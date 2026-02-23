@@ -29,10 +29,11 @@ class User(AbstractUser):
         choices=ECOLES,
         verbose_name="établissement scolaire",
     )
-    email = models.EmailField(blank=False, null=False)
+    email = models.EmailField()
 
     USERNAME_FIELD = "username"
 
     def save(self, *args, **kwargs):
         self.email = f"{self.username}@eduge.ch"
+        self.first_name, self.last_name = self.username.split(".")
         return super().save(*args, **kwargs)
