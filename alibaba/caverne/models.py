@@ -92,3 +92,7 @@ class Fichier(models.Model):
     
     def __str__(self):
         return f"{self.name} - {self.user.username}"
+    
+    def save(self, *args, **kwargs):
+        self.file = None
+        return super().save(*args, **kwargs)

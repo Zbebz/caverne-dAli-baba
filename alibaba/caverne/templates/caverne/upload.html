@@ -1,0 +1,14 @@
+{% extends 'caverne/layout.html' %} 
+{% block main %} 
+<form action="{% url 'upload' %}" method="post">
+    {% csrf_token %}
+    
+    {% for field in form %}
+    <div>
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+    </div>
+    {% endfor %}
+    <button type="submit">Submit</button>
+</form>
+{% endblock %}
