@@ -1,6 +1,6 @@
 {% extends 'caverne/layout.html' %} 
 {% block main %} 
-<form action="{% url 'upload' %}" method="post">
+<form action="{% url 'upload' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     
     {% for field in form %}
@@ -11,4 +11,5 @@
     {% endfor %}
     <button type="submit">Submit</button>
 </form>
+{{ form.errors }}
 {% endblock %}

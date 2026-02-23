@@ -11,7 +11,7 @@ def upload(request):
     if request.method == "POST":
         form = FichierForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save(commit=False)
+            form = form.save(commit=False)
             form.user = request.user
             form.save()
             return redirect(reverse('index'))
