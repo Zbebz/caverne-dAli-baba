@@ -35,6 +35,9 @@ SUBJECTS = [
     ("PO", "Philosophie"),
 ]
 
+YEARS = [(1, "1re"), (2, "2e"), (3, "3e"), (4, "4e")]
+
+
 class User(AbstractUser):
     username = models.CharField(
         unique=True, blank=False, null=False, verbose_name="identifiant eduge"
@@ -58,11 +61,11 @@ class User(AbstractUser):
 
 
 class Fichier(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     def get_sentinel_user():
         return get_user_model().objects.get_or_create(username="deleted")[0]
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET(get_sentinel_user),
@@ -70,10 +73,14 @@ class Fichier(models.Model):
     )
     name = models.CharField(blank=False, null=False, verbose_name="nom du fichier")
     description = models.TextField(blank=False, null=False)
-    year = models.IntegerField()
+    year = models.IntegerField(
+        blank=False, null=False, choices=YEARS, verbose_name="années"
+    ) # L'année pour laquelle le fichier est destiné
     subject = models.CharField(
         blank=False, null=False, choices=SUBJECTS, verbose_name="matière"
     )
+    status = models.CharField(blank=False, null=False, default="PENDING")
+    tags = models.TextField(blank=False, null=False, verbose_name="mots clés")
     uploadDatetime = models.DateTimeField(default=localtime)
 
     def filePlacer(instance, filename):
@@ -82,6 +89,6 @@ class Fichier(models.Model):
     file = models.FileField(
         upload_to=filePlacer, verbose_name="fichier", null=False, blank=False
     )
-
+    
     def __str__(self):
         return f"{self.name} - {self.user.username}"
