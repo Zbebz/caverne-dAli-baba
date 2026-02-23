@@ -60,11 +60,16 @@ class User(AbstractUser):
         return f"{self.username} - {self.get_ecole_display()}"
 
 
+def filePlacer(instance, filename):
+    return f"{Path(filename).suffix[1:]}/{filename}"
+
+
+def get_sentinel_user():
+    return get_user_model().objects.get_or_create(username="deleted")[0]
+
+
 class Fichier(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-
-    def get_sentinel_user():
-        return get_user_model().objects.get_or_create(username="deleted")[0]
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -83,9 +88,6 @@ class Fichier(models.Model):
     tags = models.TextField(blank=False, null=False, verbose_name="mots clés")
     uploadDatetime = models.DateTimeField(default=localtime)
 
-    def filePlacer(instance, filename):
-        return f"{Path(filename).suffix[1:]}/{filename}"
-
     file = models.FileField(
         upload_to=filePlacer, verbose_name="fichier", null=False, blank=False
     )
@@ -93,6 +95,6 @@ class Fichier(models.Model):
     def __str__(self):
         return f"{self.name} - {self.user.username}"
     
-    def save(self, *args, **kwargs):
-        self.file = None
-        return super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     self.file = None
+    #     return super().save(*args, **kwargs)
