@@ -1,27 +1,34 @@
-{% extends 'caverne/layout.html' %} 
-{% block staticfiles %}
+{% extends 'caverne/layout.html' %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'caverne/css/upload.css' %}">
+{% block staticfiles %}
+    <link rel="stylesheet" href="{% static 'caverne/css/upload.css' %}" />
 {% endblock %}
+{% block titre %}Partager un document -{% endblock %}
 {% block main %}
-<form action="{% url 'upload' %}" method="post" enctype="multipart/form-data">
-    {% csrf_token %} {% for field in form %}
-    <div>
-        {% if field == form.file %}
-        <div id="file-field">
-            <div id="drop-area">Choisissez votre fichier {{field}}</div>
-        </div>
-        {% else %}
-        <div class="other-field">
-            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-            {{ field }}
-        </div>
-        {% endif %}
-    </div>
-    {% endfor %}
-    <button type="submit">Submit</button>
-</form>
-{% block script %}
-<script src="{% static 'caverne/js/upload.js' %}"></script>
+    <form action="{% url 'upload' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+            <div>
+                {% if field == form.file %}
+                    <div id="file-field">
+                        <div id="drop-area">
+                            Choisissez votre fichier
+                            <span class="small-text">ou glissez-le</span>
+                            {{ field }}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="other-field">
+                        {{ field.label_tag }}
+                        {{ field }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" id="submit-button">Submit</button>
+    </form>
+    {{ form.errors }}
 {% endblock %}
-{{ form.errors }} {% endblock %}
+{% block script %}
+    <script src="{% static 'caverne/js/upload.js' %}"></script>
+{% endblock %}
