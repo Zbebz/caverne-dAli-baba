@@ -1,8 +1,6 @@
 // https://uploadcare.com/blog/how-to-make-a-drag-and-drop-file-uploader/
 const dropArea = document.getElementById("drop-area");
 const fileInput = document.getElementById("id_file");
-const otherFields = document.querySelectorAll(".other-field");
-const fileField = document.getElementById("file-field");
 
 function preventDefaults(e) {
     e.preventDefault();
@@ -21,6 +19,19 @@ dropArea.addEventListener("dragleave", () => {
     dropArea.classList.remove("drag-over");
 });
 
+// For UX
+function fileUpload() {
+    const otherFields = document.querySelectorAll(".other-field");
+    const fileField = document.getElementById("file-field");
+    const submitButton = document.getElementById("submit-button");
+
+    otherFields.forEach((f) => {
+        f.style.display = "initial";
+    });
+    submitButton.style.display = "initial";
+    fileField.style.display = "none";
+}
+
 dropArea.addEventListener("drop", (e) => {
     e.preventDefault();
 
@@ -28,13 +39,10 @@ dropArea.addEventListener("drop", (e) => {
     const files = e.dataTransfer.files;
 
     if (files.length) {
-        // Assigning the files to the hidden input from the first step
+        // Assigning the files to the hidden input
         fileInput.files = files;
 
-        otherFields.forEach((f) => {
-            f.style.display = "initial";
-        });
-        fileField.style.display = "none";
+        fileUpload();
     }
 });
 
@@ -42,3 +50,5 @@ dropArea.addEventListener("drop", (e) => {
 dropArea.addEventListener("click", (e) => {
     fileInput.click();
 });
+
+fileInput.addEventListener("change", fileUpload);
