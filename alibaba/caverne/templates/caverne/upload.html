@@ -12,7 +12,9 @@
                 {% if field == form.file %}
                     <div id="file-field">
                         <div id="drop-area">
-                            Choisissez votre fichier
+                            <label for="{{ field.id_for_label }}">
+                                Choisissez votre fichier
+                            </label>
                             <span class="small-text">ou glissez-le</span>
                             {{ field }}
                         </div>
