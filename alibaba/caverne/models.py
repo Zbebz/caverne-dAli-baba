@@ -1,10 +1,11 @@
-from django.db import models
-from django.contrib.auth.models import AbstractUser
+from pathlib import Path
+from uuid import uuid4
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractUser
+from django.db import models
 from django.utils.timezone import localtime
-import uuid
-from pathlib import Path
 
 # Create your models here.
 
@@ -35,6 +36,12 @@ SUBJECTS = [
     ("PO", "Philosophie"),
 ]
 
+TYPES = [
+    ("EVAL", "Évaluation"),
+    ("THEO", "Théorie"),
+    ("EXOS", "Exercices"),
+]
+
 YEARS = [(1, "1re"), (2, "2e"), (3, "3e"), (4, "4e")]
 
 
@@ -46,9 +53,9 @@ class User(AbstractUser):
         blank=False,
         null=False,
         choices=ECOLES,
-        verbose_name="établissement scolaire",
+        verbose_name="collège",
     )
-    email = models.EmailField(blank=False, null=False)
+    email = models.EmailField(blank=True, null=False)
 
     USERNAME_FIELD = "username"
 
@@ -69,32 +76,39 @@ def get_sentinel_user():
 
 
 class Fichier(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET(get_sentinel_user),
         related_name="fichiers",
     )
-    name = models.CharField(blank=False, null=False, verbose_name="nom du fichier")
-    description = models.TextField(blank=False, null=False)
-    year = models.IntegerField(
-        blank=False, null=False, choices=YEARS, verbose_name="années"
-    ) # L'année pour laquelle le fichier est destiné
-    subject = models.CharField(
-        blank=False, null=False, choices=SUBJECTS, verbose_name="matière"
-    )
-    status = models.CharField(blank=False, null=False, default="PENDING")
-    tags = models.TextField(blank=False, null=False, verbose_name="mots clés")
+    status = models.CharField(default="PENDING")
     uploadDatetime = models.DateTimeField(default=localtime)
 
     file = models.FileField(
         upload_to=filePlacer, verbose_name="fichier", null=False, blank=False
     )
-    
+    name = models.CharField(blank=False, null=False, verbose_name="nom du fichier")
+    year = models.IntegerField(
+        blank=False, null=False, choices=YEARS, verbose_name="années"
+    )  # L'année pour laquelle le fichier est destiné
+    subject = models.CharField(
+        blank=False, null=False, choices=SUBJECTS, verbose_name="matière"
+    )
+    type = models.CharField(
+        blank=False, null=False, choices=TYPES, verbose_name="type de fichier"
+    )
+    ecole = models.CharField(
+        blank=False, null=False, choices=ECOLES, verbose_name="collège"
+    )
+    enseignant = models.CharField(blank=False, null=False, verbose_name="enseignant.e")
+    description = models.TextField(blank=False, null=False)
+    tags = models.TextField(blank=False, null=False, verbose_name="mots clés")
+
     def __str__(self):
         return f"{self.name} - {self.user.username}"
-    
+
     # def save(self, *args, **kwargs):
     #     self.file = None
     #     return super().save(*args, **kwargs)
