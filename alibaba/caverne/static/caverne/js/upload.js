@@ -52,3 +52,12 @@ dropArea.addEventListener("click", (e) => {
 });
 
 fileInput.addEventListener("change", fileUpload);
+
+const selectDropdowns = document.querySelectorAll("select");
+
+selectDropdowns.forEach((s) => {
+    const selectPlaceholder = s.firstElementChild;
+    selectPlaceholder.selected = true;
+    selectPlaceholder.disabled = true;
+});
+
