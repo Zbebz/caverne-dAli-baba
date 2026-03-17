@@ -91,7 +91,7 @@ class Fichier(models.Model):
     )
     name = models.CharField(blank=False, null=False, verbose_name="nom du fichier")
     year = models.IntegerField(
-        blank=False, null=False, choices=YEARS, verbose_name="années"
+        blank=False, null=False, choices=YEARS, verbose_name="année"
     )  # L'année pour laquelle le fichier est destiné
     subject = models.CharField(
         blank=False, null=False, choices=SUBJECTS, verbose_name="matière"
@@ -103,12 +103,9 @@ class Fichier(models.Model):
         blank=False, null=False, choices=ECOLES, verbose_name="collège"
     )
     enseignant = models.CharField(blank=False, null=False, verbose_name="enseignant.e")
+    annotated = models.BooleanField(blank=False, null=False, verbose_name="annoté?")
     description = models.TextField(blank=False, null=False)
     tags = models.TextField(blank=False, null=False, verbose_name="mots clés")
 
     def __str__(self):
         return f"{self.name} - {self.user.username}"
-
-    # def save(self, *args, **kwargs):
-    #     self.file = None
-    #     return super().save(*args, **kwargs)
