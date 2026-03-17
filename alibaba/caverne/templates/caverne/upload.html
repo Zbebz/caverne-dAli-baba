@@ -7,27 +7,64 @@
 {% block main %}
     <form action="{% url 'upload' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {% for field in form %}
-            <div>
-                {% if field == form.file %}
-                    <div id="file-field">
-                        <div id="drop-area">
-                            <label for="{{ field.id_for_label }}">
-                                Choisissez votre fichier
-                            </label>
-                            <span class="small-text">ou glissez-le</span>
-                            {{ field }}
-                        </div>
-                    </div>
-                {% else %}
-                    <div class="other-field">
-                        {{ field.label_tag }}
-                        {{ field }}
-                    </div>
-                {% endif %}
+        <div id="file-field">
+            <div id="drop-area">
+                <label for="{{ form.file.id_for_label }}">
+                    Choisissez votre fichier
+                </label>
+                <span class="small-text">ou glissez-le</span>
+                {{ form.file }}
             </div>
-        {% endfor %}
-        <button type="submit" id="submit-button">Submit</button>
+        </div>
+        <div class="container w-50 mt-5 ms-5">
+            <div class="row mb-3">
+                <div class="col other-field">
+                    <label for="{{ form.name.id_for_label }}" class="form-label">{{ form.name.label }}</label>
+                    {{ form.name }}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col other-field">
+                    <label for="{{ form.year.id_for_label }}" class="form-label">{{ form.year.label }}</label>
+                    {{ form.year }}
+                </div>
+                <div class="col other-field">
+                    <label for="{{ form.subject.id_for_label }}" class="form-label">{{ form.subject.label }}</label>
+                    {{ form.subject }}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col other-field">
+                    <label for="{{ form.type.id_for_label }}" class="form-label">{{ form.type.label }}</label>
+                    {{ form.type }}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col other-field">
+                    <label for="{{ form.ecole.id_for_label }}" class="form-label">{{ form.ecole.label }}</label>
+                    {{ form.ecole }}
+                </div>
+                <div class="col other-field">
+                    <label for="{{ form.enseignant.id_for_label }}" class="form-label">{{ form.enseignant.label }}</label>
+                    {{ form.enseignant }}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col other-field">
+                    <div class="form-checked">
+                        {{ form.annotated }}
+                        <label
+                            for="{{ form.annotated.id_for_label }}"
+                            class="form-check-label"
+                        >{{ form.annotated.label }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="submit" id="submit-button" class="btn btn-primary ms-5">
+            Continuer
+        </button>
     </form>
     {{ form.errors }}
 {% endblock %}
