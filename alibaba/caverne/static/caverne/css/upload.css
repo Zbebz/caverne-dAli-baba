@@ -24,7 +24,7 @@
     background-color: #eee;
 }
 
-.other-field, #submit-button {
+.field-1, .field-2, #submit-button {
     display: none;
 }
 

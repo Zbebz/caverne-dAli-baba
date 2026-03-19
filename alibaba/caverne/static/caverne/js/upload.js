@@ -1,6 +1,7 @@
 // https://uploadcare.com/blog/how-to-make-a-drag-and-drop-file-uploader/
 const dropArea = document.getElementById("drop-area");
 const fileInput = document.getElementById("id_file");
+const submitButton = document.getElementById("submit-button");
 
 function preventDefaults(e) {
     e.preventDefault();
@@ -21,11 +22,10 @@ dropArea.addEventListener("dragleave", () => {
 
 // For UX
 function fileUpload() {
-    const otherFields = document.querySelectorAll(".other-field");
+    const fields1 = document.querySelectorAll(".field-1");
     const fileField = document.getElementById("file-field");
-    const submitButton = document.getElementById("submit-button");
 
-    otherFields.forEach((f) => {
+    fields1.forEach((f) => {
         f.style.display = "initial";
     });
     submitButton.style.display = "initial";
@@ -61,3 +61,12 @@ selectDropdowns.forEach((s) => {
     selectPlaceholder.disabled = true;
 });
 
+submitButton.addEventListener("click", () => {
+    const fields2 = document.querySelectorAll(".field-2")
+    fields2.forEach((f) => {
+        f.style.display = "initial";
+    });
+
+    submitButton.innerText = "Partager";
+    submitButton.type = "submit";
+}, {once: true});
