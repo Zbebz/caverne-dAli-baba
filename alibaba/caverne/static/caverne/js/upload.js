@@ -62,11 +62,32 @@ selectDropdowns.forEach((s) => {
 });
 
 submitButton.addEventListener("click", () => {
-    const fields2 = document.querySelectorAll(".field-2")
+    const fields2 = document.querySelectorAll(".field-2");
+    const fields1inputs = document.querySelectorAll(
+        ".field-1 input, .field-1 select",
+    );
+
+    let exit = false;
+    let skip = false;
+    fields1inputs.forEach((f) => {
+        if (skip) {
+            return;
+        }
+        if (!f.reportValidity()) {
+            exit = true;
+            skip = true;
+            return;
+        }
+    });
+
+    if (exit) {
+        return;
+    }
+
     fields2.forEach((f) => {
         f.style.display = "initial";
     });
 
     submitButton.innerText = "Partager";
     submitButton.type = "submit";
-}, {once: true});
+});
