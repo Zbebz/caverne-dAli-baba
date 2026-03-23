@@ -44,6 +44,7 @@ TYPES = [
 
 YEARS = [(1, "1re"), (2, "2e"), (3, "3e"), (4, "4e")]
 
+STATUTS = [(2, "En attente"), (0, "Rejeté"), (1, "Chargé")]
 
 class User(AbstractUser):
     username = models.CharField(
@@ -67,6 +68,16 @@ class User(AbstractUser):
         return f"{self.username} - {self.get_ecole_display()}"
 
 
+class Enseignant(models.Model):
+    name = models.CharField(blank=False, null=False, max_length=50, unique=True, verbose_name="nom, prénom")
+    ecole = models.CharField(
+        blank=False, null=False, choices=ECOLES, verbose_name="collège"
+    )
+
+    def __str__(self):
+        return f"{self.name} - {self.get_ecole_display()}"
+
+
 def filePlacer(instance, filename):
     return f"{Path(filename).suffix[1:]}/{filename}"
 
@@ -83,7 +94,7 @@ class Fichier(models.Model):
         on_delete=models.SET(get_sentinel_user),
         related_name="fichiers",
     )
-    status = models.CharField(default="PENDING")
+    status = models.IntegerField(default=2, choices=STATUTS)
     uploadDatetime = models.DateTimeField(default=localtime)
 
     file = models.FileField(
