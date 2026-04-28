@@ -1,11 +1,14 @@
 from pathlib import Path
 from uuid import uuid4
+import magic
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.timezone import localtime
+from django.core.validators import FileExtensionValidator
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 
@@ -46,6 +49,7 @@ YEARS = [(1, "1re"), (2, "2e"), (3, "3e"), (4, "4e")]
 
 STATUTS = [(2, "En attente"), (0, "Rejeté"), (1, "Chargé")]
 
+
 class User(AbstractUser):
     username = models.CharField(
         unique=True, blank=False, null=False, verbose_name="identifiant eduge"
@@ -69,7 +73,9 @@ class User(AbstractUser):
 
 
 class Enseignant(models.Model):
-    name = models.CharField(blank=False, null=False, max_length=50, unique=True, verbose_name="nom, prénom")
+    name = models.CharField(
+        blank=False, null=False, max_length=50, unique=True, verbose_name="nom, prénom"
+    )
     ecole = models.CharField(
         blank=False, null=False, choices=ECOLES, verbose_name="collège"
     )
@@ -86,6 +92,19 @@ def get_sentinel_user():
     return get_user_model().objects.get_or_create(username="deleted")[0]
 
 
+def validate_file_mimetype(file):
+    accept = [
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.oasis.opendocument.text",
+    ]
+    file_mime_type = magic.from_buffer(file.read(2048), mime=True)
+    print(file_mime_type)
+    if file_mime_type not in accept:
+        raise ValidationError("Ce type de fichier n'est pas autorisé.")
+
+
 class Fichier(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
 
@@ -98,7 +117,14 @@ class Fichier(models.Model):
     uploadDatetime = models.DateTimeField(default=localtime)
 
     file = models.FileField(
-        upload_to=filePlacer, verbose_name="fichier", null=False, blank=False
+        upload_to=filePlacer,
+        verbose_name="fichier",
+        null=False,
+        blank=False,
+        validators=[
+            FileExtensionValidator(["pdf", "doc", "docx", "odt"]),
+            validate_file_mimetype,
+        ],
     )
     name = models.CharField(blank=False, null=False, verbose_name="nom du fichier")
     year = models.IntegerField(

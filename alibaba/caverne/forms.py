@@ -9,7 +9,12 @@ class FichierForm(forms.ModelForm):
         model = Fichier
         exclude = ["user", "uploadDatetime", "status"]
         widgets = {
-            "file": forms.FileInput(attrs={"hidden": "true"}),
+            "file": forms.FileInput(
+                attrs={
+                    "hidden": "true",
+                    "accept": ".pdf,application/pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.odt,application/vnd.oasis.opendocument.text",
+                }
+            ),
             "annotated": forms.CheckboxInput(attrs={"class": "form-check-input"}),
         }
 
@@ -24,7 +29,7 @@ class FichierForm(forms.ModelForm):
                 field.choices = [
                     ("", f"Choisissez un.e {field.label.lower()}")
                 ] + choices
-                
+
             attributes = {"class": "form-control"}
             for attr in attributes:
                 attributes[attr] = field.widget.attrs.get(

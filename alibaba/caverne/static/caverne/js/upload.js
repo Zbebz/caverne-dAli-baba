@@ -37,12 +37,16 @@ dropArea.addEventListener("drop", (e) => {
 
     // Getting the list of dragged files
     const files = e.dataTransfer.files;
-
-    if (files.length) {
+    const acceptedFileTypes = fileInput.accept.split(",");
+    if (files.length && acceptedFileTypes.includes(files[0].type)) {
         // Assigning the files to the hidden input
         fileInput.files = files;
 
         fileUpload();
+    } else {
+        const errorMessage = document.querySelector(".files-accepted");
+        errorMessage.style.color = "red";
+        dropArea.classList.remove("drag-over");
     }
 });
 

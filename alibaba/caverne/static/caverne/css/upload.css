@@ -3,7 +3,7 @@
 }
 
 #drop-area {
-    width: calc(100vw - (155px * 2));
+    width: calc(100vw - (100px * 2));
     height: 70vh;
     margin: 50px auto;
     display: flex;
@@ -15,7 +15,6 @@
 
     & label {
         font-size: 3.5vw;
-        text-align: center;
         cursor: pointer;
     }
 }
@@ -30,6 +29,13 @@
 
 .small-text {
     font-size: 2vw;
-    text-align: center;
     color: #555;
+    margin-bottom: 15px;
+    margin-top: -10px;
 }
+
+.files-accepted {
+    font-size: 1vw;
+    color: #777
+}
+
