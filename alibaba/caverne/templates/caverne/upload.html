@@ -1,102 +1,12 @@
 {% extends 'caverne/layout.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 {% block staticfiles %}
     <link rel="stylesheet" href="{% static 'caverne/css/upload.css' %}" />
 {% endblock %}
 {% block titre %}Partager un document -{% endblock %}
 {% block main %}
-    <form action="{% url 'upload' %}" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div id="file-field">
-            <div id="drop-area">
-                <label for="{{ form.file.id_for_label }}">
-                    Choisissez votre fichier
-                </label>
-                <span class="small-text">ou glissez-le</span>
-                <span class="files-accepted"
-                {% if form.file.errors %}
-                    style="color: red;"
-                {% endif %}
-                    >Seulement les fichiers pdf, docx, doc, odt sont autorisés</span>
-                {{ form.file }}
-            </div>
-        </div>
-        <div class="container w-50 mt-5 ms-5">
-            <div class="row mb-3 field-1">
-                <div class="col">
-                    <label for="{{ form.name.id_for_label }}" class="form-label">
-                        {{ form.name.label }}
-                    </label>
-                    {{ form.name }}
-                </div>
-            </div>
-            <div class="row mb-3 field-1">
-                <div class="col">
-                    <label for="{{ form.year.id_for_label }}" class="form-label">
-                        {{ form.year.label }}
-                    </label>
-                    {{ form.year }}
-                </div>
-                <div class="col">
-                    <label for="{{ form.subject.id_for_label }}" class="form-label">
-                        {{ form.subject.label }}
-                    </label>
-                    {{ form.subject }}
-                </div>
-            </div>
-            <div class="row mb-3 field-1">
-                <div class="col">
-                    <label for="{{ form.type.id_for_label }}" class="form-label">{{ form.type.label }}</label>
-                    {{ form.type }}
-                </div>
-            </div>
-            <div class="row mb-3 field-1">
-                <div class="col">
-                    <label for="{{ form.ecole.id_for_label }}" class="form-label">{{ form.ecole.label }}</label>
-                    {{ form.ecole }}
-                </div>
-                <div class="col">
-                    <label for="{{ form.enseignant.id_for_label }}" class="form-label">{{ form.enseignant.label }}</label>
-                    {{ form.enseignant }}
-                </div>
-            </div>
-            <div class="row mb-3 field-1">
-                <div class="col">
-                    <div class="form-checked">
-                        {{ form.annotated }}
-                        <label
-                            for="{{ form.annotated.id_for_label }}"
-                            class="form-check-label"
-                        >{{ form.annotated.label }}
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="row mb-3 field-2">
-                <div class="col">
-                    <label
-                    for="{{ form.description.id_for_label }}"
-                    class="form-label"
-                    >{{ form.description.label }}
-                    </label>
-                    {{ form.description }}
-                </div>
-            </div>
-            <div class="row mb-3 field-2">
-                <div class="col">
-                    <label
-                    for="{{ form.tags.id_for_label }}"
-                    class="form-label"
-                    >{{ form.tags.label }}
-                    </label>
-                    {{ form.tags }}
-                </div>
-            </div>
-        </div>
-        <button type="button" id="submit-button" class="btn btn-primary ms-5">
-            Continuer
-        </button>
-    </form>
+    {% crispy form %}
 {% endblock %}
 {% block script %}
     <script src="{% static 'caverne/js/upload.js' %}"></script>

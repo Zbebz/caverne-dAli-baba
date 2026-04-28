@@ -1,14 +1,14 @@
 from pathlib import Path
 from uuid import uuid4
-import magic
 
+import magic
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.utils.timezone import localtime
-from django.core.validators import FileExtensionValidator
-from django.core.exceptions import ValidationError
 
 # Create your models here.
 
@@ -100,7 +100,6 @@ def validate_file_mimetype(file):
         "application/vnd.oasis.opendocument.text",
     ]
     file_mime_type = magic.from_buffer(file.read(2048), mime=True)
-    print(file_mime_type)
     if file_mime_type not in accept:
         raise ValidationError("Ce type de fichier n'est pas autorisé.")
 

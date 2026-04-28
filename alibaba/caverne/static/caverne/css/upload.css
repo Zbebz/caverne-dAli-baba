@@ -23,7 +23,7 @@
     background-color: #eee;
 }
 
-.field-1, .field-2, #submit-button {
+#field-1, #field-2, #submit-button {
     display: none;
 }
 
@@ -39,3 +39,6 @@
     color: #777
 }
 
+.asteriskField {
+    display: none;
+}

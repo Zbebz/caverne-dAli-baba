@@ -22,12 +22,10 @@ dropArea.addEventListener("dragleave", () => {
 
 // For UX
 function fileUpload() {
-    const fields1 = document.querySelectorAll(".field-1");
+    const field1 = document.getElementById("field-1");
     const fileField = document.getElementById("file-field");
 
-    fields1.forEach((f) => {
-        f.style.display = "initial";
-    });
+    field1.style.display = "initial";
     submitButton.style.display = "initial";
     fileField.style.display = "none";
 }
@@ -66,9 +64,9 @@ selectDropdowns.forEach((s) => {
 });
 
 submitButton.addEventListener("click", () => {
-    const fields2 = document.querySelectorAll(".field-2");
+    const field2 = document.getElementById("field-2");
     const fields1inputs = document.querySelectorAll(
-        ".field-1 input, .field-1 select",
+        "#field-1 input, #field-1 select",
     );
 
     let exit = false;
@@ -88,9 +86,7 @@ submitButton.addEventListener("click", () => {
         return;
     }
 
-    fields2.forEach((f) => {
-        f.style.display = "initial";
-    });
+    field2.style.display = "initial";
 
     submitButton.innerText = "Partager";
     submitButton.type = "submit";

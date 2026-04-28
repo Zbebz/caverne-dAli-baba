@@ -1,8 +1,9 @@
-from django.shortcuts import render, redirect
-from django.urls import reverse
 from django.http import HttpResponse
+from django.shortcuts import redirect, render
+from django.urls import reverse
+
 from .forms import FichierForm
-from .models import Fichier, User, Enseignant
+from .models import Enseignant, Fichier, User
 
 
 # Create your views here.
