@@ -10,8 +10,6 @@ from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.utils.timezone import localtime
 
-# Create your models here.
-
 ECOLES = [
     ("CHAVANNE", "Collège et Ecole de commerce André-Chavanne"),
     ("CALVIN", "Collège Calvin"),

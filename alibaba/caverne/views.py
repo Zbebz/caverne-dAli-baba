@@ -1,12 +1,10 @@
-from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
 from .forms import FichierForm
-from .models import Enseignant, Fichier, User
+from .models import Enseignant, User
 
 
-# Create your views here.
 def index(request):
     return render(request, "caverne/index.html")
 
