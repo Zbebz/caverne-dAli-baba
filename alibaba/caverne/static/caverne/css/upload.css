@@ -1,0 +1,44 @@
+:root {
+    font-size: 16px;
+}
+
+#drop-area {
+    width: calc(100vw - (100px * 2));
+    height: 70vh;
+    margin: 50px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed #d3d3d3;
+    cursor: pointer;
+
+    & label {
+        font-size: 3.5vw;
+        cursor: pointer;
+    }
+}
+
+#drop-area.drag-over {
+    background-color: #eee;
+}
+
+#field-1, #field-2, #submit-button {
+    display: none;
+}
+
+.small-text {
+    font-size: 2vw;
+    color: #555;
+    margin-bottom: 15px;
+    margin-top: -10px;
+}
+
+.files-accepted {
+    font-size: 1vw;
+    color: #777
+}
+
+.asteriskField {
+    display: none;
+}
