@@ -2,13 +2,17 @@ from crispy_forms.bootstrap import StrictButton
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, Column, Div, Layout, Row
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse
 
-from .models import Fichier
+from .models import Fichier, User
 
+
+class RegisterForm(UserCreationForm):
+    class Meta(UserCreationForm.Meta):
+        model = User
 
 class FichierForm(forms.ModelForm):
-
     class Meta():
         model = Fichier
         exclude = ["user", "uploadDatetime", "status"]

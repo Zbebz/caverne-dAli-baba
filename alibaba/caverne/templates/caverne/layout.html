@@ -13,6 +13,47 @@
         <title>{% block titre %}{% endblock %} Caverne d'Ali Baba</title>
     </head>
     <body>
+        <nav class="bg-light border navbar navbar-expand-md navbar-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{% url 'index' %}">
+                    Caverne d'Alibaba
+                </a>
+                <button
+                    aria-controls="navbar"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                    class="navbar-toggler"
+                    data-bs-target="#navbar"
+                    data-bs-toggle="collapse"
+                    type="button"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbar">
+                    {% if user.is_authenticated %}
+                        <ul class="navbar-nav me-auto mt-2">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'logout' %}">Se déconnecter</a>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav ms-auto mt-2">
+                            <li class="nav-item">
+                                <a class="btn btn-primary" href="{% url 'upload' %}">Publier</a>
+                            </li>
+                        </ul>
+                    {% else %}
+                    <ul class="navbar-nav me-auto mt-2">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'register' %}">S'inscrire</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Se connecter</a>
+                        </li>
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
         <main class="p-5">
             {% block main %}{% endblock %}
         </main>
