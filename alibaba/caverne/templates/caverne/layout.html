@@ -15,7 +15,7 @@
     <body>
         <nav class="bg-light border navbar navbar-expand-md navbar-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="{% url 'index' %}">
+                <a class="navbar-brand fs-4" href="{% url 'index' %}">
                     Caverne d'Alibaba
                 </a>
                 <button
@@ -31,18 +31,16 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbar">
                     {% if user.is_authenticated %}
-                        <ul class="navbar-nav me-auto mt-2">
-                            <li class="nav-item">
+                        <ul class="navbar-nav w-100 mt-1">
+                            <li class="nav-item me-auto">
                                 <a class="nav-link" href="{% url 'logout' %}">Se déconnecter</a>
                             </li>
-                        </ul>
-                        <ul class="navbar-nav ms-auto mt-2">
-                            <li class="nav-item">
+                            <li class="nav-item ms-auto">
                                 <a class="btn btn-primary" href="{% url 'upload' %}">Publier</a>
                             </li>
                         </ul>
                     {% else %}
-                    <ul class="navbar-nav me-auto mt-2">
+                    <ul class="navbar-nav me-auto mt-1">
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'register' %}">S'inscrire</a>
                         </li>
