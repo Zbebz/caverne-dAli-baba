@@ -12,6 +12,34 @@ class RegisterForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
         
+    
+    def __init__(self, *args, **kwargs):
+        super(RegisterForm, self).__init__(*args, **kwargs)
+        
+        # https://stackoverflow.com/questions/34144277/avoid-display-of-help-text-in-django-crispy-forms
+        for field_name, _ in self.fields.items():
+            self.fields[field_name].help_text = None
+        
+        self.helper = FormHelper()
+        self.helper.form_method = "POST"
+        self.helper.form_action = reverse("register")
+        
+        self.helper.layout = Layout(
+            Div(
+                Field("username", wrapper_class="mx-auto w-auto"),
+                Field("password1", wrapper_class="mx-auto w-auto"),
+                Field("password2", wrapper_class="mx-auto w-auto"),
+                StrictButton(
+                    "S'inscrire",
+                    type="submit",
+                    css_id="submit-button",
+                    css_class="btn-primary mx-auto w-auto",
+                ),
+                css_class="d-flex flex-column justify-content-center",
+            ),
+        )
+    
+        
 class LoginForm(AuthenticationForm):
     
     def __init__(self, *args, **kwargs):
