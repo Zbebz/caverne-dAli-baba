@@ -18,9 +18,7 @@ class LoginForm(AuthenticationForm):
         super(LoginForm, self).__init__(*args, **kwargs)
         
         self.helper = FormHelper()
-        self.helper.form_method = "POST"
-        self.helper.form_action = reverse("login")
-        self.helper.attrs = {"enctype": "multipart/form-data"}
+        self.helper.form_tag = False
         
         self.helper.layout = Layout(
             Div(

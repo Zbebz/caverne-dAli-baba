@@ -6,5 +6,8 @@
     <link rel="stylesheet" href="{% static 'caverne/css/login.css' %}" />
 {% endblock %}
 {% block main %}
-    {% crispy form %}
+    <form action="{% url 'login' %}" method="post">
+        {% crispy form %}
+        <input type="hidden" name="next" value="{{ next }}">
+    </form>
 {% endblock %}
