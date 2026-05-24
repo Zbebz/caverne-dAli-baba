@@ -76,22 +76,23 @@ class FichierForm(forms.ModelForm):
             ),
             Div(
                 Div(
-                    Row("name"),
+                    Row(Field("name", autocomplete="off")),
                     Row(Column("year"), Column("subject")),
                     Row("type"),
-                    Row(Column("ecole"), Column("enseignant")),
+                    Row(Column("ecole"), Column(Field("enseignant", autocomplete="off"))),
                     Row("annotated"),
                     css_id="field-1",
                 ),
                 Div(
-                    Row("description"),
-                    Row("tags"),
+                    Row(Field("description", autocomplete="off")),
+                    Row(Field("tags", autocomplete="off")),
                     css_id="field-2",
                 ),
+                StrictButton(
+                    "Continuer",
+                    css_id="submit-button",
+                    css_class="btn-primary",
+                ),
                 css_class="container w-50 mt-5 ms-5",
-            ),
-            StrictButton("Continuer",
-                css_id="submit-button",
-                css_class="btn-primary ms-5",
             ),
         )
