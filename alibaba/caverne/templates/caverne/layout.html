@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -30,7 +30,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbar">
-                    {% if user.is_authenticated %}
+                    {% if user.is_authenticated and user.verified %}
                         <ul class="navbar-nav w-100 mt-1">
                             <li class="nav-item me-auto">
                                 <a class="nav-link" href="{% url 'logout' %}">Se déconnecter</a>

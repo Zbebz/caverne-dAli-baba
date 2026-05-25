@@ -5,12 +5,15 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.urls import reverse
 
-from .models import Fichier, User
+from .models import Fichier, User, ECOLES
 
 
 class RegisterForm(UserCreationForm):
+    ecole = forms.ChoiceField(choices=ECOLES, required=True)
+    
     class Meta(UserCreationForm.Meta):
         model = User
+        fields = ["username", "password1", "password2", "ecole"]
         
     
     def __init__(self, *args, **kwargs):
@@ -26,19 +29,27 @@ class RegisterForm(UserCreationForm):
         
         self.helper.layout = Layout(
             Div(
-                Field("username", wrapper_class="mx-auto w-auto"),
-                Field("password1", wrapper_class="mx-auto w-auto"),
-                Field("password2", wrapper_class="mx-auto w-auto"),
+                Row("username"),
+                Row("ecole"),
+                Row(Column("password1"), Column("password2")),
                 StrictButton(
                     "S'inscrire",
                     type="submit",
                     css_id="submit-button",
                     css_class="btn-primary mx-auto w-auto",
                 ),
-                css_class="d-flex flex-column justify-content-center",
+                css_class="container w-50 mx-auto",
             ),
         )
     
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.email = f"{user.username}@eduge.ch"
+        
+        if commit:
+            user.save()
+            
+        return user
         
 class LoginForm(AuthenticationForm):
     

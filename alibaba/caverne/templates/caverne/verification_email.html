@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <style>
+            * {
+                font-family: Arial, Helvetica, sans-serif;
+            }
+            p {
+                white-space: pre;
+            }
+            .btn {
+                display: block;
+                border: 1px solid #0d6efd;
+                color: #0d6efd;
+                padding: 0.375rem 0.75rem;
+                text-align: center;
+                text-decoration: none;
+                font-size: 16px;
+                margin: initial auto;
+                cursor: pointer;
+                border-radius: 0.375rem;
+                width: fit-content;
+            }
+        </style>
+    </head>
+    <body>
+        <p>Cher.e {{ user.username }},
+
+Veuillez appuyez sur le button suivant pour enfin pouvoir accéder à la caverne:</p>
+        <a href="{{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}" class="btn">Sésame, ouvre-toi !</a>
+    </body>
+</html>
