@@ -47,18 +47,16 @@ class LoginForm(AuthenticationForm):
         
         self.helper = FormHelper()
         self.helper.form_tag = False
-        
+        self.helper.form_show_errors = False
+
         self.helper.layout = Layout(
-            Div(
-                Field("username", wrapper_class="mx-auto w-auto"),
-                Field("password", wrapper_class="mx-auto w-auto"),
-                StrictButton(
-                    "Se connecter",
-                    type="submit",
-                    css_id="submit-button",
-                    css_class="btn-primary mx-auto w-auto",
-                ),
-                css_class="d-flex flex-column justify-content-center",
+            Field("username"),
+            Field("password"),
+            StrictButton(
+                "Se connecter",
+                type="submit",
+                css_id="submit-button",
+                css_class="btn btn-primary mx-auto",
             ),
         )
 
