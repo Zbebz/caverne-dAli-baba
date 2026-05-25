@@ -15,16 +15,13 @@ from .models import Enseignant
 from .tokens import account_activation_token
 
 
-@verified_required
 @login_required
+@verified_required
 def index(request):
-    if request.user.verified:
-        return render(request, "caverne/index.html")
-    else:
-        return redirect(reverse("login"))
+    return render(request, "caverne/index.html")
 
-@verified_required
 @login_required
+@verified_required
 def upload(request):
     if request.method == "POST":
         fichier = FichierForm(request.POST, request.FILES)

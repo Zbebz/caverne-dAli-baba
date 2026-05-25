@@ -3,9 +3,10 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, Column, Div, Field, Layout, Row
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.core.exceptions import ValidationError
 from django.urls import reverse
 
-from .models import Fichier, User, ECOLES
+from .models import ECOLES, Fichier, User
 
 
 class RegisterForm(UserCreationForm):
@@ -70,6 +71,18 @@ class LoginForm(AuthenticationForm):
                 css_class="btn btn-primary mx-auto",
             ),
         )
+        
+    def confirm_login_allowed(self, user):
+        if not user.is_active:
+            raise ValidationError(
+                "Ce compte est banni.",
+                code="inactive",
+            )
+        if not user.verified:
+            raise ValidationError(
+                "Ce compte n'est pas vérifié.",
+                code="unverified",
+            )
 
 class FichierForm(forms.ModelForm):
     class Meta():
