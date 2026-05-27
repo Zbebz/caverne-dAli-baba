@@ -16,4 +16,9 @@ urlpatterns = [
     ),
     path("logout", views.logout_view, name="logout"),
     path("activate/<str:uidb64>/<str:token>/", views.activate, name="activate"),
+    path(
+        "send_verification/<str:user>/",
+        views.send_verification,
+        name="send_verification",
+    ),
 ]

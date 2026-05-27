@@ -3,17 +3,33 @@
 
 {% block main %}
 {% if messages %}
-{% for message in messages %}
-    {% if message.tags == 'success' %}
+    {% for message in messages %}
+        {% if message.tags == 'success' %}
+            <div class="alert alert-success" role="alert">
+                {{ message }}
+            </div>
+        {% elif message.tags == 'error' %}
+            <div class="alert alert-danger" role="alert">
+                {{ message }}
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+
+{% if status %}
+    {% if status == 1 %}
         <div class="alert alert-success" role="alert">
-            {{ message }}
+            Vous pouvez maintenant accéder aux trésors de la caverne :)
         </div>
-    {% elif message.tags == 'error' %}
+    {% elif status == 2 %}
         <div class="alert alert-danger" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            Ce lien est expiré. Appuyez <a href="{{ link.protocol }}://{{ link.domain }}{% url 'send_verification' user=link.uid %}">ici</a> pour en recevoir un autre.
+        </div>
+    {% elif status == 3 %}
+        <div class="alert alert-danger" role="alert">
+            Ce lien est invalide...
         </div>
     {% endif %}
-{% endfor %}
 {% endif %}
 {% endblock %}

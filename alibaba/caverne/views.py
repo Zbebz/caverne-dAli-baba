@@ -2,15 +2,15 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail import EmailMessage
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
-from django.template.loader import render_to_string
 from django.urls import reverse
-from django.utils.encoding import force_bytes, force_str
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.utils.encoding import force_str
+from django.utils.http import urlsafe_base64_decode
 
 from .decorators import unauth_required, verified_required
 from .forms import FichierForm, RegisterForm
+from .helper import VerificationEmail
 from .models import Enseignant
 from .tokens import account_activation_token
 
@@ -38,27 +38,46 @@ def upload(request):
         fichier = FichierForm()
     return render(request, "caverne/upload.html", {"form": fichier})
 
-def activate(request, uidb64, token):
+@unauth_required
+def send_verification(request, user):
     User = get_user_model()
-    try:
-        uid = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except (TypeError, OverflowError, ValueError, User.DoesNotExist):
-        user = None
-
-    if user is not None and account_activation_token.check_token(user, token):
-        user.verified = True
-        user.save()
-
-        login(request, user)
-        messages.success(
-            request,
-            "Vous pouvez maintenant accéder aux trésors de la caverne :)",
-        )
+    context = {}
+    
+    if isinstance(user, str):
+        try:
+            uid = force_str(urlsafe_base64_decode(user))
+            u = User.objects.get(pk=uid)
+        except (TypeError, OverflowError, ValueError, User.DoesNotExist):
+            u = None
     else:
-        messages.error(request, "Ce lien est invalide")
-
-    return render(request, "caverne/verification.html", {"messages": messages.get_messages(request)})
+        u = user
+        
+    if u is None:
+        return HttpResponse("Ce compte n'existe pas!", status=404)
+    
+    if u.verified:
+        status = 1
+        context["status"] = status
+    else:
+        email = VerificationEmail(
+                    u,
+                    "Vérifiez votre compte",
+                    reply_to=["no-reply@caverne.ch"],
+                )
+        email.make_body(
+            get_current_site(request).domain, is_secure=request.is_secure()
+        )
+        email.send()
+        
+        messages.success(
+                    request,
+                    f"Veuillez regarder votre boîte mail {u.email} pour le lien de verification. Vérifiez votre dossier spam.",
+                )
+        
+        context["messages"] = messages.get_messages(request)
+        print(context["messages"])
+    
+    return render(request, "caverne/verification.html", context)
 
 @unauth_required
 def register(request):
@@ -66,34 +85,44 @@ def register(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
-            message = render_to_string(
-                "caverne/verification_email.html",
-                {
-                    "user": user,
-                    "domain": get_current_site(request).domain,
-                    "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-                    "token": account_activation_token.make_token(user),
-                    "protocol": "https" if request.is_secure() else "http",
-                },
-            )
-            email = EmailMessage(
-                "Vérifiez votre compte",
-                message,
-                to=[user.email],
-                reply_to=["no-reply@caverne.ch"],
-            ) 
-            email.content_subtype = "html" # https://sendlayer.com/blog/how-to-send-email-with-django/
-            email.send()
-            messages.success(
-                request,
-                f"Veuillez regarder votre boîte mail {user.email} pour le lien de verification. Vérifiez votre dossier spam.",
-            )
-                
-            return render(request, "caverne/verification.html", {"messages": messages.get_messages(request)})
+            return send_verification(request, user)
+
     else:
         form = RegisterForm()
 
     return render(request, "caverne/register.html", {"form": form})
+
+def activate(request, uidb64, token):
+    User = get_user_model()
+    context = {}
+    
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, OverflowError, ValueError, User.DoesNotExist):
+        user = None
+
+    is_verified, is_expired = account_activation_token.check_token(user, token)
+    if is_verified:
+        user.verified = True
+        user.save()
+
+        login(request, user)
+        status = 1
+    elif is_expired:
+        # Pour permettre à l'utilisateur de recevoir un autre lien
+        link = {
+            "protocol": "https" if request.is_secure()  else "http",
+            "domain": get_current_site(request).domain,
+            "uid": uidb64,
+        }
+        context["link"] = link
+        status = 2
+    else:
+        status = 3
+    
+    context["status"] = status
+    return render(request, "caverne/verification.html", context)
 
 def logout_view(request):
     logout(request)

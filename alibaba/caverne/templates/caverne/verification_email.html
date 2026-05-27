@@ -15,11 +15,14 @@
                 padding: 0.375rem 0.75rem;
                 text-align: center;
                 text-decoration: none;
-                font-size: 16px;
                 margin: initial auto;
                 cursor: pointer;
                 border-radius: 0.375rem;
                 width: fit-content;
+            }
+            .attention {
+                font-weight: bold;
+                color: #f00;
             }
         </style>
     </head>
@@ -28,5 +31,6 @@
 
 Veuillez appuyez sur le button suivant pour enfin pouvoir accéder à la caverne:</p>
         <a href="{{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}" class="btn">Sésame, ouvre-toi !</a>
+        <p><span class="attention">Attention!</span> Vous n'avez que 24h pour vérifier, ensuite le lien est expiré...</p>
     </body>
 </html>

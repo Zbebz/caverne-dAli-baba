@@ -99,6 +99,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+PASSWORD_RESET_TIMEOUT = 86400 # 24h
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
@@ -111,6 +112,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Email Settings
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 DEFAULT_FROM_EMAIL = env("EMAIL")
