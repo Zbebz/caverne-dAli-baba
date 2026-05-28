@@ -75,7 +75,6 @@ def send_verification(request, user):
                 )
         
         context["messages"] = messages.get_messages(request)
-        print(context["messages"])
     
     return render(request, "caverne/verification.html", context)
 
