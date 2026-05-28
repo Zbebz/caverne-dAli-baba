@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <style>
+            * {
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 16px;
+            }
+            p {
+                white-space: pre;
+            }
+            .attention {
+                font-weight: bold;
+                color: #f00;
+            }
+            .nb {
+                font-size: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <p>Cher.e {{ user.username }},
+
+Veuillez appuyez <a href="{{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}">ici</a> pour pouvoir accéder à la caverne.
+
+<span class="attention">Attention!</span> Vous n'avez que 24h pour vérifier, ensuite le lien est expiré...</p>
+        <p class="nb">Vous avez reçu ce courriel car vous avez récemment créé un compte sur la Caverne d'Ali Baba. Si ce n'est pas vous, veuillez ignorer ce message.</p>
+    </body>
+</html>

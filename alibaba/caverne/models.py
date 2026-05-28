@@ -59,12 +59,9 @@ class User(AbstractUser):
         verbose_name="collège",
     )
     email = models.EmailField(blank=True, null=False)
+    verified = models.BooleanField(default=False)
 
     USERNAME_FIELD = "username"
-
-    def save(self, *args, **kwargs):
-        self.email = f"{self.username}@eduge.ch"
-        return super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.username} - {self.get_ecole_display()}"

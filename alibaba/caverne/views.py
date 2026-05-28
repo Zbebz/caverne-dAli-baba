@@ -1,22 +1,33 @@
+from django.contrib import messages
+from django.contrib.auth import get_user_model, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.sites.shortcuts import get_current_site
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.utils.encoding import force_str
+from django.utils.http import urlsafe_base64_decode
 
-from .forms import FichierForm
-from .models import Enseignant, User
+from .decorators import unauth_required, verified_required
+from .forms import FichierForm, RegisterForm
+from .helper import VerificationEmail
+from .models import Enseignant
+from .tokens import account_activation_token
 
 
+@login_required
+@verified_required
 def index(request):
     return render(request, "caverne/index.html")
 
-
+@login_required
+@verified_required
 def upload(request):
-    testuser = User.objects.get_or_create(username="test")[0]
     if request.method == "POST":
         fichier = FichierForm(request.POST, request.FILES)
         if fichier.is_valid():
             fichier = fichier.save(commit=False)
-            fichier.user = testuser
-            print(fichier)
+            fichier.user = request.user
             fichier.save()
 
             teacher = Enseignant.objects.get_or_create(name=fichier.enseignant)[0]
@@ -26,3 +37,92 @@ def upload(request):
     else:
         fichier = FichierForm()
     return render(request, "caverne/upload.html", {"form": fichier})
+
+@unauth_required
+def send_verification(request, user):
+    User = get_user_model()
+    context = {}
+    
+    if isinstance(user, str):
+        try:
+            uid = force_str(urlsafe_base64_decode(user))
+            u = User.objects.get(pk=uid)
+        except (TypeError, OverflowError, ValueError, User.DoesNotExist):
+            u = None
+    else:
+        u = user
+        
+    if u is None:
+        return HttpResponse("Ce compte n'existe pas!", status=404)
+    
+    if u.verified:
+        status = 1
+        context["status"] = status
+    else:
+        email = VerificationEmail(
+                    u,
+                    "Vérifiez votre compte",
+                    reply_to=["no-reply@caverne.ch"],
+                )
+        email.make_body(
+            get_current_site(request).domain, is_secure=request.is_secure()
+        )
+        email.send()
+        
+        messages.success(
+                    request,
+                    f"Veuillez regarder votre boîte mail {u.email} pour le lien de verification. Vérifiez votre dossier spam.",
+                )
+        
+        context["messages"] = messages.get_messages(request)
+    
+    return render(request, "caverne/verification.html", context)
+
+@unauth_required
+def register(request):
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            return send_verification(request, user)
+
+    else:
+        form = RegisterForm()
+
+    return render(request, "caverne/register.html", {"form": form})
+
+def activate(request, uidb64, token):
+    User = get_user_model()
+    context = {}
+    
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, OverflowError, ValueError, User.DoesNotExist):
+        user = None
+
+    is_verified, is_expired = account_activation_token.check_token(user, token)
+    if is_verified:
+        user.verified = True
+        user.save()
+
+        login(request, user)
+        status = 1
+    elif is_expired:
+        # Pour permettre à l'utilisateur de recevoir un autre lien
+        link = {
+            "protocol": "https" if request.is_secure()  else "http",
+            "domain": get_current_site(request).domain,
+            "uid": uidb64,
+        }
+        context["link"] = link
+        status = 2
+    else:
+        status = 3
+    
+    context["status"] = status
+    return render(request, "caverne/verification.html", context)
+
+def logout_view(request):
+    logout(request)
+    return redirect(reverse("index"))

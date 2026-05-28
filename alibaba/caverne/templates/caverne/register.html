@@ -1,0 +1,11 @@
+{% extends 'caverne/layout.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block titre %} S'inscrire -{% endblock %}
+{% block staticfiles %}
+    <link rel="stylesheet" href="{% static 'caverne/css/login.css' %}" />
+{% endblock %}
+{% block main %}
+    <h3 class="text-center mb-4">Accéder à la Caverne</h3>
+    {% crispy form %}
+{% endblock %}
