@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
+from django.db.models import Q, Value
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -10,15 +11,36 @@ from django.utils.http import urlsafe_base64_decode
 
 from .decorators import unauth_required, verified_required
 from .forms import FichierForm, RegisterForm
-from .helper import VerificationEmail
-from .models import Enseignant
-from .tokens import account_activation_token
+from .helper import ArrayToString, VerificationEmail, account_activation_token
+from .models import Enseignant, Fichier
 
 
 @login_required
 @verified_required
 def index(request):
     return render(request, "caverne/index.html")
+
+@login_required
+@verified_required
+def search_autocomplete(request):
+    search_text = request.POST.get("search")
+
+    context = {}
+    if not search_text.isspace() and search_text:
+        q_name = q_tags = q_description = Q()
+        for word in search_text.split():
+            q_name |= Q(name__unaccent__icontains=word) | Q(
+                name__trigram_word_similar=word
+            )
+            q_tags |= Q(tags_text__unaccent__icontains=word) | Q(tags_text__trigram_word_similar=word)
+            q_description |= Q(description__unaccent__icontains=word) | Q(
+                description__trigram_word_similar=word
+            )
+            
+        results = Fichier.objects.annotate(tags_text=ArrayToString("tags", Value(" "))).filter(q_name | q_tags | q_description).distinct()[:5]
+        context["results"] = results
+        
+    return render(request, "caverne/partials/search_autocomplete.html", context)
 
 @login_required
 @verified_required

@@ -1,3 +1,10 @@
 {% extends 'caverne/layout.html' %}
 {% block main %}
+<h1 class="text-center mb-4">Que cherchez-vous ?</h1>
+<form method="post">
+    {% csrf_token %}
+    <input type="text" name="search" id="search" placeholder="Cherchez..." class="form-control" hx-post="{% url "search-autocomplete" %}" hx-target="#results" hx-trigger="keyup changed delay:500ms">
+</form>
+<div id="results">
+</div>
 {% endblock %}

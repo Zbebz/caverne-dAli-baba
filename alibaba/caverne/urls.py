@@ -22,3 +22,9 @@ urlpatterns = [
         name="send_verification",
     ),
 ]
+
+htmx_urlpatterns = [
+    path("search-autocomplete", views.search_autocomplete, name="search-autocomplete"),
+]
+
+urlpatterns += htmx_urlpatterns
