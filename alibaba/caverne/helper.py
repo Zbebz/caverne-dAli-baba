@@ -1,12 +1,14 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.core.exceptions import ValidationError
 from django.core.mail import EmailMessage
-from django.db.models import Func, TextField
+from django.forms import CharField
 from django.template.loader import render_to_string
 from django.utils.crypto import constant_time_compare
 from django.utils.encoding import force_bytes
 from django.utils.http import base36_to_int, urlsafe_base64_encode
+
 
 class AccountActivationTokenGenerator(PasswordResetTokenGenerator):
     def _make_hash_value(self, user, timestamp):
@@ -67,7 +69,15 @@ class VerificationEmail(EmailMessage):
             },
         )
 
-class ArrayToString(Func):
-    """Convert tags to a string"""
-    function="array_to_string"
-    output_field=TextField()
+class TagField(CharField):
+    def to_python(self, value):
+        if not value:
+            return []
+        return value.lower().split(", ")
+    
+    def validate(self, value):
+        res = super().validate(value)
+        
+        if not value:
+            raise ValidationError("Il faut mettre des mot clés")
+        return res

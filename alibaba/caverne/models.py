@@ -5,7 +5,6 @@ import magic
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
-from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 from django.db import models
@@ -80,6 +79,13 @@ class Enseignant(models.Model):
         return f"{self.name} - {self.get_ecole_display()}"
 
 
+# TODO: Make tags model
+class Tag(models.Model):
+    name = models.CharField(blank=False, null=False, verbose_name="mot clé", unique=True)
+
+    def __str__(self):
+        return self.name
+
 def filePlacer(instance, filename):
     return f"{Path(filename).suffix[1:]}/{filename}"
 
@@ -137,8 +143,6 @@ class Fichier(models.Model):
     enseignant = models.CharField(blank=False, null=False, verbose_name="enseignant.e")
     annotated = models.BooleanField(blank=False, null=False, verbose_name="annoté?")
     description = models.TextField(blank=False, null=False)
-    tags = ArrayField(
-        models.CharField(blank=False, null=False), verbose_name="mots clés"
-    )
+    tags = models.ManyToManyField(Tag, related_name="fichiers")
     def __str__(self):
         return f"{self.name} - {self.user.username}"

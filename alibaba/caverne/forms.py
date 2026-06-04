@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from django.urls import reverse
 
 from .models import ECOLES, Fichier, User
+from .helper import TagField
 
 
 class RegisterForm(UserCreationForm):
@@ -85,9 +86,10 @@ class LoginForm(AuthenticationForm):
             )
 
 class FichierForm(forms.ModelForm):
+    mots_cles = TagField(label="Mots clés")
     class Meta():
         model = Fichier
-        exclude = ["user", "uploadDatetime", "status"]
+        exclude = ["user", "uploadDatetime", "status", "tags"]
         widgets = {
             "file": forms.FileInput(
                 attrs={
@@ -114,7 +116,7 @@ class FichierForm(forms.ModelForm):
             ),
             Div(
                 Row(Field("description", autocomplete="off")),
-                Row(Field("tags", autocomplete="off")),
+                Row(Field("mots_cles", autocomplete="off")),
                 css_id="field-2",
             ),
         )

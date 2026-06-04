@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
-from django.db.models import Q, Value
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -11,8 +11,8 @@ from django.utils.http import urlsafe_base64_decode
 
 from .decorators import unauth_required, verified_required
 from .forms import FichierForm, RegisterForm
-from .helper import ArrayToString, VerificationEmail, account_activation_token
-from .models import Enseignant, Fichier
+from .helper import VerificationEmail, account_activation_token
+from .models import Enseignant, Tag
 
 
 @login_required
@@ -27,17 +27,11 @@ def search_autocomplete(request):
 
     context = {}
     if not search_text.isspace() and search_text:
-        q_name = q_tags = q_description = Q()
+        q_tags =  Q()
         for word in search_text.split():
-            q_name |= Q(name__unaccent__icontains=word) | Q(
-                name__trigram_word_similar=word
-            )
-            q_tags |= Q(tags_text__unaccent__icontains=word) | Q(tags_text__trigram_word_similar=word)
-            q_description |= Q(description__unaccent__icontains=word) | Q(
-                description__trigram_word_similar=word
-            )
+            q_tags |= Q(name__unaccent__icontains=word) | Q(name__trigram_word_similar=word)
             
-        results = Fichier.objects.annotate(tags_text=ArrayToString("tags", Value(" "))).filter(q_name | q_tags | q_description).distinct()[:5]
+        results = Tag.objects.filter(q_tags)[:5]
         context["results"] = results
         
     return render(request, "caverne/partials/search_autocomplete.html", context)
@@ -46,19 +40,22 @@ def search_autocomplete(request):
 @verified_required
 def upload(request):
     if request.method == "POST":
-        fichier = FichierForm(request.POST, request.FILES)
-        if fichier.is_valid():
-            fichier = fichier.save(commit=False)
+        form = FichierForm(request.POST, request.FILES)
+        if form.is_valid():
+            fichier = form.save(commit=False)
             fichier.user = request.user
             fichier.save()
+            for mot in form.cleaned_data["mots_cles"]:
+                fichier.tags.add(Tag.objects.get_or_create(name=mot)[0])
+            print(fichier.tags)
 
             teacher = Enseignant.objects.get_or_create(name=fichier.enseignant)[0]
             teacher.ecole = fichier.ecole
             teacher.save()
             return redirect(reverse("index"))
     else:
-        fichier = FichierForm()
-    return render(request, "caverne/upload.html", {"form": fichier})
+        form = FichierForm()
+    return render(request, "caverne/upload.html", {"form": form})
 
 @unauth_required
 def send_verification(request, user):
