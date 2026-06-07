@@ -8,7 +8,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
-from django.views.generic import ListView
+from django.views.generic import DetailView, ListView
 
 from .decorators import unauth_required, verified_required
 from .forms import FichierForm, RegisterForm
@@ -50,6 +50,10 @@ class SearchView(ListView):
         context = super().get_context_data(**kwargs)
         context["q"] = self.request.GET.get("q", "")
         return context
+
+class FichierDetailView(DetailView):
+    model = Fichier
+    template_name = "caverne/fichier_detail.html"
 
 
 @login_required

@@ -21,7 +21,8 @@ urlpatterns = [
         views.send_verification,
         name="send_verification",
     ),
-    path("search", views.SearchView.as_view(), name="search")
+    path("search", views.SearchView.as_view(), name="search"),
+    path("fichier/<str:pk>", views.FichierDetailView.as_view(), name="fichier"),
 ]
 
 htmx_urlpatterns = [

@@ -1,12 +1,16 @@
 {% extends "caverne/layout.html" %}
+{% load static %}
+{% block staticfiles %}
+    <link rel="stylesheet" href="{% static 'caverne/css/autocomplete.css' %}">
+{% endblock %}
 {% block titre %}{{ q }} - {% endblock titre %}
 {% block main %}
     {% if fichiers %}
         <ul class="list-group">
             {% for fichier in fichiers %}
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    {{ fichier.name }}
-                </li>
+            <a href="{{ fichier.get_absolute_url }}" class="list-group-item d-flex justify-content-between align-items-center files">
+                {{ fichier.name }}
+            </a>
             {% endfor %}
         </ul>
     {% else %}

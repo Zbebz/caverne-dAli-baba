@@ -1,0 +1,10 @@
+{% extends "caverne/layout.html" %}
+{% block titre %}{{ fichier.name }} - {% endblock %}
+{% block main %}
+    <h3>{{ fichier.name }}</h3>
+    <p>{{ fichier.get_subject_display }}, {{ fichier.get_year_display }} année - {{ fichier.get_ecole_display }}</p>
+    <p>{{ fichier.description }}</p>
+    <object data="{{ fichier.file.url }}" type="application/pdf" style="width: 100%; height: 550px">
+        <p>Vous ne voyez pas le fichier ? <a href="{{ fichier.file.url }}" type="application/pdf" target="_blank">Ouvrez-le ici!</a></p>
+    </object>
+{% endblock main %}

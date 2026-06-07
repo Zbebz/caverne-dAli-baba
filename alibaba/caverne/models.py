@@ -8,6 +8,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 from django.db import models
+from django.urls import reverse
 from django.utils.timezone import localtime
 
 ECOLES = [
@@ -25,16 +26,20 @@ ECOLES = [
 ]
 
 SUBJECTS = [
+    ("AL", "Allemand"),
     ("AN", "Anglais"),
+    ("AM", "Applications des maths"),
+    ("AP", "Arts plastiques"),
     ("BI", "Biologie"),
+    ("CH", "Chimie"),
     ("FR", "Français"),
     ("GE", "Géographie"),
     ("HI", "Histoire"),
+    ("HA", "Histoire de l'art"),
     ("IT", "Italien"),
     ("MA", "Mathématiques"),
-    ("PY", "Physique"),
-    ("AM", "Applications des maths"),
     ("PO", "Philosophie"),
+    ("PY", "Physique"),
 ]
 
 TYPES = [
@@ -79,7 +84,6 @@ class Enseignant(models.Model):
         return f"{self.name} - {self.get_ecole_display()}"
 
 
-# TODO: Make tags model
 class Tag(models.Model):
     name = models.CharField(blank=False, null=False, verbose_name="mot clé", unique=True)
 
@@ -144,5 +148,10 @@ class Fichier(models.Model):
     annotated = models.BooleanField(blank=False, null=False, verbose_name="annoté?")
     description = models.TextField(blank=False, null=False)
     tags = models.ManyToManyField(Tag, related_name="fichiers")
+    
     def __str__(self):
         return f"{self.name} - {self.user.username}"
+    
+    def get_absolute_url(self):
+        return reverse("fichier", kwargs={"pk": self.pk})
+    
