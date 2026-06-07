@@ -1,10 +1,26 @@
 {% extends 'caverne/layout.html' %}
+{% load static %}
+{% block staticfiles %}
+    <link rel="stylesheet" href="{% static 'caverne/css/autocomplete.css' %}">
+{% endblock %}
 {% block main %}
 <h1 class="text-center mb-4">Que cherchez-vous ?</h1>
-<form method="post">
-    {% csrf_token %}
-    <input type="search" name="search" id="search" placeholder="Cherchez..." class="form-control" hx-post="{% url "search-autocomplete" %}" hx-target="#results" hx-trigger="keyup changed delay:500ms">
+<form method="get" action="{% url "search" %}">
+    <div class="input-group">
+        <input
+            type="search"
+            name="q" id="search"
+            placeholder="Cherchez..."
+            class="form-control"
+            hx-get="{% url "search-autocomplete" %}"
+            hx-target="#results" hx-trigger="keyup changed delay:500ms"
+        >
+        <button type="submit" class="btn btn-outline-secondary"><i class="fa-solid fa-magnifying-glass"></i></button>
+    </div>
 </form>
 <div id="results">
 </div>
+{% endblock %}
+{% block script %}
+    <script src="{% static 'caverne/js/autocomplete.js' %}"></script>
 {% endblock %}

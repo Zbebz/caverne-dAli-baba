@@ -8,11 +8,12 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
+from django.views.generic import ListView
 
 from .decorators import unauth_required, verified_required
 from .forms import FichierForm, RegisterForm
 from .helper import VerificationEmail, account_activation_token
-from .models import Enseignant, Tag
+from .models import Enseignant, Fichier, Tag
 
 
 @login_required
@@ -20,21 +21,36 @@ from .models import Enseignant, Tag
 def index(request):
     return render(request, "caverne/index.html")
 
+
 @login_required
 @verified_required
 def search_autocomplete(request):
-    search_text = request.POST.get("search")
+    search_text = request.GET.get("q", "")
 
     context = {}
     if not search_text.isspace() and search_text:
-        q_tags =  Q()
+        q_tags = Q()
         for word in search_text.split():
             q_tags |= Q(name__unaccent__icontains=word) | Q(name__trigram_word_similar=word)
             
-        results = Tag.objects.filter(q_tags)[:5]
-        context["results"] = results
+        tags = Tag.objects.filter(q_tags)[:5]
+        context["tags"] = tags
         
     return render(request, "caverne/partials/search_autocomplete.html", context)
+
+class SearchView(ListView):
+    model = Fichier
+    template_name = "caverne/search_list.html"
+    context_object_name = "fichiers"
+    
+    def get_queryset(self):
+        return Fichier.objects.filter(tags__name=self.request.GET.get("q", ""))
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["q"] = self.request.GET.get("q", "")
+        return context
+
 
 @login_required
 @verified_required
@@ -56,6 +72,7 @@ def upload(request):
     else:
         form = FichierForm()
     return render(request, "caverne/upload.html", {"form": form})
+
 
 @unauth_required
 def send_verification(request, user):

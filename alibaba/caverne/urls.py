@@ -21,6 +21,7 @@ urlpatterns = [
         views.send_verification,
         name="send_verification",
     ),
+    path("search", views.SearchView.as_view(), name="search")
 ]
 
 htmx_urlpatterns = [
