@@ -94,7 +94,7 @@ class FichierForm(forms.ModelForm):
             "file": forms.FileInput(
                 attrs={
                     "hidden": "true",
-                    "accept": ".pdf,application/pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.odt,application/vnd.oasis.opendocument.text",
+                    "accept": ".pdf,application/pdf",
                 }
             ),
         }

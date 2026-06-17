@@ -102,9 +102,6 @@ def get_sentinel_user():
 def validate_file_mimetype(file):
     accept = [
         "application/pdf",
-        "application/msword",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "application/vnd.oasis.opendocument.text",
     ]
     file_mime_type = magic.from_buffer(file.read(2048), mime=True)
     if file_mime_type not in accept:
@@ -128,7 +125,7 @@ class Fichier(models.Model):
         null=False,
         blank=False,
         validators=[
-            FileExtensionValidator(["pdf", "doc", "docx", "odt"]),
+            FileExtensionValidator(["pdf"]),
             validate_file_mimetype,
         ],
     )
@@ -156,4 +153,3 @@ class Fichier(models.Model):
     
     def get_absolute_url(self):
         return reverse("fichier", kwargs={"pk": self.pk})
-
