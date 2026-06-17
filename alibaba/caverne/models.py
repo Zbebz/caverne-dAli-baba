@@ -90,13 +90,14 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
-def filePlacer(instance, filename):
-    return f"{Path(filename).suffix[1:]}/{filename}"
+def file_path(instance, filename):
+    return f"documents/{instance.pk}/{Path(filename).name}"
 
+def thumbnail_path(instance, filename):
+    return f"documents/{instance.pk}/thumbnail.jpg"
 
 def get_sentinel_user():
     return get_user_model().objects.get_or_create(username="deleted")[0]
-
 
 def validate_file_mimetype(file):
     accept = [
@@ -122,7 +123,7 @@ class Fichier(models.Model):
     uploadDatetime = models.DateTimeField(default=localtime)
 
     file = models.FileField(
-        upload_to=filePlacer,
+        upload_to=file_path,
         verbose_name="fichier",
         null=False,
         blank=False,
@@ -131,6 +132,7 @@ class Fichier(models.Model):
             validate_file_mimetype,
         ],
     )
+    thumbnail = models.ImageField(upload_to=thumbnail_path, null=False, blank=False)
     name = models.CharField(blank=False, null=False, verbose_name="nom du fichier")
     year = models.IntegerField(
         blank=False, null=False, choices=YEARS, verbose_name="année"
@@ -154,4 +156,4 @@ class Fichier(models.Model):
     
     def get_absolute_url(self):
         return reverse("fichier", kwargs={"pk": self.pk})
-    
+

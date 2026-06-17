@@ -1,7 +1,9 @@
+import pymupdf
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.exceptions import ValidationError
+from django.core.files.base import ContentFile
 from django.core.mail import EmailMessage
 from django.forms import CharField
 from django.template.loader import render_to_string
@@ -81,3 +83,20 @@ class TagField(CharField):
         if not value:
             raise ValidationError("Il faut mettre des mot clés")
         return res
+
+# https://artifex.com/blog/converting-pdfs-to-images-with-pymupdf-a-complete-guide#a50e521e3d17
+def create_pdf_thumbnail(fichier):
+    with fichier.file.open("rb") as f:
+        pdf_bytes = f.read()
+    
+    doc = pymupdf.open(stream=pdf_bytes, filetype="pdf")
+    page = doc[0]
+
+    pix = page.get_pixmap()
+    image_bytes = pix.tobytes("jpeg", jpg_quality=90)
+    doc.close()
+    
+    fichier.thumbnail.save(
+        "thumbnail.jpg",
+        ContentFile(image_bytes),
+    )

@@ -89,7 +89,7 @@ class FichierForm(forms.ModelForm):
     mots_cles = TagField(label="Mots clés")
     class Meta():
         model = Fichier
-        exclude = ["user", "uploadDatetime", "status", "tags"]
+        exclude = ["user", "uploadDatetime", "status", "tags", "thumbnail"]
         widgets = {
             "file": forms.FileInput(
                 attrs={

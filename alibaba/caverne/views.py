@@ -14,6 +14,7 @@ from .decorators import unauth_required, verified_required
 from .forms import FichierForm, RegisterForm
 from .helper import VerificationEmail, account_activation_token
 from .models import Enseignant, Fichier, Tag
+from .helper import create_pdf_thumbnail
 
 
 @login_required
@@ -65,9 +66,9 @@ def upload(request):
             fichier = form.save(commit=False)
             fichier.user = request.user
             fichier.save()
+            create_pdf_thumbnail(fichier)
             for mot in form.cleaned_data["mots_cles"]:
                 fichier.tags.add(Tag.objects.get_or_create(name=mot)[0])
-            print(fichier.tags)
 
             teacher = Enseignant.objects.get_or_create(name=fichier.enseignant)[0]
             teacher.ecole = fichier.ecole
