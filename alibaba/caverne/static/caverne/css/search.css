@@ -1,0 +1,40 @@
+a {
+    text-decoration: none;
+    color: #000;
+}
+
+.fichier-list {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    column-gap: 10px;
+    row-gap: 10px;
+}
+
+.fichier {
+    width: 200px;
+    border: 1px solid #000;
+    justify-self: center;
+    background-color: #d9d9d9;
+    display: block;
+    padding: 20px;
+}
+
+img {
+    width: 100%
+}
+
+h2 {
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+#ecole {
+    font-size: 0.7rem;
+}
+
+.footer {
+    display: flex;
+    font-size: 0.9rem;
+    justify-content: space-between;
+    margin-top: 20%;
+}

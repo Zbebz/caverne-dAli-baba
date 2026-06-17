@@ -1,18 +1,16 @@
 {% extends "caverne/layout.html" %}
 {% load static %}
 {% block staticfiles %}
-    <link rel="stylesheet" href="{% static 'caverne/css/autocomplete.css' %}">
+    <link rel="stylesheet" href="{% static 'caverne/css/search.css' %}">
 {% endblock %}
 {% block titre %}{{ q }} - {% endblock titre %}
 {% block main %}
     {% if fichiers %}
-        <ul class="list-group">
+        <div class="fichier-list">
             {% for fichier in fichiers %}
-            <a href="{{ fichier.get_absolute_url }}" class="list-group-item d-flex justify-content-between align-items-center files">
-                {{ fichier.name }}
-            </a>
+                {% include "caverne/partials/card.html" %}
             {% endfor %}
-        </ul>
+        </div>
     {% else %}
         <h3>Il n'y a pas de résultats pour "{{ q }}"</h3>
         <p>Faites attention à l'orthographe!</p>
