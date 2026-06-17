@@ -21,12 +21,13 @@ urlpatterns = [
         views.send_verification,
         name="send_verification",
     ),
-    path("search", views.SearchView.as_view(), name="search"),
     path("fichier/<str:pk>", views.FichierDetailView.as_view(), name="fichier"),
+    path("search", views.search, name="search")
 ]
 
 htmx_urlpatterns = [
     path("search-autocomplete", views.search_autocomplete, name="search-autocomplete"),
+    path("search-list", views.SearchResultsView.as_view(), name="search-list"),
 ]
 
 urlpatterns += htmx_urlpatterns

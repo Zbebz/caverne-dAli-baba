@@ -11,7 +11,7 @@ from django.utils.http import urlsafe_base64_decode
 from django.views.generic import DetailView, ListView
 
 from .decorators import unauth_required, verified_required
-from .forms import FichierForm, RegisterForm
+from .forms import FichierForm, RegisterForm, SearchFiltersForm
 from .helper import VerificationEmail, account_activation_token
 from .models import Enseignant, Fichier, Tag
 from .helper import create_pdf_thumbnail
@@ -39,13 +39,27 @@ def search_autocomplete(request):
         
     return render(request, "caverne/partials/search_autocomplete.html", context)
 
-class SearchView(ListView):
+def search(request):
+    filters = SearchFiltersForm()
+    return render(request, "caverne/search_results.html", {"q": request.GET.get("q", ""), "filters": filters})
+
+class SearchResultsView(ListView):
     model = Fichier
-    template_name = "caverne/search_list.html"
+    template_name = "caverne/partials/search_list.html"
     context_object_name = "fichiers"
     
     def get_queryset(self):
-        return Fichier.objects.filter(tags__name=self.request.GET.get("q", ""))
+        q = Q(tags__name=self.request.GET.get("q", ""))
+        for y in self.request.GET.getlist("year"):
+            q &= Q(year=y)
+        for e in self.request.GET.getlist("ecole"):
+            q &= Q(ecole=e)
+        for t in self.request.GET.getlist("type"):
+            q &= Q(type=t)
+        for s in self.request.GET.getlist("subject"):
+            q &= Q(subject=s)
+        
+        return Fichier.objects.filter(q)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

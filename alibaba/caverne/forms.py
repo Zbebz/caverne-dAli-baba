@@ -6,8 +6,8 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.exceptions import ValidationError
 from django.urls import reverse
 
-from .models import ECOLES, Fichier, User
 from .helper import TagField
+from .models import ECOLES, SUBJECTS, TYPES, YEARS, Fichier, User
 
 
 class RegisterForm(UserCreationForm):
@@ -120,3 +120,29 @@ class FichierForm(forms.ModelForm):
                 css_id="field-2",
             ),
         )
+
+class SearchFiltersForm(forms.Form):
+    year = forms.MultipleChoiceField(
+        choices=YEARS,
+        required=False,
+        label="Année",
+        widget=forms.CheckboxSelectMultiple,
+    )
+    ecole = forms.MultipleChoiceField(
+        choices=ECOLES,
+        required=False,
+        label="Collège",
+        widget=forms.CheckboxSelectMultiple,
+    )
+    type = forms.MultipleChoiceField(
+        choices=TYPES,
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
+    subject = forms.MultipleChoiceField(
+        choices=SUBJECTS,
+        required=False,
+        label="Matière",
+        widget=forms.CheckboxSelectMultiple,
+    )
+    

@@ -2,11 +2,11 @@
     <img
         src="{{ fichier.thumbnail.url }}"
         alt="thumbnail"
-        class="border border-black"
+        class="border border-black thumbnail"
     >
-    <h2>{{ fichier.name }}</h2>
-    <span id="ecole">{{ fichier.ecole }}</span>
-    <div class="footer">
+    <h3 class="fichier-name">{{ fichier.name }}</h3>
+    <span class="ecole">{{ fichier.ecole }}</span>
+    <div class="card-footer">
         <span>{{ fichier.get_subject_display | upper }}</span>
         <span>{{ fichier.get_year_display }}</span>
     </div>

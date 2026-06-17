@@ -1,13 +1,29 @@
-a {
-    text-decoration: none;
-    color: #000;
+/* Filters side-bar */
+.filters {
+    display: inline-block;
+    border-right: solid;
+    border-color: rgba(0, 22, 22, 0.4);
+    padding-right: 1.5rem;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+    width: 20rem;
+}
+
+.filter {
+    display: block;
+    padding: 10px 30px;
+}
+
+/* Search results */
+#results {
+    min-width: 0;
+    margin: 1.5rem 0 0 1.5rem;
 }
 
 .fichier-list {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    column-gap: 10px;
-    row-gap: 10px;
+    grid-template-columns: repeat(3, minmax(220px, 1fr));
+    gap: 2rem;
 }
 
 .fichier {
@@ -17,24 +33,34 @@ a {
     background-color: #d9d9d9;
     display: block;
     padding: 20px;
+    text-decoration: none;
+    color: #000;
 }
 
-img {
+.fichier-name {
+    font-size: 1.1rem;
+    margin: 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.thumbnail {
     width: 100%
 }
 
-h2 {
-    font-size: 1.1rem;
-    margin: 0;
-}
-
-#ecole {
+.ecole {
     font-size: 0.7rem;
 }
 
-.footer {
+.card-footer {
     display: flex;
     font-size: 0.9rem;
     justify-content: space-between;
     margin-top: 20%;
+}
+
+main {
+    position: absolute;
+    top: 2rem; /* nombres arbitraires, à corriger */
+    left: 19rem;
 }

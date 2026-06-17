@@ -1,0 +1,25 @@
+{% extends "caverne/layout.html" %}
+{% load static %}
+{% block staticfiles %}
+    <link rel="stylesheet" href="{% static 'caverne/css/search.css' %}">
+{% endblock %}
+{% block titre %}{{ q }} - {% endblock titre %}
+{% block aside %}
+    <div class="filters">
+        <form hx-get="{% url 'search-list' %}" hx-trigger="change, load from:document" hx-target="#results">
+            <input type="hidden" name="q" value="{{ q }}">
+            {% for filter in filters %}
+                <div class="filter" id="{{ filter.name }}">
+                    <fieldset>
+                        <legend>{{ filter.label }}</legend>
+                        {{ filter }}
+                    </fieldset>
+                </div>
+            {% endfor %}
+        </form>
+    </div>
+{% endblock %}
+{% block main %}
+    <div id="results">
+    </div>
+{% endblock %}
