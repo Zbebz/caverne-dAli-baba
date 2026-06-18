@@ -4,7 +4,7 @@
 {% block staticfiles %}
     <link rel="stylesheet" href="{% static 'caverne/css/upload.css' %}" />
 {% endblock %}
-{% block titre %}Partager un document -{% endblock %}
+{% block titre %}Partager un document - {% endblock %}
 {% block main %}
     <form action="{% url "upload" %}" method="post" enctype="multipart/form-data">
         <div id="file-field">

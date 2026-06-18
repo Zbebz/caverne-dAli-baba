@@ -149,7 +149,7 @@ class Fichier(models.Model):
     # enseignant = models.CharField(blank=False, null=False, verbose_name="enseignant.e")
     enseignant = models.ForeignKey(
         Enseignant,
-        on_delete=models.SET(get_sentinel_enseignantC),
+        on_delete=models.SET(get_sentinel_enseignant),
         related_name="fichiers",
     )
     annotated = models.BooleanField(blank=False, null=False, verbose_name="annoté?")
