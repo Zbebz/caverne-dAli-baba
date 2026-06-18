@@ -3,9 +3,9 @@
 }
 
 #drop-area {
-    width: calc(100vw - (100px * 2));
+    width: calc(100vw - (12vw * 2)); /* Leaves a gap of width 12vw on both sides to center*/
     height: 70vh;
-    margin: 50px auto;
+    margin: 30px auto;
     display: flex;
     flex-direction: column;
     align-items: center;

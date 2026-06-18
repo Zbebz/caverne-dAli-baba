@@ -1,0 +1,13 @@
+<a href="{{ fichier.get_absolute_url }}" class="fichier">
+    <img
+        src="{{ fichier.thumbnail.url }}"
+        alt="thumbnail"
+        class="border border-black thumbnail"
+    >
+    <h3 class="fichier-name">{{ fichier.name }}</h3>
+    <span class="ecole">{{ fichier.ecole }}</span>
+    <div class="card-footer">
+        <span>{{ fichier.get_subject_display | upper }}</span>
+        <span>{{ fichier.get_year_display }}</span>
+    </div>
+</a>

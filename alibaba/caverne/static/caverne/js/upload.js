@@ -59,35 +59,53 @@ const selectDropdowns = document.querySelectorAll("select");
 
 selectDropdowns.forEach((s) => {
     const selectPlaceholder = s.firstElementChild;
-    selectPlaceholder.selected = true;
     selectPlaceholder.disabled = true;
 });
 
-submitButton.addEventListener("click", () => {
+let field2Appeared = false;
+
+submitButton.addEventListener("click", (e) => {
     const field2 = document.getElementById("field-2");
     const fields1inputs = document.querySelectorAll(
         "#field-1 input, #field-1 select",
     );
-
-    let exit = false;
-    let skip = false;
-    fields1inputs.forEach((f) => {
-        if (skip) {
-            return;
-        }
-        if (!f.reportValidity()) {
-            exit = true;
-            skip = true;
-            return;
+    const fieldsInputs = document.querySelectorAll(
+        "#field-1 input, #field-2 input, #field-2 textarea",
+    );
+    
+    // https://coreui.io/answers/how-to-check-if-a-string-is-empty-in-javascript/
+    const isBlank = (str) => !str || str.trim().length === 0;
+    
+    fieldsInputs.forEach((f) => {
+        if (isBlank(f.value)) {
+            f.setCustomValidity("Veuillez remplir ce champ.");
+        } else {
+            f.setCustomValidity("");
         }
     });
-
-    if (exit) {
-        return;
+    
+    if (!field2Appeared) {
+        e.preventDefault();
+        
+        let exit = false;
+        let skip = false;
+        fields1inputs.forEach((f) => {
+            if (skip) {
+                return;
+            }
+            if (!f.reportValidity()) {
+                exit = true;
+                skip = true;
+                return;
+            }
+        });
+    
+        if (exit) {
+            return;
+        }
+        field2.style.display = "initial";
+        
+        field2Appeared = true;
+        submitButton.innerText = "Partager";
     }
-
-    field2.style.display = "initial";
-
-    submitButton.innerText = "Partager";
-    submitButton.type = "submit";
 });

@@ -2,17 +2,19 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
+from django.views.generic import DetailView, ListView
 
 from .decorators import unauth_required, verified_required
-from .forms import FichierForm, RegisterForm
-from .helper import VerificationEmail
-from .models import Enseignant
-from .tokens import account_activation_token
+from .forms import FichierForm, RegisterForm, SearchFiltersForm
+from .helper import VerificationEmail, account_activation_token
+from .models import Enseignant, Fichier, Tag
+from .helper import create_pdf_thumbnail
 
 
 @login_required
@@ -20,23 +22,76 @@ from .tokens import account_activation_token
 def index(request):
     return render(request, "caverne/index.html")
 
+
+@login_required
+@verified_required
+def search_autocomplete(request):
+    search_text = request.GET.get("q", "")
+
+    context = {}
+    if not search_text.isspace() and search_text:
+        q_tags = Q()
+        for word in search_text.split():
+            q_tags |= Q(name__unaccent__icontains=word) | Q(name__trigram_word_similar=word)
+            
+        tags = Tag.objects.filter(q_tags)[:5]
+        context["tags"] = tags
+        
+    return render(request, "caverne/partials/search_autocomplete.html", context)
+
+def search(request):
+    filters = SearchFiltersForm()
+    return render(request, "caverne/search_results.html", {"q": request.GET.get("q", ""), "filters": filters})
+
+class SearchResultsView(ListView):
+    model = Fichier
+    template_name = "caverne/partials/search_list.html"
+    context_object_name = "fichiers"
+    
+    def get_queryset(self):
+        q = Q(tags__name=self.request.GET.get("q", ""))
+        for y in self.request.GET.getlist("year"):
+            q &= Q(year=y)
+        for e in self.request.GET.getlist("ecole"):
+            q &= Q(ecole=e)
+        for t in self.request.GET.getlist("type"):
+            q &= Q(type=t)
+        for s in self.request.GET.getlist("subject"):
+            q &= Q(subject=s)
+        
+        return Fichier.objects.filter(q)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["q"] = self.request.GET.get("q", "")
+        return context
+
+class FichierDetailView(DetailView):
+    model = Fichier
+    template_name = "caverne/fichier_detail.html"
+
+
 @login_required
 @verified_required
 def upload(request):
     if request.method == "POST":
-        fichier = FichierForm(request.POST, request.FILES)
-        if fichier.is_valid():
-            fichier = fichier.save(commit=False)
+        form = FichierForm(request.POST, request.FILES)
+        if form.is_valid():
+            fichier = form.save(commit=False)
             fichier.user = request.user
             fichier.save()
+            create_pdf_thumbnail(fichier)
+            for mot in form.cleaned_data["mots_cles"]:
+                fichier.tags.add(Tag.objects.get_or_create(name=mot)[0])
 
             teacher = Enseignant.objects.get_or_create(name=fichier.enseignant)[0]
             teacher.ecole = fichier.ecole
             teacher.save()
             return redirect(reverse("index"))
     else:
-        fichier = FichierForm()
-    return render(request, "caverne/upload.html", {"form": fichier})
+        form = FichierForm()
+    return render(request, "caverne/upload.html", {"form": form})
+
 
 @unauth_required
 def send_verification(request, user):

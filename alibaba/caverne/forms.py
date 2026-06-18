@@ -1,12 +1,13 @@
 from crispy_forms.bootstrap import StrictButton
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import HTML, Column, Div, Field, Layout, Row
+from crispy_forms.layout import Column, Div, Field, Layout, Row
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.exceptions import ValidationError
 from django.urls import reverse
 
-from .models import ECOLES, Fichier, User
+from .helper import TagField
+from .models import ECOLES, SUBJECTS, TYPES, YEARS, Fichier, User
 
 
 class RegisterForm(UserCreationForm):
@@ -85,14 +86,15 @@ class LoginForm(AuthenticationForm):
             )
 
 class FichierForm(forms.ModelForm):
+    mots_cles = TagField(label="Mots clés")
     class Meta():
         model = Fichier
-        exclude = ["user", "uploadDatetime", "status"]
+        exclude = ["user", "uploadDatetime", "status", "tags", "thumbnail"]
         widgets = {
             "file": forms.FileInput(
                 attrs={
                     "hidden": "true",
-                    "accept": ".pdf,application/pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.odt,application/vnd.oasis.opendocument.text",
+                    "accept": ".pdf,application/pdf",
                 }
             ),
         }
@@ -101,48 +103,46 @@ class FichierForm(forms.ModelForm):
         super(FichierForm, self).__init__(*args, **kwargs)
 
         self.helper = FormHelper()
-        self.helper.form_method = "POST"
-        self.helper.form_action = reverse("upload")
-        self.helper.attrs = {"enctype": "multipart/form-data"}
+        self.helper.form_tag = False
         
         self.helper.layout = Layout(
-            HTML(
-                """
-<div id="file-field">
-    <div id="drop-area">
-        <label for="{{ form.file.id_for_label }}">
-            Choisissez votre fichier
-        </label>
-        <span class="small-text">ou glissez-le</span>
-        <span class="files-accepted"
-        {% if form.file.errors %}
-            style="color: red;"
-        {% endif %}
-            >Seulement les fichiers pdf, docx, doc, odt sont autorisés</span>
-        {{ form.file }}
-    </div>
-</div>
-"""
+            Div(
+                Row(Field("name", autocomplete="off")),
+                Row(Column("year"), Column("subject")),
+                Row("type"),
+                Row(Column("ecole"), Column(Field("enseignant", autocomplete="off"))),
+                Row("annotated"),
+                css_id="field-1",
             ),
             Div(
-                Div(
-                    Row(Field("name", autocomplete="off")),
-                    Row(Column("year"), Column("subject")),
-                    Row("type"),
-                    Row(Column("ecole"), Column(Field("enseignant", autocomplete="off"))),
-                    Row("annotated"),
-                    css_id="field-1",
-                ),
-                Div(
-                    Row(Field("description", autocomplete="off")),
-                    Row(Field("tags", autocomplete="off")),
-                    css_id="field-2",
-                ),
-                StrictButton(
-                    "Continuer",
-                    css_id="submit-button",
-                    css_class="btn-primary",
-                ),
-                css_class="container w-50 mt-5 ms-5",
+                Row(Field("description", autocomplete="off")),
+                Row(Field("mots_cles", autocomplete="off")),
+                css_id="field-2",
             ),
         )
+
+class SearchFiltersForm(forms.Form):
+    year = forms.MultipleChoiceField(
+        choices=YEARS,
+        required=False,
+        label="Année",
+        widget=forms.CheckboxSelectMultiple,
+    )
+    ecole = forms.MultipleChoiceField(
+        choices=ECOLES,
+        required=False,
+        label="Collège",
+        widget=forms.CheckboxSelectMultiple,
+    )
+    type = forms.MultipleChoiceField(
+        choices=TYPES,
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
+    subject = forms.MultipleChoiceField(
+        choices=SUBJECTS,
+        required=False,
+        label="Matière",
+        widget=forms.CheckboxSelectMultiple,
+    )
+    

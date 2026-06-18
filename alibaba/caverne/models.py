@@ -8,6 +8,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 from django.db import models
+from django.urls import reverse
 from django.utils.timezone import localtime
 
 ECOLES = [
@@ -25,16 +26,20 @@ ECOLES = [
 ]
 
 SUBJECTS = [
+    ("AL", "Allemand"),
     ("AN", "Anglais"),
+    ("AM", "Applications des maths"),
+    ("AP", "Arts plastiques"),
     ("BI", "Biologie"),
+    ("CH", "Chimie"),
     ("FR", "Français"),
     ("GE", "Géographie"),
     ("HI", "Histoire"),
+    ("HA", "Histoire de l'art"),
     ("IT", "Italien"),
     ("MA", "Mathématiques"),
-    ("PY", "Physique"),
-    ("AM", "Applications des maths"),
     ("PO", "Philosophie"),
+    ("PY", "Physique"),
 ]
 
 TYPES = [
@@ -79,20 +84,24 @@ class Enseignant(models.Model):
         return f"{self.name} - {self.get_ecole_display()}"
 
 
-def filePlacer(instance, filename):
-    return f"{Path(filename).suffix[1:]}/{filename}"
+class Tag(models.Model):
+    name = models.CharField(blank=False, null=False, verbose_name="mot clé", unique=True)
 
+    def __str__(self):
+        return self.name
+
+def file_path(instance, filename):
+    return f"documents/{instance.pk}/{Path(filename).name}"
+
+def thumbnail_path(instance, filename):
+    return f"documents/{instance.pk}/thumbnail.jpg"
 
 def get_sentinel_user():
     return get_user_model().objects.get_or_create(username="deleted")[0]
 
-
 def validate_file_mimetype(file):
     accept = [
         "application/pdf",
-        "application/msword",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "application/vnd.oasis.opendocument.text",
     ]
     file_mime_type = magic.from_buffer(file.read(2048), mime=True)
     if file_mime_type not in accept:
@@ -111,15 +120,16 @@ class Fichier(models.Model):
     uploadDatetime = models.DateTimeField(default=localtime)
 
     file = models.FileField(
-        upload_to=filePlacer,
+        upload_to=file_path,
         verbose_name="fichier",
         null=False,
         blank=False,
         validators=[
-            FileExtensionValidator(["pdf", "doc", "docx", "odt"]),
+            FileExtensionValidator(["pdf"]),
             validate_file_mimetype,
         ],
     )
+    thumbnail = models.ImageField(upload_to=thumbnail_path, null=False, blank=False)
     name = models.CharField(blank=False, null=False, verbose_name="nom du fichier")
     year = models.IntegerField(
         blank=False, null=False, choices=YEARS, verbose_name="année"
@@ -136,7 +146,10 @@ class Fichier(models.Model):
     enseignant = models.CharField(blank=False, null=False, verbose_name="enseignant.e")
     annotated = models.BooleanField(blank=False, null=False, verbose_name="annoté?")
     description = models.TextField(blank=False, null=False)
-    tags = models.TextField(blank=False, null=False, verbose_name="mots clés")
-
+    tags = models.ManyToManyField(Tag, related_name="fichiers")
+    
     def __str__(self):
         return f"{self.name} - {self.user.username}"
+    
+    def get_absolute_url(self):
+        return reverse("fichier", kwargs={"pk": self.pk})

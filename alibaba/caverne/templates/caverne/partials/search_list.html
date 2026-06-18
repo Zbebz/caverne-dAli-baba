@@ -1,0 +1,11 @@
+{% if fichiers %}
+    <h2 class="title">Résultats pour "{{ q }}"</h2>
+    <div class="fichier-list">
+        {% for fichier in fichiers %}
+            {% include "caverne/partials/card.html" %}
+        {% endfor %}
+    </div>
+{% else %}
+    <h2 class="title">Il n'y a pas de résultats pour "{{ q }}"</h2>
+    <p>Faites attention à l'orthographe!</p>
+{% endif %}

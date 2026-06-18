@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='fichier',
             name='file',
-            field=models.FileField(upload_to=caverne.models.filePlacer, validators=[django.core.validators.FileExtensionValidator(['pdf', 'doc', 'docx', 'odt']), caverne.models.validate_file_mimetype], verbose_name='fichier'),
+            field=models.FileField(upload_to=caverne.models.file_path, validators=[django.core.validators.FileExtensionValidator(['pdf', 'doc', 'docx', 'odt']), caverne.models.validate_file_mimetype], verbose_name='fichier'),
         ),
     ]

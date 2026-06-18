@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                 ('status', models.CharField(default='PENDING')),
                 ('tags', models.TextField(verbose_name='mots clés')),
                 ('uploadDatetime', models.DateTimeField(default=django.utils.timezone.localtime)),
-                ('file', models.FileField(upload_to=caverne.models.filePlacer, verbose_name='fichier')),
+                ('file', models.FileField(upload_to=caverne.models.file_path, verbose_name='fichier')),
                 ('user', models.ForeignKey(on_delete=models.SET(caverne.models.get_sentinel_user), related_name='fichiers', to=settings.AUTH_USER_MODEL)),
             ],
         ),

@@ -11,3 +11,4 @@ class MediaStorage(S3Boto3Storage):
     file_overwrite = False
     querystring_auth = True
     querystring_expire = 600
+    custom_domain = None

@@ -1,10 +1,55 @@
-from django.core.mail import EmailMessage
-from django.template.loader import render_to_string
-from django.utils.encoding import force_bytes
+import pymupdf
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-from django.utils.http import urlsafe_base64_encode
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.core.exceptions import ValidationError
+from django.core.files.base import ContentFile
+from django.core.mail import EmailMessage
+from django.forms import CharField
+from django.template.loader import render_to_string
+from django.utils.crypto import constant_time_compare
+from django.utils.encoding import force_bytes
+from django.utils.http import base36_to_int, urlsafe_base64_encode
 
-from .tokens import account_activation_token
+
+class AccountActivationTokenGenerator(PasswordResetTokenGenerator):
+    def _make_hash_value(self, user, timestamp):
+        return f"{user.pk}{timestamp}{user.verified}"
+
+    def check_token(self, user, token):
+        # Même fonction que celle de base
+        # Seule modif.: retourne 1 si le token est valide mais expiré et 0 sinon
+        # Et -1 si tout va bien
+        if not (user and token):
+            return False, 0
+
+        try:
+            ts_b36, _ = token.split("-")
+        except ValueError:
+            return False, 0
+
+        try:
+            ts = base36_to_int(ts_b36)
+        except ValueError:
+            return False, 0
+
+        for secret in [self.secret, *self.secret_fallbacks]:
+            if constant_time_compare(
+                self._make_token_with_timestamp(user, ts, secret),
+                token,
+            ):
+                break
+        else:
+            return False, 0
+
+        # Check the timestamp is within limit.
+        if (self._num_seconds(self._now()) - ts) > settings.PASSWORD_RESET_TIMEOUT:
+            return False, 1
+
+        return True, -1
+
+account_activation_token = AccountActivationTokenGenerator()
+
 
 class VerificationEmail(EmailMessage):
     content_subtype = "html" # https://sendlayer.com/blog/how-to-send-email-with-django/
@@ -25,4 +70,33 @@ class VerificationEmail(EmailMessage):
                 "token": token,
             },
         )
+
+class TagField(CharField):
+    def to_python(self, value):
+        if not value:
+            return []
+        return value.lower().split(", ")
+    
+    def validate(self, value):
+        res = super().validate(value)
         
+        if not value:
+            raise ValidationError("Il faut mettre des mot clés")
+        return res
+
+# https://artifex.com/blog/converting-pdfs-to-images-with-pymupdf-a-complete-guide#a50e521e3d17
+def create_pdf_thumbnail(fichier):
+    with fichier.file.open("rb") as f:
+        pdf_bytes = f.read()
+    
+    doc = pymupdf.open(stream=pdf_bytes, filetype="pdf")
+    page = doc[0]
+
+    pix = page.get_pixmap()
+    image_bytes = pix.tobytes("jpeg", jpg_quality=90)
+    doc.close()
+    
+    fichier.thumbnail.save(
+        "thumbnail.jpg",
+        ContentFile(image_bytes),
+    )
