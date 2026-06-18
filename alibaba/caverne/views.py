@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.encoding import force_str
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.http import urlsafe_base64_decode
 from django.views.generic import DetailView, ListView
 
@@ -39,11 +40,13 @@ def search_autocomplete(request):
         
     return render(request, "caverne/partials/search_autocomplete.html", context)
 
+@login_required
+@verified_required
 def search(request):
     filters = SearchFiltersForm()
     return render(request, "caverne/search_results.html", {"q": request.GET.get("q", ""), "filters": filters})
 
-class SearchResultsView(ListView):
+class SearchResultsView(LoginRequiredMixin, ListView):
     model = Fichier
     template_name = "caverne/partials/search_list.html"
     context_object_name = "fichiers"
@@ -66,7 +69,7 @@ class SearchResultsView(ListView):
         context["q"] = self.request.GET.get("q", "")
         return context
 
-class FichierDetailView(DetailView):
+class FichierDetailView(LoginRequiredMixin, DetailView):
     model = Fichier
     template_name = "caverne/fichier_detail.html"
 
@@ -79,14 +82,20 @@ def upload(request):
         if form.is_valid():
             fichier = form.save(commit=False)
             fichier.user = request.user
-            fichier.save()
-            create_pdf_thumbnail(fichier)
-            for mot in form.cleaned_data["mots_cles"]:
-                fichier.tags.add(Tag.objects.get_or_create(name=mot)[0])
-
-            teacher = Enseignant.objects.get_or_create(name=fichier.enseignant)[0]
+            
+            teacher = Enseignant.objects.get_or_create(
+                name=form.cleaned_data["enseignant"]
+            )[0]
             teacher.ecole = fichier.ecole
             teacher.save()
+            
+            fichier.enseignant = teacher
+            fichier.save()
+            
+            for mot in form.cleaned_data["mots_cles"]:
+                fichier.tags.add(Tag.objects.get_or_create(name=mot)[0])
+            create_pdf_thumbnail(fichier)
+            
             return redirect(reverse("index"))
     else:
         form = FichierForm()

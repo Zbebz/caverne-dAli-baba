@@ -86,10 +86,18 @@ class LoginForm(AuthenticationForm):
             )
 
 class FichierForm(forms.ModelForm):
-    mots_cles = TagField(label="Mots clés")
+    mots_cles = TagField(label="Mots clés", required=True)
+    enseignant = forms.CharField(label="Enseignant.e", required=True)
     class Meta():
         model = Fichier
-        exclude = ["user", "uploadDatetime", "status", "tags", "thumbnail"]
+        exclude = [
+            "user",
+            "uploadDatetime",
+            "status",
+            "tags",
+            "thumbnail",
+            "enseignant",
+        ]
         widgets = {
             "file": forms.FileInput(
                 attrs={

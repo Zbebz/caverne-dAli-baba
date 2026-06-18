@@ -99,6 +99,9 @@ def thumbnail_path(instance, filename):
 def get_sentinel_user():
     return get_user_model().objects.get_or_create(username="deleted")[0]
 
+def get_sentinel_enseignant():
+    return Enseignant.objects.get_or_create(name="deleted")[0]
+
 def validate_file_mimetype(file):
     accept = [
         "application/pdf",
@@ -116,7 +119,7 @@ class Fichier(models.Model):
         on_delete=models.SET(get_sentinel_user),
         related_name="fichiers",
     )
-    status = models.IntegerField(default=2, choices=STATUTS)
+    status = models.IntegerField(default=1, choices=STATUTS)
     uploadDatetime = models.DateTimeField(default=localtime)
 
     file = models.FileField(
@@ -143,7 +146,12 @@ class Fichier(models.Model):
     ecole = models.CharField(
         blank=False, null=False, choices=ECOLES, verbose_name="collège"
     )
-    enseignant = models.CharField(blank=False, null=False, verbose_name="enseignant.e")
+    # enseignant = models.CharField(blank=False, null=False, verbose_name="enseignant.e")
+    enseignant = models.ForeignKey(
+        Enseignant,
+        on_delete=models.SET(get_sentinel_enseignantC),
+        related_name="fichiers",
+    )
     annotated = models.BooleanField(blank=False, null=False, verbose_name="annoté?")
     description = models.TextField(blank=False, null=False)
     tags = models.ManyToManyField(Tag, related_name="fichiers")
