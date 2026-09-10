@@ -1,7 +1,10 @@
 from django.contrib.auth import views as auth_views
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import  static
 
-from . import views, forms
+
+from . import decorators, forms, views
 
 urlpatterns = [
     path("", views.index, name="index"),
@@ -9,9 +12,9 @@ urlpatterns = [
     path("register", views.register, name="register"),
     path(
         "login",
-        auth_views.LoginView.as_view(
+        decorators.unauth_required(auth_views.LoginView.as_view(
             template_name="caverne/login.html", authentication_form=forms.LoginForm
-        ),
+        )),
         name="login",
     ),
     path("logout", views.logout_view, name="logout"),
@@ -31,3 +34,7 @@ htmx_urlpatterns = [
 ]
 
 urlpatterns += htmx_urlpatterns
+
+# Only in development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

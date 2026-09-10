@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import user_passes_test
 
+
 def unauth_required(
     function=None, index_url="/"
 ):
@@ -8,7 +9,7 @@ def unauth_required(
     to the index page if necessary.
     """
     actual_decorator = user_passes_test(
-        lambda u: not u.is_authenticated,
+        lambda u: (not u.is_authenticated) or (not u.verified),
         login_url=index_url,
         redirect_field_name=None,
     )
