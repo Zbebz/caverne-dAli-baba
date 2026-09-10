@@ -1,7 +1,9 @@
-:root {
-    font-size: 16px;
-}
-
 .asteriskField {
     display: none;
+}
+
+#register {
+    font-size: 0.8rem;
+    text-decoration: none;
+    margin-bottom: 0.3rem;
 }
