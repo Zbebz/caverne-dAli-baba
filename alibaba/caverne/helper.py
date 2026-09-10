@@ -78,11 +78,7 @@ class TagField(CharField):
         return value.lower().split(", ")
     
     def validate(self, value):
-        res = super().validate(value)
-        
-        if not value:
-            raise ValidationError("Il faut mettre des mot clés")
-        return res
+        return super().validate(value)
 
 # https://artifex.com/blog/converting-pdfs-to-images-with-pymupdf-a-complete-guide#a50e521e3d17
 def create_pdf_thumbnail(fichier):

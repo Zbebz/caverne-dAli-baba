@@ -135,7 +135,7 @@ class Fichier(models.Model):
     thumbnail = models.ImageField(upload_to=thumbnail_path, null=False, blank=False)
     name = models.CharField(blank=False, null=False, verbose_name="nom du fichier")
     year = models.IntegerField(
-        blank=False, null=False, choices=YEARS, verbose_name="année"
+        blank=False, null=False, choices=YEARS, verbose_name="degré"
     )  # L'année pour laquelle le fichier est destiné
     subject = models.CharField(
         blank=False, null=False, choices=SUBJECTS, verbose_name="matière"
@@ -146,15 +146,15 @@ class Fichier(models.Model):
     ecole = models.CharField(
         blank=False, null=False, choices=ECOLES, verbose_name="collège"
     )
-    # enseignant = models.CharField(blank=False, null=False, verbose_name="enseignant.e")
+
     enseignant = models.ForeignKey(
         Enseignant,
         on_delete=models.SET(get_sentinel_enseignant),
         related_name="fichiers",
     )
-    annotated = models.BooleanField(blank=False, null=False, verbose_name="annoté?")
-    description = models.TextField(blank=False, null=False)
-    tags = models.ManyToManyField(Tag, related_name="fichiers")
+    annotated = models.BooleanField(blank=False, null=False, verbose_name="annoté/corrigé?")
+    description = models.TextField(null=False, blank=True)
+    tags = models.ManyToManyField(Tag, related_name="fichiers", blank=True)
     
     def __str__(self):
         return f"{self.name} - {self.user.username}"

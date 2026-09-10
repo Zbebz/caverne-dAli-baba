@@ -86,7 +86,7 @@ class LoginForm(AuthenticationForm):
             )
 
 class FichierForm(forms.ModelForm):
-    mots_cles = TagField(label="Mots clés", required=True)
+    mots_cles = TagField(label="Mots clés", required=False)
     enseignant = forms.CharField(label="Enseignant.e", required=True)
     class Meta():
         model = Fichier

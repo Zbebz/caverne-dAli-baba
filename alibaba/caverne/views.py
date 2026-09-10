@@ -1,21 +1,20 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.sites.shortcuts import get_current_site
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.encoding import force_str
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.http import urlsafe_base64_decode
 from django.views.generic import DetailView, ListView
 
 from .decorators import unauth_required, verified_required
 from .forms import FichierForm, RegisterForm, SearchFiltersForm
-from .helper import VerificationEmail, account_activation_token
+from .helper import VerificationEmail, account_activation_token, create_pdf_thumbnail
 from .models import Enseignant, Fichier, Tag
-from .helper import create_pdf_thumbnail
 
 
 @login_required
@@ -190,3 +189,4 @@ def activate(request, uidb64, token):
 def logout_view(request):
     logout(request)
     return redirect(reverse("index"))
+

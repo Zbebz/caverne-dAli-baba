@@ -36,15 +36,25 @@ dropArea.addEventListener("drop", (e) => {
     // Getting the list of dragged files
     const files = e.dataTransfer.files;
     const acceptedFileTypes = fileInput.accept.split(",");
-    if (files.length && acceptedFileTypes.includes(files[0].type)) {
-        // Assigning the files to the hidden input
-        fileInput.files = files;
-
-        fileUpload();
-    } else {
-        const errorMessage = document.querySelector(".files-accepted");
+    const nameTag = document.getElementById("id_name");
+    console.log(files)
+    if (files.length != 1) {
+        const errorMessage = document.getElementById("maxfile-amount");
+        errorMessage.style.opacity = "1";
+        dropArea.classList.remove("drag-over");
+        console.log(1)
+    } else if (!acceptedFileTypes.includes(files[0].type)) {
+        const errorMessage = document.getElementById("filetype-accepted");
         errorMessage.style.color = "red";
         dropArea.classList.remove("drag-over");
+        console.log(acceptedFileTypes.includes(files[0].type));
+        console.log(files[0].type);
+    } else {
+        // Assigning the files to the hidden input
+        fileInput.files = files;
+        nameTag.value = files[0].name;
+        
+        fileUpload();
     }
 });
 
@@ -69,9 +79,7 @@ submitButton.addEventListener("click", (e) => {
     const fields1inputs = document.querySelectorAll(
         "#field-1 input, #field-1 select",
     );
-    const fieldsInputs = document.querySelectorAll(
-        "#field-1 input, #field-2 input, #field-2 textarea",
-    );
+    const fieldsInputs = document.querySelectorAll("#field-1 input");
     
     // https://coreui.io/answers/how-to-check-if-a-string-is-empty-in-javascript/
     const isBlank = (str) => !str || str.trim().length === 0;

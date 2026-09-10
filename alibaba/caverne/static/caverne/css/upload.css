@@ -34,9 +34,15 @@
     margin-top: -10px;
 }
 
-.files-accepted {
+#filetype-accepted {
     font-size: 1vw;
     color: #777
+}
+
+#maxfile-amount {
+    opacity: 0;
+    font-size: 1vw;
+    color: red
 }
 
 .asteriskField {

@@ -13,11 +13,12 @@
                     Choisissez votre fichier
                 </label>
                 <span class="small-text">ou glissez-le</span>
-                <span class="files-accepted"
+                <span id="filetype-accepted"
                 {% if form.file.errors %}
                     style="color: red;"
                 {% endif %}
                     >Seulement les fichiers pdf sont autorisés</span>
+                <span id="maxfile-amount">Seulement un fichier</span>
                 {{ form.file }}
             </div>
         </div>
