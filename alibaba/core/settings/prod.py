@@ -29,3 +29,10 @@ STORAGES = {
         "BACKEND": "core.settings.storages.StaticStorage",
     },
 }
+
+# Behind Caddy, which terminates TLS
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = False
