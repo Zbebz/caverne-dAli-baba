@@ -24,7 +24,11 @@ ___
   - [Inscription au site / Création d'un compte](#inscription-au-site--création-dun-compte)
   - [Vérification par mail](#vérification-par-mail)
   - [Connexion et session](#connexion-et-session)
-- [Accès et téléchargements des fichiers](#accès-et-téléchargements-des-fichiers)
+- [Accès et téléchargement des fichiers](#accès-et-téléchargement-des-fichiers)
+  - [Recherche d'un fichier](#recherche-dun-fichier)
+  - [*Auto-suggestion* (suggestion semi-automatique)](#auto-suggestion-suggestion-semi-automatique)
+  - [Filtrage et affichage des résultats](#filtrage-et-affichage-des-résultats)
+  - [Affichage et téléchargement des fichiers](#affichage-et-téléchargement-des-fichiers)
 
 ---
 
@@ -74,7 +78,10 @@ J'ai donc choisi de faire ce projet avec Django pour les raisons listées ci-des
 
 ### *Frontend*
 
-J'ai choisi de ne pas utiliser une *frontend framework*, car je trouve que l'application n'a pas besoin de la complexité qu'amène une comme *React* or *Vue*. À savoir que pour utiliser une *frontend*, on devrait écrire un API qui sert les informations à cette dernière (CSR, dit *Client-side rendering*) au lieu d'utiliser les *templates* de Django pour générer l'HTML côté serveur (SSR, dit *Server-side rendering*), ce qui, à mon avis, rend les choses plus compliquées. Cependant, il faut quand même du dynamisme dans le site, je vais donc utiliser Vanilla JS (ou HTMX). (HTMX est un entre-deux. Elle m'évite d'écrire beaucoup de *boilerplate*. Si j'écrivais tout en Vanilla JS, je serais essentiellement en train d'écrire mon propre *Framework*). J'ai choisi d'utiliser *Bootstrap* au lieu d'écrire moi-même le CSS car elle permet de faire le *design* qu'on veut en très peu de temps.
+J'ai choisi de ne pas utiliser de *frontend framework*, car je trouve que l'application n'a pas besoin de la complexité qu'en amène une comme *React* or *Vue*. À savoir que pour utiliser une *frontend*, on devrait écrire un API qui sert les informations à cette dernière (CSR, dit *Client-side rendering*) au lieu d'utiliser les *templates* de Django pour générer l'HTML côté serveur (SSR, dit *Server-side rendering*), ce qui, à mon avis, rend les choses plus compliquées. Cependant, il faut quand même du dynamisme dans le site, je vais donc utiliser Vanilla JS et htmx (dont je parlerai dans la sous-section [*Auto-suggestion* (suggestion semi-automatique)](#auto-suggestion-suggestion-semi-automatique) de la section [Accès et téléchargements des fichiers](#accès-et-téléchargements-des-fichiers)).
+J'ai choisi d'utiliser *Bootstrap* de manière générale et CSS pour les petites modifications car *Bootstrap* permet de faire le *design* qu'on veut en très peu de temps.[^bootstrap-tailwind]
+
+[^bootstrap-tailwind]: Cette sous-section est écrite le 17 septembre 2026. J'ai découvert que *Bootstrap* est assez limité et ne possède pas tous ce dont j'ai besoin, donc je finis quand-même par écrire plus de CSS que voulu. Il est très probable que je cesserai d'utiliser *Bootstrap* et commencer à utiliser *Tailwind*. Plus d'informations seront mises suite au changement.
 
 
 ### *Database* (base de données)
@@ -97,7 +104,7 @@ Pour ce projet, les *MVPs* sont :
 - Accès aux fichiers, ainsi que leurs téléchargements
 
 ## Publication des fichiers
-La publication des fichiers est la fonctionnalité qui donne à l'utilisateur la possibilité de partager ses documents avec le monde. L'une des difficultés dans l'implémentation de cette fonctionnalité est de savoir et de décider les informations qu'un utilisateur doit entrer avec le téléversement du fichier. Les informations données par l'utilisateur sont principalement la matière, le type de fichier (évaluation, exercices, théorie, etc.), le degré pour lequel le fichier est destiné, ainsi que l'enseignant qui a donné ce fichier. Elles doivent être stockées dans la DB[^db] de manière structurée afin de pouvoir s'en servir plus tard dans le *MVP* **[Accès et téléchargements des fichiers](#accès-et-téléchargements-des-fichiers)**.
+La publication des fichiers est la fonctionnalité qui donne à l'utilisateur la possibilité de partager ses documents avec le monde. L'une des difficultés dans l'implémentation de cette fonctionnalité est de savoir et de décider les informations qu'un utilisateur doit entrer avec le téléversement du fichier. Ces informations doivent être stockées dans la DB[^db] de manière structurée afin de pouvoir s'en servir plus tard dans le *MVP* **[Accès et téléchargements des fichiers](#accès-et-téléchargements-des-fichiers)**.
 
 [^db]: Pour des raisons de brièveté et de légèreté de lecture, DB signifie base de données.
 
@@ -124,7 +131,7 @@ erDiagram
     direction LR
     USER {
         int id PK
-        autre propriétés...
+        autres propriétés...
     }
 
 FICHIER {
@@ -215,8 +222,45 @@ Le lien de vérification est valide pendant 24h avec la possibilité d'en géné
 [^secret-key]: "La clé secrète d’une installation Django. Elle est utilisée dans le contexte de la signature cryptographique, et doit être définie à une valeur unique et non prédictible." [DJANGO SOFTWARE FOUNDATION, 2026. Réglages. Django (Version 6.1) (en ligne). Disponible à l'adresse : [https://docs.djangoproject.com/fr/6.1/ref/settings/#std-setting-SECRET_KEY](https://docs.djangoproject.com/fr/6.1/ref/settings/#std-setting-SECRET_KEY)]
 
 ### Connexion et session
-La connexion et session sont gérées par Django sans grande modification ou ajout de ma part. Une session, qui est créée suite à la connexion d'un utilisateur, me permet de pouvoir lier l'utilisateur qui a publié un fichier au fichier publié.****
+La connexion et session sont gérées par Django sans grande modification ou ajout de ma part. Une session, qui est créée suite à la connexion d'un utilisateur, me permet de pouvoir lier l'utilisateur qui a publié un fichier au fichier publié.
 
 
-## Accès et téléchargements des fichiers
-tag search, then filtering
+## Accès et téléchargement des fichiers
+Suite à la publication des fichiers, il est important que l'utilisateur puissent y accéder et les télécharger; c'est l'objectif de l'application. Cependant, avec l'augmentation de fichier (que j’espère ce qui va arriver) sur l'application, il devient presque impossible de trouver ce que l'on veut. Afin de résoudre ce problème, il faut mettre un système de recherche efficace qui permettra à l'utilisateur de trouver ce dont il a besoin sans problème. C'est ici qu'on se sert de l'organisation de données dans la DB (cf. [Publication des fichiers](#publication-des-fichiers)).
+
+
+### Recherche d'un fichier
+```mermaid
+---
+title: Processus de recherche d'un fichier
+---
+flowchart LR
+id1("`Utilisateur tape un mot clé dans le champ de recherche`")-->id2[Choix entre mot clé proposé]-->id3[("`Recherche dans la DB de tous les fichiers qui contiennent ce mot clé`")]-->id4["`Affichage des résultats`" ]-->id5["`Ouverture d'un fichier`" ]
+id4-->id6["`Filtrages avec plusieurs critères`" ]-->id5
+```
+<br/>
+
+Quand l'utilisateur ouvre le site, en s'étant déjà connecté, il trouve directement la barre de recherche de lui, ce qui lui facilite la tâche, car il n'as pas à la chercher ailleurs. Pour chercher ce dont il a besoin, l'utilisateur écrit des mots clés, les mêmes qui ont étés inscrits lors de la publication.[^search]
+
+[^search]: Cette section est écrite le 17 septembre 2026. Le système de recherche actuel est susceptible de changement. Les raisons seront écrites suite au changement.
+
+### *Auto-suggestion* (suggestion semi-automatique)
+L'*auto-suggestion* est une fonctionnalité qui "prédit" et montre à l'utilisateur des fin possibles à ce qui'il est en train d'écrire lors de sa recherche. Elle lui donne une rapidité et rends sa requête plus précise. Dans l'application, cette fonctionnalité est possible grâce à PostgreSQL. Dans PostgreSQL, il est possible de faire une recherche par *Trigram similarity*[^trigram] à l'aide du module `pg_trgm`, ce qui rends la tâche très fluide. Étant donné que la langue française fait usage des accents, il est important que les résultats ne dépende pas de leur presence, car les accents ne sont pas toujours mises lors de la recherche. Pour ce faire, Il existe un autre module `unaccent` dont la seule fonction est de enlever les accents. Ces 2 modules n'existe que dans PostgreSQL.
+
+[^trigram]: "A trigram is a group of three consecutive characters taken from a string. We can measure the similarity of two strings by counting the number of trigrams they share. This simple idea turns out to be very effective for measuring the similarity of words in many natural languages." [POSTGRESQL. pg_trgm — support for similarity of text using trigram matching. PostgreSQL (en ligne). Disponible à l'adresse : [https://www.postgresql.org/docs/current/pgtrgm.html](https://www.postgresql.org/docs/current/pgtrgm.html)]
+
+Bien souvent, l'utilisateur peut changer le contenu de la barre de recherche. Dans ces situation, ce serait quand-même assez préférable si les suggestion change aussi, pour donner une sensation de dynamisme à l'utilisateur, et quand on parle de dynamisme, Javascript apparaît. Or, je n'aime pas Javascript, car je ne suis pas à l'aise avec elle et je trouve sa syntaxe vraiment immonde. C'est ici qu'apparaît htmx. htmx (en miniscule) est une librairie qui me permet déclencher des requêtes `HTTP` à partir d'attributs HTML, sans avoir recours à Javascript. Dans le cas de cette application, htmx envoie une requête à Django avec le contenu de la barre de recherche, Django fait sa magie[^magie] et envoie un fragment d'HTML avec les résultats (qui sont les suggestions), et htmx le remplace directement dans le *DOM*[^dom], tout à l'aide d'attribut HTML. Sans htmx, il aurait fallu coder la détection de la modification des filtres, l'envoie de la requête, la récupération de la réponse et la modification du *DOM* pour afficher les nouveaux résultats.
+
+[^dom]: "Le Document Object Model (DOM) est une interface de programmation pour les documents web. Il représente la page de façon à ce que des programmes puissent modifier la structure, le style et le contenu du document. Le DOM représente le document sous forme de nœuds et d'objets ; ainsi, les langages de programmation peuvent interagir avec la page." [MOZILLA. Document Object Model (DOM) (en français). MDN Web Docs (en ligne). Disponible à l'adresse : [https://developer.mozilla.org/fr/docs/Web/API/Document_Object_Model](https://developer.mozilla.org/fr/docs/Web/API/Document_Object_Model)]
+
+[^magie]: Ce n'est bien sûr pas de la magie, il s'agit d'une requête fait par Django dans la DB avec *Trigram Similarity*.
+
+### Filtrage et affichage des résultats
+Quand l'utilisateur choisit enfin le mot clé souhaité, la requête est envoyée a Django qui cherche ensuite dans la DB une liste des fichiers possédant ce mot clé dans leur propriété `tag`. La liste des fichier est affichée à l'utilisateur sous forme de carte, qui contient une vignette du fichier (qui a été créée lors de la publication).
+
+Voici un exemple de comment ceci se passe: un utilisateur peut chercher "géométrie vectorielle", et il aura comme résultats plusieurs fichier qui ceci comme sujet. Cependant, notre cher utilisateur est un étudiant de 2e année, et la géométrie vectorielle est aussi abordée en 3e année[^geo-vec]. Comment fait-il pour ne pas tomber sur des fichiers qui, a priori, ne lui sont pas intéressant ? C'est pour cette raison qu'il y a des filtres, comme l'école, le degré et le type de fichier, qui sont mises en place et qu'on peut choisir afin de raffiner les résultats et trouver ce qui nous convient.
+
+[^geo-vec]: C'est le cas de Sismondi de toute manière.
+
+### Affichage et téléchargement des fichiers
+Un utilisateur peut voir plus d'informations sur un fichier ainsi que son contenu en cliquant sur la carte qui le représente. Pour afficher le contenu d'un fichier, le lecteur PDF par défaut du navigateur est utilisé.
