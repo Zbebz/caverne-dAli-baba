@@ -13,13 +13,11 @@ ___
   - [*Backend*](#backend)
   - [*Frontend*](#frontend)
   - [*Database* (base de données)](#database-base-de-données)
-  - [*Cloud storage*](#cloud-storage)
 - [Les *MVPs*](#les-mvps)
 - [Publication des fichiers](#publication-des-fichiers)
   - [Comment Django interagit-il avec la DB ?](#comment-django-interagit-il-avec-la-db-)
   - [Organisation des données](#organisation-des-données)
   - [Dans les coulisses](#dans-les-coulisses)
-  - [Problèmes rencontrés](#problèmes-rencontrés)
 - [Authentification utilisateur](#authentification-utilisateur)
   - [Inscription au site / Création d'un compte](#inscription-au-site--création-dun-compte)
   - [Vérification par mail](#vérification-par-mail)
@@ -29,15 +27,15 @@ ___
   - [*Auto-suggestion* (suggestion semi-automatique)](#auto-suggestion-suggestion-semi-automatique)
   - [Filtrage et affichage des résultats](#filtrage-et-affichage-des-résultats)
   - [Affichage et téléchargement des fichiers](#affichage-et-téléchargement-des-fichiers)
+- [La suite](#la-suite)
 
 ---
 
 <br>
 
-À travers son parcours académique, on fait tous.tes face aux évaluations, c'est malheureusement inevitable. Il arrive parfois que, au moment de la révision pour une des ces fameuses évaluations, les fiches de théorie données pour son/sa prof n'aident pas vraiment, ou on n'a plus d'exercices pour s'entrainer parce que celui/celle n'en fait tout simplement très peu. Il est bien évidement possible de chercher sur l'internet, mais c'est très difficile de trouver des exercices avec la même difficulté que celle qu'on fait en cours, ou de trouver le sujet expliqué de la même manière que son adorable prof. Il est aussi possible de demander à ses amis, mais quel.le ami.e ? Celle qui vient presque jamais en cours ? Celui qui ne note quasiment rien ? C'est pourquoi j'ai décidé de faire un site web qui permet de partager tous ses fichiers afin de faciliter le recherche ceux-ci dans les moments les plus (ou les moins) urgents.
+À travers son parcours académique, on fait toutes et tous face aux évaluations, c'est malheureusement inevitable. Il arrive parfois que, au moment de la révision pour une des ces fameuses évaluations, les fiches de théorie données pour son/sa prof n'aident pas vraiment, ou on n'a plus d'exercices pour s'entrainer parce que il/elle n'en fait tout simplement très peu. Il est bien évidement possible de chercher sur l'internet, mais c'est très difficile de trouver des exercices avec la même difficulté que celle qu'on fait en cours, ou de trouver le sujet expliqué de la même manière que son adorable prof. Il est aussi possible de demander à ses amis, mais quel.le ami.e ? Celle qui vient presque jamais en cours ? Celui qui ne note quasiment rien ? C'est pourquoi j'ai décidé de faire un site web qui permet de partager tous ses fichiers afin de faciliter le recherche ceux-ci dans les moments les plus (ou les moins) urgents.
 
 ## Le *Tech Stack*
-
 La definition du *Tech Stack* sur GeeksForGeek[^tech-stack] : 
 > A tech stack (technology stack) is the collection of tools, frameworks, programming languages, and platforms used to build and run a web or mobile application. It represents the layered foundation of modern software where each component works together to enable functionality, performance, and scalability.  
 
@@ -50,14 +48,13 @@ Le *Tech stack* se divise en 4 parties principales:
 - ***Database*** **(base de données)** : C'est ici qu'on stocke et gère les données.
 - **Infrastructure** : Il s'agit de la mise en production (*deployment*), le *cloud*, etc.
 
-Il existe une quantité énorme de *stacks* dont les plus populaires utilisent JavaScript comme langage principale (e.g. MERN, MEAN, MEVN, etc.). Il y aussi d'autres basés sur d'autres langages comme *Ruby on rails* pour Ruby, *Spring* pour Java, *.NET* pour C#, *Django* et *Flask* pour Python, et plein d'autres.  
+Il existe une quantité énorme de *stacks* dont les plus populaires utilisent JavaScript comme langage principale (e.g. MERN, MEAN, MEVN, etc.). Il y aussi d'autres basés sur d'autres langages comme *Ruby on rails* pour Ruby, *Spring* pour Java, *.NET* pour C#, *Django* et *Flask* pour Python, et plein d'autres.
 Je vous présente donc le stack pour lequel j'ai opté.
 
 ### *Backend*
+Le langage que je connais le mieux est Python, donc mon choix de *framework* était entre *Django* et *Flask*. Comme tout, chacun a ses propres avantages et désavantages.
 
-Le langage que je connais le mieux est Python, donc mon choix de *framework* était entre *Django* et *Flask*. Comme tout, chacun a ses propres avantages et désavantages.  
-
-Commençons par Django. Django, publiée en 2005, est une *framework* qu'on dit est *batteries included*, c'est-à-dire qu'elle te donne tout ce dont on a besoin *out of the box*. Elle est magnifique pour des grands applications, mais *overkill* pour des petits projets ou des microservices. Elle est très bien documentée[^django] avec une grande communauté. Il existe une quantité énorme de tutos en ligne pour presque tout les choses qu'on aimerait faire. Il est important de savoir que Django est utilisé ou a été utilisé par pleins d'applications notamment Instagram, Spotify, YouTube, Pinterest, Mozilla et autres.
+Commençons par Django. Django est une *framework* qu'on dit "*batteries included*", c'est-à-dire qu'elle donne tout ce dont on a besoin *out of the box*. Elle est magnifique pour des grands applications, mais *overkill* pour des petits projets ou des microservices. Elle est très bien documentée[^django] avec une grande communauté. Il existe une quantité énorme de tutos en ligne pour presque tout les choses qu'on aimerait faire.
 
 Inversement, Flask est très minimale, on ne te donne rien au début. Ceci peut être bon et mauvais selon les cas. Bon car elle permet une grande flexibilité, ce qui est très bien pour commencer très rapidement un projet assez petit, mauvais quand le projet est assez grand. Ainsi, elle nécessite soit l'installation de beaucoup de modules pour faire la même chose que Django soit la création soi-même de ses modules. Voici une liste non exhaustive des modules à installer si je travaillais avec Flask :  
 
@@ -69,7 +66,7 @@ Fonctionnalité | Module
  Interface d'admin | Flask-admin
  ...
 
-De plus, ces modules ne sont pas toujours bien documentés, cependant, Flask elle-même est aussi bien documentée[^flask] avec une communauté un peu moins large que celle de Django. Flask est utilisé plutôt par des entreprises pour faire des microservices, ce qui est le cas pour Netflix, Pinterest, Airbnb.
+De plus, ces modules ne sont pas toujours bien documentés. Cependant, Flask elle-même est bien documentée[^flask] avec une communauté un peu moins large que celle de Django.
 
 J'ai donc choisi de faire ce projet avec Django pour les raisons listées ci-dessus.
 
@@ -77,23 +74,17 @@ J'ai donc choisi de faire ce projet avec Django pour les raisons listées ci-des
 [^flask]: Voici sa documentation : [https://flask.palletsprojects.com/](https://flask.palletsprojects.com/)
 
 ### *Frontend*
+J'ai choisi de ne pas utiliser de *frontend framework*, car je trouve que l'application n'a pas besoin de la complexité qu'en amène une comme *React* or *Vue*. Cependant, il faut quand-même du dynamisme dans le site, je vais donc utiliser Vanilla JS et htmx (dont je parle dans la sous-section [*Auto-suggestion* (suggestion semi-automatique)](#auto-suggestion-suggestion-semi-automatique)).
 
-J'ai choisi de ne pas utiliser de *frontend framework*, car je trouve que l'application n'a pas besoin de la complexité qu'en amène une comme *React* or *Vue*. À savoir que pour utiliser une *frontend*, on devrait écrire un API qui sert les informations à cette dernière (CSR, dit *Client-side rendering*) au lieu d'utiliser les *templates* de Django pour générer l'HTML côté serveur (SSR, dit *Server-side rendering*), ce qui, à mon avis, rend les choses plus compliquées. Cependant, il faut quand même du dynamisme dans le site, je vais donc utiliser Vanilla JS et htmx (dont je parlerai dans la sous-section [*Auto-suggestion* (suggestion semi-automatique)](#auto-suggestion-suggestion-semi-automatique) de la section [Accès et téléchargements des fichiers](#accès-et-téléchargements-des-fichiers)).
 J'ai choisi d'utiliser *Bootstrap* de manière générale et CSS pour les petites modifications car *Bootstrap* permet de faire le *design* qu'on veut en très peu de temps.[^bootstrap-tailwind]
 
 [^bootstrap-tailwind]: Cette sous-section est écrite le 17 septembre 2026. J'ai découvert que *Bootstrap* est assez limité et ne possède pas tous ce dont j'ai besoin, donc je finis quand-même par écrire plus de CSS que voulu. Il est très probable que je cesserai d'utiliser *Bootstrap* et commencer à utiliser *Tailwind*. Plus d'informations seront mises suite au changement.
 
 
 ### *Database* (base de données)
-
-PostgreSQL pour Trigram Search
-
-### *Cloud storage*
-
-AWS S3 buckets
+J'ai choisi d'utiliser PostgreSQL à cause de certaines fonctionnalités qui ne sont possible qu'avec elle. J'explique mon choix plus en profondeur dans la sous-section [*Auto-suggestion* (suggestion semi-automatique)].
 
 ## Les *MVPs*
-
 Après avoir choisi notre *stack*, il faut diviser le projet en *MVPs* (*Minimum Viable Product* en pluriel). Un *MVP* est la version la plus minimale d'un produit ou d'une fonctionnalité. Il s'agit d'implémenter seulement ce qui est nécessaire pour que l'application fonctionne bien et ensuite commencer à l'améliorer. Le but est donc de concevoir le produit le plus rapidement possible afin de pouvoir le montrer au monde et ensuite avoir des retours. En bref, il s'agit d'une version provisoire, mais qui fonctionne bien.[^mvp]
 
 [^mvp]: WIKIMEDIA. Minimum viable product. Wikipédia (en ligne). Disponible à l'adresse : [https://en.wikipedia.org/wiki/Minimum_viable_product](https://en.wikipedia.org/wiki/Minimum_viable_product)
@@ -189,9 +180,6 @@ Le processus de publication d'un fichier est très simple grâce à Django. Quan
 
 Tous les fichiers (et vignettes) sont stockés sur un bucket AWS S3. Stocker les documents sur un tel service permet une séparation de tâches où le serveur s'occupe seulement du programme et de la conservation des métadonnées des fichiers dans la DB et le service s'occupe de la conservation des fichiers. Cette organisation allège le travail du serveur, car leur téléchargement ne nécessite pas un transit à travers le serveur. Plus encore, en cas d'augmentations du nombre de serveurs hébergeant l'application, ils pourront tous communiquer au service au lieu de chercher dans chacun où se trouve un certain fichier.
 
-### Problèmes rencontrés
-Thumbnail, tags, accès au fichier avec S3
-
 ## Authentification utilisateur
 L'authentification utilisateur est très important pour l'application car elle permet de vérifier si l'utilisateur est bien un étudiant du Collège de Genève et lui autorisé l'accès. Ainsi, l'utilisateur doit pouvoir créer son propre compte, vérifier son adresse mail, se connecter afin de s'authentifier et pouvoir acceder à la caverne.
 
@@ -245,11 +233,11 @@ Quand l'utilisateur ouvre le site, en s'étant déjà connecté, il trouve direc
 [^search]: Cette section est écrite le 17 septembre 2026. Le système de recherche actuel est susceptible de changement. Les raisons seront écrites suite au changement.
 
 ### *Auto-suggestion* (suggestion semi-automatique)
-L'*auto-suggestion* est une fonctionnalité qui "prédit" et montre à l'utilisateur des fin possibles à ce qui'il est en train d'écrire lors de sa recherche. Elle lui donne une rapidité et rends sa requête plus précise. Dans l'application, cette fonctionnalité est possible grâce à PostgreSQL. Dans PostgreSQL, il est possible de faire une recherche par *Trigram similarity*[^trigram] à l'aide du module `pg_trgm`, ce qui rends la tâche très fluide. Étant donné que la langue française fait usage des accents, il est important que les résultats ne dépende pas de leur presence, car les accents ne sont pas toujours mises lors de la recherche. Pour ce faire, Il existe un autre module `unaccent` dont la seule fonction est de enlever les accents. Ces 2 modules n'existe que dans PostgreSQL.
+L'*auto-suggestion* est une fonctionnalité qui "prédit" et montre à l'utilisateur des fin possibles à ce qui'il est en train d'écrire lors de sa recherche. Elle lui donne une rapidité et rends sa requête plus précise. Dans l'application, cette fonctionnalité est possible grâce à PostgreSQL. Dans PostgreSQL, il est possible de faire une recherche par *Trigram similarity*[^trigram] à l'aide du module `pg_trgm`, ce qui rends la tâche très fluide. Étant donné que la langue française fait usage des accents, il est important que les résultats ne dépende pas de leur presence, car les accents ne sont pas toujours mises lors de la recherche. Pour ce faire, Il existe un autre module `unaccent` dont la seule fonction est de enlever les accents. Ces 2 modules sont propres à PostgreSQL.
 
 [^trigram]: "A trigram is a group of three consecutive characters taken from a string. We can measure the similarity of two strings by counting the number of trigrams they share. This simple idea turns out to be very effective for measuring the similarity of words in many natural languages." [POSTGRESQL. pg_trgm — support for similarity of text using trigram matching. PostgreSQL (en ligne). Disponible à l'adresse : [https://www.postgresql.org/docs/current/pgtrgm.html](https://www.postgresql.org/docs/current/pgtrgm.html)]
 
-Bien souvent, l'utilisateur peut changer le contenu de la barre de recherche. Dans ces situation, ce serait quand-même assez préférable si les suggestion change aussi, pour donner une sensation de dynamisme à l'utilisateur, et quand on parle de dynamisme, Javascript apparaît. Or, je n'aime pas Javascript, car je ne suis pas à l'aise avec elle et je trouve sa syntaxe vraiment immonde. C'est ici qu'apparaît htmx. htmx (en miniscule) est une librairie qui me permet déclencher des requêtes `HTTP` à partir d'attributs HTML, sans avoir recours à Javascript. Dans le cas de cette application, htmx envoie une requête à Django avec le contenu de la barre de recherche, Django fait sa magie[^magie] et envoie un fragment d'HTML avec les résultats (qui sont les suggestions), et htmx le remplace directement dans le *DOM*[^dom], tout à l'aide d'attribut HTML. Sans htmx, il aurait fallu coder la détection de la modification des filtres, l'envoie de la requête, la récupération de la réponse et la modification du *DOM* pour afficher les nouveaux résultats.
+Bien souvent, l'utilisateur peut changer le contenu de la barre de recherche. Dans ces situation, ce serait quand-même assez préférable si les suggestion change aussi, pour donner une sensation de dynamisme à l'utilisateur, et quand on parle de dynamisme, Javascript apparaît. Or, je n'aime pas Javascript, car je ne suis pas à l'aise avec elle et je trouve sa syntaxe vraiment immonde. C'est ici qu'apparaît htmx. htmx (en miniscule) est une librairie qui me permet déclencher des requêtes `HTTP` à partir d'attributs HTML, sans avoir recours à Javascript. Dans le cas de cette application, htmx envoie une requête à Django avec le contenu de la barre de recherche, Django fait sa magie[^magie] et envoie un fragment d'HTML avec les résultats (qui sont les suggestions), et htmx le remplace directement dans le *DOM*[^dom] au lieu de recharger la page, tout à l'aide d'attributs HTML. Sans htmx, il aurait fallu coder la détection de la modification de la barre de recherche, l'envoie de la requête, la récupération de la réponse et la modification du *DOM* pour afficher les nouveaux résultats.
 
 [^dom]: "Le Document Object Model (DOM) est une interface de programmation pour les documents web. Il représente la page de façon à ce que des programmes puissent modifier la structure, le style et le contenu du document. Le DOM représente le document sous forme de nœuds et d'objets ; ainsi, les langages de programmation peuvent interagir avec la page." [MOZILLA. Document Object Model (DOM) (en français). MDN Web Docs (en ligne). Disponible à l'adresse : [https://developer.mozilla.org/fr/docs/Web/API/Document_Object_Model](https://developer.mozilla.org/fr/docs/Web/API/Document_Object_Model)]
 
@@ -258,9 +246,19 @@ Bien souvent, l'utilisateur peut changer le contenu de la barre de recherche. Da
 ### Filtrage et affichage des résultats
 Quand l'utilisateur choisit enfin le mot clé souhaité, la requête est envoyée a Django qui cherche ensuite dans la DB une liste des fichiers possédant ce mot clé dans leur propriété `tag`. La liste des fichier est affichée à l'utilisateur sous forme de carte, qui contient une vignette du fichier (qui a été créée lors de la publication).
 
-Voici un exemple de comment ceci se passe: un utilisateur peut chercher "géométrie vectorielle", et il aura comme résultats plusieurs fichier qui ceci comme sujet. Cependant, notre cher utilisateur est un étudiant de 2e année, et la géométrie vectorielle est aussi abordée en 3e année[^geo-vec]. Comment fait-il pour ne pas tomber sur des fichiers qui, a priori, ne lui sont pas intéressant ? C'est pour cette raison qu'il y a des filtres, comme l'école, le degré et le type de fichier, qui sont mises en place et qu'on peut choisir afin de raffiner les résultats et trouver ce qui nous convient.
+Voici un exemple de comment ceci peut se passer: un utilisateur peut chercher "géométrie vectorielle", et il aura comme résultats plusieurs fichier qui ceci comme sujet. Cependant, notre cher utilisateur est un étudiant de 2e année, et la géométrie vectorielle est aussi abordée en 3e année[^geo-vec]. Comment fait-il pour ne pas tomber sur des fichiers qui, a priori, ne lui sont pas intéressant ? C'est pour cette raison qu'il y a des filtres, comme l'école, le degré et le type de fichier, qui sont mises en place et qu'on peut choisir afin de raffiner les résultats et trouver ce qui nous convient. htmx est aussi utilisé ici de la même manière qu'avant: à chaque ajout ou enlèvement de filtres, htmx envoie la requête et remplace les résultats au lieu de recharger la page.
 
 [^geo-vec]: C'est le cas de Sismondi de toute manière.
 
 ### Affichage et téléchargement des fichiers
-Un utilisateur peut voir plus d'informations sur un fichier ainsi que son contenu en cliquant sur la carte qui le représente. Pour afficher le contenu d'un fichier, le lecteur PDF par défaut du navigateur est utilisé.
+Un utilisateur peut voir plus d'informations sur un fichier ainsi que son contenu en cliquant sur la carte qui le représente. Pour afficher le contenu d'un fichier, le lecteur PDF par défaut du navigateur est utilisé. Dans ce lecteur, il y l'option de télécharger le fichier.
+
+## La suite
+Maintenant que le site web fonctionne de manière basique et est en ligne, il reste encore plusieurs choses dont j'ai envie de faire et d'implementer. Voici une liste non exhaustive:
+- Travailler sur le design du site
+- Changement de mot de passe
+- Repenser le système de recherche actuelle
+- Faire tester le site web par d'autres élèves
+- etc.
+
+J'esssaie toujours de réfléchir à des differentes manière pour améliorer le site web
