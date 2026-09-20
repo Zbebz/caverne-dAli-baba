@@ -23,6 +23,8 @@ def index(request):
     return render(request, "caverne/index.html")
 
 
+# Search
+
 @login_required
 @verified_required
 def search_autocomplete(request):
@@ -73,6 +75,8 @@ class FichierDetailView(LoginRequiredMixin, DetailView):
     template_name = "caverne/fichier_detail.html"
 
 
+# Upload
+
 @login_required
 @verified_required
 def upload(request):
@@ -100,6 +104,8 @@ def upload(request):
         form = FichierForm()
     return render(request, "caverne/upload.html", {"form": form})
 
+
+# Auth
 
 @unauth_required
 def send_verification(request, user):
@@ -189,4 +195,3 @@ def activate(request, uidb64, token):
 def logout_view(request):
     logout(request)
     return redirect(reverse("index"))
-
