@@ -26,11 +26,14 @@ ___
       - [Dans les coulisses](#dans-les-coulisses-1)
     - [Connexion et session](#connexion-et-session)
   - [Accès et téléchargement des fichiers](#accès-et-téléchargement-des-fichiers)
-    - [Recherche d'un fichier](#recherche-dun-fichier)
-  - [*Auto-suggestion* (suggestion semi-automatique)](#auto-suggestion-suggestion-semi-automatique)
+    - [Point de vu utilisateur](#point-de-vu-utilisateur)
+    - [Recherche et *Auto-suggestion* (suggestion semi-automatique)](#recherche-et-auto-suggestion-suggestion-semi-automatique)
     - [Filtrage et affichage des résultats](#filtrage-et-affichage-des-résultats)
     - [Affichage et téléchargement des fichiers](#affichage-et-téléchargement-des-fichiers)
+- [Problèmes rencontrés](#problèmes-rencontrés)
 - [La suite](#la-suite)
+- [Conclusion](#conclusion)
+- [Bibliography](#bibliography)
 
 ---
 
@@ -160,6 +163,8 @@ FICHIER {
 <br/>
 
 **On** peut voir dans ce diagramme[^diagram] toutes les relations entre modèles dans la BD. Quand un *user* publie des fichiers, en mentionnant l'enseignant concerné, plusieurs relations sont établies dans la BD. La relation entre `User` et `Fichier` et celle entre `Enseignant` et `Fichier` s'appellent des relations *one-to-many* (un-à-plusieurs) ; un utilisateur peut avoir plusieurs fichiers, mais un fichier n'appartient qu'à un utilisateur. On associe à chaque fichier un ou plusieurs *tags* (mots clés), qui aident plus tard à la recherche de ces documents. Cette relation s'appelle *Many-to-many* ; un *tag* peut être associé à plusieurs fichiers et un fichier peut avoir plusieurs *tags*. Il est important de savoir que pour avoir une relation *many-to-many* (plusieurs-à-plusieurs), il y a besoin d'une table de plus qui n'a pas de modèle associé, elle sert juste de pont entre les deux. Cette table est créée par défaut par l'*ORM* de Django, mais on peut aussi créer la sienne.
+
+Au départ, `tags` était une chaîne de caractère et non un objet dans un autre modèle. J'ai essayé d'utiliser le type *array* (liste ou tableau) de PostgreSQL, mais je n'ai pas pu m'en servir pour la recherche plus tard. La solution était mettre les mots clés dans une table à part.
 
 [^diagram]: Le markdown écrit pour concevoir ce diagramme a été créé le 13 septembre 2026 à l'aide de ChatGPT. Le fichier contenant les modèles lui a été donné afin qu'il me donne le markdown nécessaire. J'ai ensuite modifié selon mes besoins le diagramme.
 
@@ -313,48 +318,77 @@ En cas de non verification du compte, l'utilisateur voit le message dans la figu
 
 
 ## Accès et téléchargement des fichiers
-Suite à la publication des fichiers, il est important que l'utilisateur puisse y accéder et les télécharger ; c'est l'objectif de l'application. Cependant, avec l'augmentation du nombre de fichiers (ce qui, je l’espère, va arriver) sur l'application, il devient presque impossible de trouver ce que l'on veut. Afin de résoudre ce problème, il faut mettre un système de recherche efficace qui permettra à l'utilisateur de trouver ce dont il a besoin sans problème. C'est ici qu'on se sert de l'organisation des données dans la BD (cf. [Publication des fichiers](#publication-des-fichiers)).
 
+Finalement, la dernière fonctionnalité que j'ai implémenté est le système de recherche des fichiers. Suite à leur publication, il est important que l'utilisateur puisse y accéder et les télécharger ; c'est l'objectif de l'application. Cependant, avec l'augmentation du nombre de fichiers (ce qui, j'espère, va arriver) sur l'application, il devient presque impossible de trouver ce que l'on veut. Afin de résoudre ce problème, il faut mettre un système de recherche efficace qui permettra à l'utilisateur de trouver ce dont il a besoin sans problème. C'est ici qu'on se sert de l'organisation des données dans la BD (cf. [Publication des fichiers](#publication-des-fichiers)).
 
-### Recherche d'un fichier
-```mermaid
----
-title: "Figure X: Processus de recherche d'un fichier"
----
-flowchart LR
-id1("`L'utilisateur tape un mot clé dans le champ de recherche`")-->id2[Choix entre les mots clés proposés]-->id3[("`Recherche dans la BD de tous les fichiers qui contiennent ce mot clé`")]-->id4["`Affichage des résultats`" ]-->id5["`Ouverture d'un fichier`" ]
-id4-->id6["`Filtrage avec plusieurs critères`" ]-->id5
-```
-<br/>
+### Point de vu utilisateur
 
-Quand l'utilisateur ouvre le site, en s'étant déjà connecté, il trouve directement la barre de recherche devant lui, ce qui lui facilite la tâche, car il n'a pas à la chercher ailleurs. Pour chercher ce dont il a besoin, l'utilisateur écrit des mots clés, les mêmes qui ont été inscrits lors de la publication.[^search]
+<!-- IMAGES
+Fichiers: se_1.png, se_2.png, se_3.png, se_4.png, se_5.png
+Disposition: processus en 5 étapes, grille compacte adaptée à la page
+Ordre: de gauche à droite, puis de haut en bas.
+Légende générale: Figure X: Étapes de recherche et d'accès à un fichier.
+Sous-légendes:
+1. Page d'accueil et barre de recherche.
+2. Affichage d'une suggestion lors de la saisie.
+3. Affichage des fichiers correspondant à la recherche.
+4. Filtrage selon le besoin.
+5. Affichage d'un fichier et possibilité de le télécharger.
+-->
 
-[^search]: Cette section est écrite le 17 septembre 2026. Le système de recherche actuel est susceptible de changement. Les raisons seront écrites suite au changement.
+Quand l'utilisateur ouvre le site en s'étant déjà connecté, il trouve directement la barre de recherche devant lui, ce qui lui facilite la tâche, car il n'a pas à la chercher ailleurs. Pour chercher ce dont il a besoin, l'utilisateur écrit des mots clés, les mêmes qui ont été inscrits lors de la publication.
 
-## *Auto-suggestion* (suggestion semi-automatique)
-L'*auto-suggestion* est une fonctionnalité qui "prédit" et montre à l'utilisateur des fins possibles à ce qu'il est en train d'écrire lors de sa recherche. Elle lui permet de gagner en rapidité et rend sa requête plus précise. Dans l'application, cette fonctionnalité est possible grâce à PostgreSQL. Dans PostgreSQL, il est possible de faire une recherche par *Trigram similarity*[^trigram] à l'aide du module `pg_trgm`, ce qui rend la tâche très fluide. Étant donné que la langue française fait usage des accents, il est important que les résultats ne dépendent pas de leur présence, car les accents ne sont pas toujours mis lors de la recherche. Pour ce faire, il existe un autre module `unaccent` dont la seule fonction est d'enlever les accents. Ces 2 modules sont propres à PostgreSQL.
+J'ai choisi un affichage des fichiers sous forme de cartes car il me permet de présenter quelques informations essentielles : titre, école, matière, degré et une vignette du fichier (qui a été créée lors de la publication), de manière concise et propre. Il permet à l'utilisateur comparer les fichiers rapidement pour en trouver un qui est satisfaisant, comme s'il faisait du shopping sur une boutique en ligne.
 
-[^trigram]: "A trigram is a group of three consecutive characters taken from a string. We can measure the similarity of two strings by counting the number of trigrams they share. This simple idea turns out to be very effective for measuring the similarity of words in many natural languages." [POSTGRESQL. pg_trgm — support for similarity of text using trigram matching. PostgreSQL (en ligne). Disponible à l'adresse : [https://www.postgresql.org/docs/current/pgtrgm.html](https://www.postgresql.org/docs/current/pgtrgm.html)]
+<!-- IMAGES
+Fichiers: se_no1.png, se_no2.png
+Disposition: 2 images côte à côte.
+Légende générale: Figure X: Une recherche qui ne donne aucun résultat.
+Sous-légendes:
+1. Recherche d'un terme ne correspondant à aucune ressource.
+2. Affichage du message indiquant qu'aucun résultat n'a été trouvé.
+-->
+Quand un utilisateur tape un mot clé qui n'existe pas dans la BD, il ne voit aucune suggestion lors de la recherche, ce qui devrait sous-entendre qu'il n'existe pas de fichiers remplissant ses besoins. S'il décide tout de même de chercher, il voit une message lui disant ainsi.
 
-Bien souvent, l'utilisateur peut changer le contenu de la barre de recherche. Dans ces situations, il serait quand même assez préférable que les suggestions changent aussi, pour donner une sensation de dynamisme à l'utilisateur, et quand on parle de dynamisme, JavaScript apparaît. Or, je n'aime pas JavaScript, car je ne suis pas à l'aise avec lui et je trouve sa syntaxe vraiment immonde. C'est ici qu'apparaît htmx. htmx (en minuscules) est une librairie qui me permet de déclencher des requêtes `HTTP` à partir d'attributs HTML, sans avoir recours à JavaScript. Dans le cas de cette application, htmx envoie une requête à Django avec le contenu de la barre de recherche, Django fait sa magie[^magie] et envoie un fragment de HTML avec les résultats (qui sont les suggestions), et htmx le remplace directement dans le *DOM*[^dom] au lieu de recharger la page, le tout à l'aide d'attributs HTML. Sans htmx, il aurait fallu coder la détection de la modification de la barre de recherche, l'envoi de la requête, la récupération de la réponse et la modification du *DOM* pour afficher les nouveaux résultats.
+### Recherche et *Auto-suggestion* (suggestion semi-automatique)
+
+L'*auto-suggestion* est une fonctionnalité qui "prédit" et montre à l'utilisateur des fins possibles à ce qu'il est en train d'écrire lors de sa recherche. J'ai décidé de l'implementer car elle lui permet de gagner en rapidité et rend sa requête plus précise. L'implementation a commencé par le changement de BD de SQLite à PostgreSQL. Dans PostgreSQL, il est possible de faire une recherche par *Trigram similarity*[^trigram] à l'aide du module `pg_trgm`, ce qui rend la tâche très fluide. Étant donné que la langue française fait usage des accents, il est important que les résultats ne dépendent pas de leur présence, car les accents ne sont pas toujours mis lors de la recherche. Pour ce faire, il existe un autre module `unaccent` dont la seule fonction est d'enlever les accents. Ces 2 modules sont propres à PostgreSQL.
+
+<!-- IMAGE
+Fichier: se_prob.png
+Légende: Figure X: Absence de suggestion pour "naths".
+Disposition: à droite, inclus avec le reste du texte
+-->
+Après quelques tests, j'ai aperçu que la méthode *Trigram similarity* ne donne pas toujours des résultats. Dans la figure X, on a tapé "naths" au lieu de "maths" et il n'y a pas de mots clés suggérés, malgré le fait qu'il s'agit s'une substitution de deux lettres à côté l'un de l'autre sur un clavier QWERTZ suisse. J'ai trouvé que c'est un problème de seuil de similarité. La fonction dans le module PostgreSQL ne rends que les mots qui ont un score de similarité plus grand qu'un certain seuil prédéfini. Le problème survient principalement avec les mots courts car il y a moins de trigrammes. Ma solution est de baisser ce seuil pour que la recherche soit moins restrictive.
+
+[^trigram]: "Un trigramme est un groupe de trois caractères consécutifs extraits d’une chaîne de caractères. Il est possible de mesurer la similarité entre deux chaînes en comptant le nombre de trigrammes qu’elles ont en commun. Cette idée simple s’avère très efficace pour mesurer la similarité entre des mots dans de nombreuses langues naturelles." [POSTGRESQL. pg_trgm — support for similarity of text using trigram matching. PostgreSQL (en ligne). Disponible à l'adresse : [https://www.postgresql.org/docs/current/pgtrgm.html](https://www.postgresql.org/docs/current/pgtrgm.html). Traduit d'anglais en français avec Google Traduction].
+
+Bien souvent, l'utilisateur peut changer le contenu de la barre de recherche. Quand l'utilisateur tape dans la barre de recherche ou change son contenu, il est assez préférable que les suggestions apparaissent ou changent sans rechargement de page, pour lui donner une sensation de dynamisme. C'est ici qu'intervient htmx (cf. [htmx et JavaScript](#htmx-et-javascript)). Dans le cas de cette application, htmx envoie une requête à Django avec le contenu de la barre de recherche, Django fait sa magie[^magie] et envoie un fragment de HTML avec les résultats (qui sont les suggestions), et htmx le remplace directement dans le *DOM*[^dom] au lieu de recharger la page, le tout à l'aide d'attributs HTML. Sans htmx, il aurait fallu coder en JavaScript la détection de la modification de la barre de recherche, l'envoi de la requête, la récupération de la réponse et la modification du *DOM* pour afficher les nouveaux résultats.
 
 [^dom]: "Le Document Object Model (DOM) est une interface de programmation pour les documents web. Il représente la page de façon à ce que des programmes puissent modifier la structure, le style et le contenu du document. Le DOM représente le document sous forme de nœuds et d'objets ; ainsi, les langages de programmation peuvent interagir avec la page." [MOZILLA. Document Object Model (DOM) (en français). MDN Web Docs (en ligne). Disponible à l'adresse : [https://developer.mozilla.org/fr/docs/Web/API/Document_Object_Model](https://developer.mozilla.org/fr/docs/Web/API/Document_Object_Model)]
 
 [^magie]: Ce n'est bien sûr pas de la magie, il s'agit d'une requête faite par Django dans la BD avec *Trigram Similarity*.
 
 ### Filtrage et affichage des résultats
-Quand l'utilisateur choisit enfin le mot clé souhaité, la requête est envoyée à Django qui cherche ensuite dans la BD une liste des fichiers possédant ce mot clé dans leur propriété `tag`. La liste des fichiers est affichée à l'utilisateur sous forme de carte, qui contient une vignette du fichier (qui a été créée lors de la publication).
 
-Voici un exemple de la manière dont ceci peut se passer : un utilisateur peut chercher "géométrie vectorielle", et il aura comme résultats plusieurs fichiers qui ont ceci comme sujet. Cependant, notre cher utilisateur est un étudiant de 2e année, et la géométrie vectorielle est aussi abordée en 3e année[^geo-vec]. Comment fait-il pour ne pas tomber sur des fichiers qui, a priori, ne lui sont pas intéressants ? C'est pour cette raison qu'il y a des filtres, comme l'école, le degré et le type de fichier, qui sont mis en place et qu'on peut choisir afin de raffiner les résultats et de trouver ce qui nous convient. htmx est aussi utilisé ici de la même manière qu'avant : à chaque ajout ou enlèvement de filtres, htmx envoie la requête et remplace les résultats au lieu de recharger la page.
+Voici un exemple de la manière dont ceci peut se passer : un étudiant en 2e année à Rousseau cherche "géométrie vectorielle". Il aura comme résultats plusieurs fichiers qui ont ceci comme sujet. Cependant, il trouve des fichiers sur la géométrie vectorielle en 2e et 3e année[^geo-vec], de plusieurs collèges. Il a besoin de fichiers qui lui sont covenants. Comment fait-il pour ne pas tomber sur des fichiers qui, a priori, ne lui sont pas intéressants ? C'est pour cette raison que j'ai implémenté des filtres, comme l'école, le degré et le type de fichier, qu'on peut choisir afin de raffiner les résultats et de trouver ce qui nous convient. htmx est aussi utilisé ici de la même manière qu'avant : à chaque ajout ou enlèvement de filtres, htmx envoie la requête et remplace les résultats au lieu de recharger la page.
 
 [^geo-vec]: C'est le cas à Sismondi de toute manière.
 
 ### Affichage et téléchargement des fichiers
+
 Un utilisateur peut voir plus d'informations sur un fichier ainsi que son contenu en cliquant sur la carte qui le représente. Pour afficher le contenu d'un fichier, le lecteur PDF par défaut du navigateur est utilisé. Dans ce lecteur, il y a l'option de télécharger le fichier.
 
 ---
 
+# Problèmes rencontrés
+
+
+
+---
+
 # La suite
+
 Maintenant que le site web fonctionne de manière basique et est en ligne, il reste encore plusieurs choses que j'ai envie de faire et d'implémenter. Voici une liste non exhaustive :
 - Travailler sur le design du site
 - Changement de mot de passe
@@ -363,3 +397,13 @@ Maintenant que le site web fonctionne de manière basique et est en ligne, il re
 - etc.
 
 J'essaie toujours de réfléchir à différentes manières d'améliorer le site web.
+
+---
+
+# Conclusion
+
+
+
+---
+
+# Bibliography
