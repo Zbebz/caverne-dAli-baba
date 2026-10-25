@@ -1,11 +1,9 @@
-# La Caverne d'AliBaba  <!-- omit from toc -->
+# La Caverne d'Ali Baba  <!-- omit from toc -->
 **Alieldeen Ibrahim**  
 Groupe 402
 
-Travail de Maturité  
+*COLLÈGE SISMONDI*, Travail de Maturité 2025-2027
 Maître accompagnant : **Mathieu Schiess**
-
-*COLLÈGE SISMONDI*
 
 ___
 
@@ -19,8 +17,8 @@ ___
     - [PostgreSQL](#postgresql)
 - [Réalisation](#réalisation)
   - [Publication des fichiers](#publication-des-fichiers)
-    - [Comment Django interagit-il avec la BD ?](#comment-django-interagit-il-avec-la-bd-)
     - [Organisation des données](#organisation-des-données)
+    - [Point de vue utilisateur](#point-de-vue-utilisateur)
     - [Dans les coulisses](#dans-les-coulisses)
   - [Authentification utilisateur](#authentification-utilisateur)
     - [Inscription au site / Création d'un compte](#inscription-au-site--création-dun-compte)
@@ -55,7 +53,7 @@ Je me suis donc posé la question suivante : N'existe-t-il pas de moyen de parta
 
 # Méthodologie
 
-Je suis un simple collégien de 17-18 ans. J'ai fait de la programmation depuis l'âge de 12 ans ; c'était la pandémie et je devais bien faire quelque chose de ma vie. Cependant, je n'ai jamais créé de projet de ma propre ingénierie. J'étais donc perdu lorsqu'il a fallu commencer le travail. Pour pouvoir trouver une piste vers lequel je vais me diriger, j'ai fait une recherche rapide sur internet sur comment planifier un projet informatique. J'ai trouvé un [post](https://www.reddit.com/r/learnprogramming/comments/mumrgn/how_to_plan_and_build_a_programming_project_a/) sur Reddit donnant des étapes pour ce faire. Je n'ai pas suivi toutes les étapes, mais j'en ai pris l'essence. Dans ce chapitre, je vais expliquer la démarche que j'ai prise afin de concevoir le site web.
+Je suis un simple collégien de 17-18 ans. J'ai fait de la programmation depuis l'âge de 12 ans ; c'était la pandémie et je devais bien faire quelque chose de ma vie. Cependant, je n'ai jamais créé de projet de ma propre ingénierie. J'étais donc perdu lorsqu'il a fallu commencer le travail. Pour pouvoir trouver une piste vers lequel je vais me diriger, j'ai fait une recherche rapide sur internet sur comment planifier un projet informatique. J'ai trouvé un [post](https://www.reddit.com/r/learnprogramming/comments/mumrgn/how_to_plan_and_build_a_programming_project_a/) sur Reddit donnant des étapes pour ce faire. Je n'ai pas suivi toutes les étapes, mais j'en ai pris l'essence. Dans ce chapitre, je explique la démarche que j'ai prise afin de concevoir le site web, ainsi que les choix des outils pris.
 
 ## Définition du projet et ses objectifs
 
@@ -69,7 +67,7 @@ J'ai défini le *MVP* de la manière suivante : un site web sur lequel les utili
 
 ### Django
 
-Pour ce projet, je savais que je vais apprendre beaucoup de programmation. De ce fait, j'ai décidé de me rendre la tâche plus facile en choisissant Python comme langage principale, car c'est celui que je connais le plus. Ce choix a été pas mal controversé par mes amis, en me demandant pourquoi pas utiliser JavaScript. Leur question est tout à fait valide qui me met parfois le doute. JavaScript est un langage très populaire dans le monde du web sur lequel une quantité énorme de *frameworks* est basée (React, Vue, Angular, Svelte, etc.). Ma réponse est que je ne suis pas à l'aise avec JavaScript.
+Pour ce projet, je savais que je allais apprendre beaucoup de programmation. De ce fait, j'ai décidé de me rendre la tâche plus facile en choisissant Python comme langage principale, car c'est celui que je connais le plus. Ce choix a été pas mal controversé par mes amis, en me demandant pourquoi pas utiliser JavaScript. Leur question est tout à fait valide qui me met parfois le doute. JavaScript est un langage très populaire dans le monde du web sur lequel une quantité énorme de *frameworks* est basée (React, Vue, Angular, Svelte, etc.). Ma réponse est que je ne suis pas à l'aise avec JavaScript.
 
 Pour Python, il existe 2 *frameworks* populaires : Django et Flask. Le choix s'est basé sur deux critères : les fonctionnalités proposées nativement et mon degré de familiarité avec celui-ci. Pour ce qui concerne fonctionnalité, Django intègre nativement plus de fonctionnalités que Flask. Avoir ces mêmes fonctionnalités dans Flask necessite l'installation et l'apprentissage des librairies en plus. Pour ce qui concerne mon degré de familiarité, je connaissais ni la syntaxe ni le système de Django, donc il faut regarder des vidéos et lire des articles. J'ai déjà utilisé Flask dans un cours d'informatique. Mon choix final est Django. Au-delà de ses fonctionnalités, j'avais envie d'apprendre Django, donc le choix n'a pas été tout à fait objectif.
 
@@ -93,11 +91,13 @@ Dés le départ, j'ai décidé de prendre PostgreSQL comme BD. À ce moment-là,
 
 # Réalisation
 
-## Publication des fichiers
-La publication des fichiers est la fonctionnalité qui donne à l'utilisateur la possibilité de partager ses documents avec le monde. L'une des difficultés dans l'implémentation de cette fonctionnalité est de savoir et de décider quelles informations un utilisateur doit entrer avec le téléversement du fichier. Ces informations doivent être stockées dans la BD de manière structurée afin de pouvoir s'en servir plus tard dans le *MVP* [Accès et téléchargements des fichiers](#accès-et-téléchargements-des-fichiers).
+Dans ce chapitre, j'explique comment j'ai implémenté le site web. Je présente les principales fonctionnalités : la publication des fichiers, l'authentification des utilisateurs et enfin l'accès aux ressources et leur téléchargement à travers le système de recherche.
 
-### Comment Django interagit-il avec la BD ?
-Django utilise la technique d'*ORM* (*Object-relational mapping*) pour gérer les données. Dans cette technique, on associe les tables d'une BD à des classes, donc chaque colonne de la table est représentée par une propriété de la classe et chaque ligne de la table est représentée par une instance de la classe, d'où "*mapping*" dans *Object-relational mapping*. Cette technique ne fonctionne bien sûr qu'avec les langages de programmation orientée objet, ce qui est le cas de Python. La table d'une BD est appelée un modèle (*model* en anglais) dans le monde de Django. La technique d'*ORM* permet au développeur de pouvoir se concentrer sur seulement un langage lors de la conception de son projet au lieu de devoir s'occuper d'un autre, SQL, lui donnant une vitesse de production. De plus, les *ORMs* (*Object-relational mapper*)[^orm-orm] améliorent la sécurité en réduisant fortement le risque d'attaques du type *SQL injection*[^SQLi], et en évitant de faire un *Bobby Tables*[^bobby-tables]. Cependant, les requêtes générées avec un *ORM* peuvent être moins optimisées que celles en *Raw SQL*.
+## Publication des fichiers
+
+La première fonctionnalité que j'ai implémenté est celle de la publication et partage des fichiers, car selon moi, il s'agit du cœur de l'application. C'est la fonctionnalité qui donne à l'utilisateur la possibilité de partager ses documents avec le monde.
+
+Afin de comprendre certains éléments qui arrivent plus tard dans le rapport, il faut savoir comment Django gère la BD. Django utilise la technique d'*ORM* (*Object-relational mapping*) pour gérer les données. Dans cette technique, on associe les tables d'une BD à des classes, donc chaque colonne de la table est représentée par une propriété de la classe et chaque ligne de la table est représentée par une instance de la classe, d'où "*mapping*" dans *Object-relational mapping*. Cette technique ne fonctionne bien sûr qu'avec les langages de programmation orientée objet, ce qui est le cas de Python. La table d'une BD est appelée un modèle (*model* en anglais) dans le monde de Django. La technique d'*ORM* permet au développeur de pouvoir se concentrer sur seulement un langage lors de la conception de son projet au lieu de devoir s'occuper d'un autre, SQL, lui donnant une vitesse de production. De plus, les *ORMs* (*Object-relational mapper*)[^orm-orm] améliorent la sécurité en réduisant fortement le risque d'attaques du type *SQL injection*[^SQLi], et en évitant de faire un *Bobby Tables*[^bobby-tables]. Cependant, les requêtes générées avec un *ORM* peuvent être moins optimisées que celles en *Raw SQL*.
 
 [^orm-orm]: Il est important de différencier *Object-relational mapping*, c'est-à-dire la technique, et *Object-relational mapper*, c'est-à-dire l'outil qui nous fait utiliser la technique.
 
@@ -105,12 +105,17 @@ Django utilise la technique d'*ORM* (*Object-relational mapping*) pour gérer le
 
 [^bobby-tables]: En 2007, xkcd a publié un comic avec un personnage dont le prénom a effectué une attaque *SQL injection*. [https://xkcd.com/327/](https://xkcd.com/327/)
 
+
 ### Organisation des données
+
+Tout d'abord, j'ai commencé par créer la BD. L'une des difficultés qui se pose lors de l'implémentation de cette fonctionnalité est celle de savoir et de décider quelles informations un utilisateur doit entrer avec le téléversement du fichier. Ces informations doivent être stockées dans la BD de manière structurée afin de pouvoir s'en servir plus tard pour la recherche des fichiers.
+
+
 Voici un diagramme[^diagram] des différents modèles dans l'application et leurs relations :
 
 ```mermaid
 ---
-title: Schéma de la BD
+title: "Figure X: Schéma de la BD"
 config:
   theme: redux-color
   look: neo
@@ -158,24 +163,58 @@ FICHIER {
 
 [^diagram]: Le markdown écrit pour concevoir ce diagramme a été créé à l'aide de ChatGPT le 13 septembre 2026. Le fichier contenant les modèles lui a été donné afin qu'il me donne le markdown nécessaire. J'ai ensuite modifié selon mes besoins le diagramme.
 
-On peut voir dans ce diagramme toutes les relations entre modèles dans la BD. Un *user* publie des fichiers, en mentionnant l'enseignant concerné. La relation entre `User` et `Fichier` et celle entre `Enseignant` et `Fichier` s'appellent des relations *one-to-many* (un-à-plusieurs) ; un utilisateur peut avoir plusieurs fichiers, mais un fichier n'appartient qu'à un utilisateur. On associe à chaque fichier un ou plusieurs *tags* (mots clés), qui aident plus tard à la recherche de ces documents. Cette relation s'appelle *Many-to-many* ; un *tag* peut être associé à plusieurs fichiers et un fichier peut avoir plusieurs *tags*. Il est important de savoir que pour avoir une relation *many-to-many* (plusieurs-à-plusieurs), il y a besoin d'une table de plus qui n'a pas de modèle associé, elle sert juste de pont entre les deux. Cette table est créée par défaut par l'*ORM* de Django, mais on peut aussi créer la sienne.
-Pour les écoles, matières, types de fichier et années, je n'ai pas créé de modèle. J'ai utilisé des *enums*[^enum], car ces valeurs sont toujours constantes, ne changeront jamais, et il n'y en a pas beaucoup. Pour les enseignants, j'ai dû en faire un modèle car je n'ai pas accès à une liste de tous les enseignants de tous les collèges de Genève. À chaque publication d'un fichier, un enseignant ne figurant pas déjà dans la BD est ajouté.
+On peut voir dans ce diagramme toutes les relations entre modèles dans la BD. Quand un *user* publie des fichiers, en mentionnant l'enseignant concerné, plusieurs relations sont établies dans la BD. La relation entre `User` et `Fichier` et celle entre `Enseignant` et `Fichier` s'appellent des relations *one-to-many* (un-à-plusieurs) ; un utilisateur peut avoir plusieurs fichiers, mais un fichier n'appartient qu'à un utilisateur. On associe à chaque fichier un ou plusieurs *tags* (mots clés), qui aident plus tard à la recherche de ces documents. Cette relation s'appelle *Many-to-many* ; un *tag* peut être associé à plusieurs fichiers et un fichier peut avoir plusieurs *tags*. Il est important de savoir que pour avoir une relation *many-to-many* (plusieurs-à-plusieurs), il y a besoin d'une table de plus qui n'a pas de modèle associé, elle sert juste de pont entre les deux. Cette table est créée par défaut par l'*ORM* de Django, mais on peut aussi créer la sienne.
+
+Pour les écoles, matières, types de fichier et années, je n'ai pas créé de modèle. J'ai utilisé des *enums*[^enum], car ces valeurs sont toujours constantes, ne changeront jamais, et il n'y en a pas beaucoup. Pour les enseignants, j'ai prévu d'utiliser ce même outil. Cependant, j'ai dû faire un modèle `Enseignant` car je ne possède pas de liste contenant tous les enseignants de tous les collèges de Genève. À chaque publication d'un fichier, un enseignant ne figurant pas déjà dans la BD est ajouté. Ceci signifie qu'avec un grand nombre d'utilisateurs et de fichiers téléversés sur le site, je peux avoir une telle liste.
 
 [^enum]: "En programmation informatique, un type énuméré (appelé souvent énumération ou juste enum, parfois type énumératif ou liste énumérative) est un type de données qui consiste en un ensemble de valeurs constantes. Ces différentes valeurs représentent différents cas ; on les nomme énumérateurs. Lorsqu'une variable est de type énuméré, elle peut avoir comme valeur n'importe quel cas de ce type énuméré." [WIKIMEDIA. Type énuméré. Wikipédia (en ligne). Disponible à l'adresse : [https://fr.wikipedia.org/wiki/Type_%C3%A9num%C3%A9r%C3%A9](https://fr.wikipedia.org/wiki/Type_%C3%A9num%C3%A9r%C3%A9)]
+
+### Point de vue utilisateur
+
+<!-- FIGURE: PROCESSUS DE PUBLICATION
+Images: pub_1.png, pub_2.png, pub_3.png, pub_4.png, pub_5.png, pub_6.png
+Disposition: grille 2 colonnes × 3 lignes
+Ordre: de gauche à droite, puis de haut en bas
+Légende générale: Figure X: Étapes de publication d'un fichier sur la plateforme.
+Sous-légendes:
+1. Accès à la page de publication
+2. Sélection d'un fichier
+3. Dépôt du fichier PDF
+4. Affichage du formulaire
+5. Saisie des informations
+6. Publication du fichier
+-->
+
+Au début, j'envisageait le formulaire de publication différemment. Je pensais mettre tous ses champs à la suite sans qu'il y aie de séparation ou de transition. Après avoir montré à certains de mes amis et avoir regardé des inspirations en ligne, j'ai aperçu que cette mise en page est assez lourde. Je l'ai ensuite refaite telle qu'elle est dans la figure X. J'ai implémenté la méthode glisser-déposer (*drag and drop*) qui est fréquemment utilisée dans les sites où il faut un dépôt de fichier. Elle permet une certaine fluidité au site. L'utilisateur peut tout de même charger un fichier en cliquant dans le carré. Ensuite, l'utilisateur remplie le reste du formulaire et le soumet. À la fin, il retourne à la page d'accueil.
+
+<!-- IMAGE
+Fichier: pub_error.png
+Légende: Figure X: Exemple de validation du formulaire lorsqu’un champ obligatoire n’est pas renseigné
+Disposition: à droite, inclus avec le reste du texte
+-->
+Comme on peut dans la figure X, un message apparaît rappelant l'utilisateur de remplir le champ en cas d'oubli.
+
+<!-- IMAGE
+Fichier: pub_supposed.png
+Légende: Figure X: Maquette conçue pour l’interface de publication avant son implémentation
+Disposition: à droite, inclus avec le reste du texte
+-->
+L'espace vide à droite qu'on voit dans la figure X-2 est censé être remplacer par une carte, qu'on peut voir dans la figure X, montrant à quoi ressemblera le fichier dans les résultats d'un recherche. Le carré vide dans la carte sera remplacé par une vignette du fichier. Ceci est en cours de développement.
 
 ### Dans les coulisses
 ```mermaid
 ---
-title: Processus de publication d'un fichier
+title: "Figure X: Processus de publication d'un fichier"
 ---
 flowchart LR
-id1("`L'utilisateur appuie sur **Partager**`")-->id2[Validation des données]-->id3[("`Création d'un objet *Fichier* dans la BD`")]-->id4@{ shape: cloud, label: "Téléversement du fichier dans le cloud" }-->id5["`Création du lien avec *Enseignant* et *Tags*`" ]-->id6@{ shape: cloud, label: "Création et téléversement d'une vignette sur le cloud" }-->id7[("`Sauvegarde de l'objet dans la BD`")]
+id1("`L'utilisateur remplit le formulaire et appuie sur **Partager**`")-->id2{Validation des données}-->|Validées|id3["`Création d'un objet *Fichier* dans la BD`"]-->id4["Téléversement du fichier dans le cloud"]-->id5["`Création du lien avec *Enseignant* et *Tags*`" ]-->id6["Création et téléversement d'une vignette sur le cloud"]-->id7[("`Sauvegarde de l'objet dans la BD`")]
+id2-->|Non validées|id8[Rechargement de page avec un message d'erreur]-->id1
 ```
 <br/>
 
 Le processus de publication d'un fichier est très simple grâce à Django. Quand un utilisateur partage un fichier, la validation des données, c'est-à-dire la vérification qu'elles sont bien remplies et du bon type, est effectuée par Django qui regarde les critères qui ont été déclarés lors de la création du modèle. De plus, la création d'un objet `Fichier` ainsi que son lien avec la BD sont assurés par l'*ORM* de Django.
 
-Tous les fichiers (et vignettes) sont stockés sur un bucket AWS S3. Stocker les documents sur un tel service permet une séparation de tâches où le serveur s'occupe seulement du programme et de la conservation des métadonnées des fichiers dans la BD et le service s'occupe de la conservation des fichiers. Cette organisation allège le travail du serveur, car leur téléchargement ne nécessite pas de transit à travers le serveur. Plus encore, en cas d'augmentation du nombre de serveurs hébergeant l'application, ils pourront tous communiquer avec le service au lieu de chercher dans chacun où se trouve un certain fichier.
+Tous les fichiers et leurs vignettes sont stockés sur un bucket AWS S3. Le stockage des documents sur un tel service permet une séparation de tâches où le serveur s'occupe seulement du programme et de la conservation des métadonnées des fichiers dans la BD et le service s'occupe de la conservation des fichiers. Cette organisation allège le travail du serveur, car leur téléchargement ne nécessite pas de transit à travers le serveur. Plus encore, en cas d'augmentation du nombre de serveurs hébergeant l'application, ils pourront tous communiquer avec le service au lieu de chercher dans chacun où se trouve un certain fichier.
 
 ## Authentification utilisateur
 L'authentification utilisateur est très importante pour l'application car elle permet de vérifier si l'utilisateur est bien un étudiant du Collège de Genève et de lui autoriser l'accès. Ainsi, l'utilisateur doit pouvoir créer son propre compte, vérifier son adresse mail, se connecter afin de s'authentifier et pouvoir accéder à la caverne.
@@ -185,7 +224,7 @@ Un des avantages de Django dont j'ai parlé dans la section [Le *Tech Stack*](#l
 ### Inscription au site / Création d'un compte
 ```mermaid
 ---
-title: Processus de création d'un compte
+title: "Figure X: Processus de création d'un compte"
 ---
 flowchart LR
 id1("`L'utilisateur remplit le formulaire d'inscription et le soumet`")-->id2[Validation des données]-->id3[("`Création et sauvegarde d'un objet *User* dans la BD`")]-->id4["`Envoi du lien de vérification par mail`" ]-->id5["`Vérification`" ]-->id6["`Accès au site`" ]
@@ -217,7 +256,7 @@ Suite à la publication des fichiers, il est important que l'utilisateur puisse 
 ### Recherche d'un fichier
 ```mermaid
 ---
-title: Processus de recherche d'un fichier
+title: "Figure X: Processus de recherche d'un fichier"
 ---
 flowchart LR
 id1("`L'utilisateur tape un mot clé dans le champ de recherche`")-->id2[Choix entre les mots clés proposés]-->id3[("`Recherche dans la BD de tous les fichiers qui contiennent ce mot clé`")]-->id4["`Affichage des résultats`" ]-->id5["`Ouverture d'un fichier`" ]
