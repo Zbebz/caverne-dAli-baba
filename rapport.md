@@ -22,7 +22,8 @@ ___
     - [Dans les coulisses](#dans-les-coulisses)
   - [Authentification utilisateur](#authentification-utilisateur)
     - [Inscription au site / Création d'un compte](#inscription-au-site--création-dun-compte)
-    - [Vérification par mail](#vérification-par-mail)
+      - [Point de vue utilisateur](#point-de-vue-utilisateur-1)
+      - [Dans les coulisses](#dans-les-coulisses-1)
     - [Connexion et session](#connexion-et-session)
   - [Accès et téléchargement des fichiers](#accès-et-téléchargement-des-fichiers)
     - [Recherche d'un fichier](#recherche-dun-fichier)
@@ -110,9 +111,6 @@ Afin de comprendre certains éléments qui arrivent plus tard dans le rapport, i
 
 Tout d'abord, j'ai commencé par créer la BD. L'une des difficultés qui se pose lors de l'implémentation de cette fonctionnalité est celle de savoir et de décider quelles informations un utilisateur doit entrer avec le téléversement du fichier. Ces informations doivent être stockées dans la BD de manière structurée afin de pouvoir s'en servir plus tard pour la recherche des fichiers.
 
-
-Voici un diagramme[^diagram] des différents modèles dans l'application et leurs relations :
-
 ```mermaid
 ---
 title: "Figure X: Schéma de la BD"
@@ -161,9 +159,9 @@ FICHIER {
 ```
 <br/>
 
-[^diagram]: Le markdown écrit pour concevoir ce diagramme a été créé à l'aide de ChatGPT le 13 septembre 2026. Le fichier contenant les modèles lui a été donné afin qu'il me donne le markdown nécessaire. J'ai ensuite modifié selon mes besoins le diagramme.
+**On** peut voir dans ce diagramme[^diagram] toutes les relations entre modèles dans la BD. Quand un *user* publie des fichiers, en mentionnant l'enseignant concerné, plusieurs relations sont établies dans la BD. La relation entre `User` et `Fichier` et celle entre `Enseignant` et `Fichier` s'appellent des relations *one-to-many* (un-à-plusieurs) ; un utilisateur peut avoir plusieurs fichiers, mais un fichier n'appartient qu'à un utilisateur. On associe à chaque fichier un ou plusieurs *tags* (mots clés), qui aident plus tard à la recherche de ces documents. Cette relation s'appelle *Many-to-many* ; un *tag* peut être associé à plusieurs fichiers et un fichier peut avoir plusieurs *tags*. Il est important de savoir que pour avoir une relation *many-to-many* (plusieurs-à-plusieurs), il y a besoin d'une table de plus qui n'a pas de modèle associé, elle sert juste de pont entre les deux. Cette table est créée par défaut par l'*ORM* de Django, mais on peut aussi créer la sienne.
 
-On peut voir dans ce diagramme toutes les relations entre modèles dans la BD. Quand un *user* publie des fichiers, en mentionnant l'enseignant concerné, plusieurs relations sont établies dans la BD. La relation entre `User` et `Fichier` et celle entre `Enseignant` et `Fichier` s'appellent des relations *one-to-many* (un-à-plusieurs) ; un utilisateur peut avoir plusieurs fichiers, mais un fichier n'appartient qu'à un utilisateur. On associe à chaque fichier un ou plusieurs *tags* (mots clés), qui aident plus tard à la recherche de ces documents. Cette relation s'appelle *Many-to-many* ; un *tag* peut être associé à plusieurs fichiers et un fichier peut avoir plusieurs *tags*. Il est important de savoir que pour avoir une relation *many-to-many* (plusieurs-à-plusieurs), il y a besoin d'une table de plus qui n'a pas de modèle associé, elle sert juste de pont entre les deux. Cette table est créée par défaut par l'*ORM* de Django, mais on peut aussi créer la sienne.
+[^diagram]: Le markdown écrit pour concevoir ce diagramme a été créé le 13 septembre 2026 à l'aide de ChatGPT. Le fichier contenant les modèles lui a été donné afin qu'il me donne le markdown nécessaire. J'ai ensuite modifié selon mes besoins le diagramme.
 
 Pour les écoles, matières, types de fichier et années, je n'ai pas créé de modèle. J'ai utilisé des *enums*[^enum], car ces valeurs sont toujours constantes, ne changeront jamais, et il n'y en a pas beaucoup. Pour les enseignants, j'ai prévu d'utiliser ce même outil. Cependant, j'ai dû faire un modèle `Enseignant` car je ne possède pas de liste contenant tous les enseignants de tous les collèges de Genève. À chaque publication d'un fichier, un enseignant ne figurant pas déjà dans la BD est ajouté. Ceci signifie qu'avec un grand nombre d'utilisateurs et de fichiers téléversés sur le site, je peux avoir une telle liste.
 
@@ -171,11 +169,11 @@ Pour les écoles, matières, types de fichier et années, je n'ai pas créé de 
 
 ### Point de vue utilisateur
 
-<!-- FIGURE: PROCESSUS DE PUBLICATION
-Images: pub_1.png, pub_2.png, pub_3.png, pub_4.png, pub_5.png, pub_6.png
+<!-- IMAGES
+Fichiers: pub_1.png, pub_2.png, pub_3.png, pub_4.png, pub_5.png, pub_6.png
 Disposition: grille 2 colonnes × 3 lignes
 Ordre: de gauche à droite, puis de haut en bas
-Légende générale: Figure X: Étapes de publication d'un fichier sur la plateforme.
+Légende générale: Figure X: Étapes de publication d'un fichier sur le site.
 Sous-légendes:
 1. Accès à la page de publication
 2. Sélection d'un fichier
@@ -207,8 +205,8 @@ L'espace vide à droite qu'on voit dans la figure X-2 est censé être remplacer
 title: "Figure X: Processus de publication d'un fichier"
 ---
 flowchart LR
-id1("`L'utilisateur remplit le formulaire et appuie sur **Partager**`")-->id2{Validation des données}-->|Validées|id3["`Création d'un objet *Fichier* dans la BD`"]-->id4["Téléversement du fichier dans le cloud"]-->id5["`Création du lien avec *Enseignant* et *Tags*`" ]-->id6["Création et téléversement d'une vignette sur le cloud"]-->id7[("`Sauvegarde de l'objet dans la BD`")]
-id2-->|Non validées|id8[Rechargement de page avec un message d'erreur]-->id1
+id1("`L'utilisateur remplit le formulaire et appuie sur **Partager**`")-->id2{Validation des données}-->|Validées|id3["`Création d'un objet *Fichier* dans la BD`"]-->id4[Téléversement du fichier dans le cloud]-->id5["`Création du lien avec *Enseignant* et *Tags*`"]-->id6[Création et téléversement d'une vignette sur le cloud]-->id7[(Sauvegarde de l'objet dans la BD)]
+id2-->|Non validées|id8[Rechargement de page avec un message d'erreur adéquat]-->id1
 ```
 <br/>
 
@@ -217,36 +215,101 @@ Le processus de publication d'un fichier est très simple grâce à Django. Quan
 Tous les fichiers et leurs vignettes sont stockés sur un bucket AWS S3. Le stockage des documents sur un tel service permet une séparation de tâches où le serveur s'occupe seulement du programme et de la conservation des métadonnées des fichiers dans la BD et le service s'occupe de la conservation des fichiers. Cette organisation allège le travail du serveur, car leur téléchargement ne nécessite pas de transit à travers le serveur. Plus encore, en cas d'augmentation du nombre de serveurs hébergeant l'application, ils pourront tous communiquer avec le service au lieu de chercher dans chacun où se trouve un certain fichier.
 
 ## Authentification utilisateur
-L'authentification utilisateur est très importante pour l'application car elle permet de vérifier si l'utilisateur est bien un étudiant du Collège de Genève et de lui autoriser l'accès. Ainsi, l'utilisateur doit pouvoir créer son propre compte, vérifier son adresse mail, se connecter afin de s'authentifier et pouvoir accéder à la caverne.
 
-Un des avantages de Django dont j'ai parlé dans la section [Le *Tech Stack*](#le-tech-stack) est son système d'authentification. Django possède déjà un modèle `AbstractUser` qui contient toutes les propriétés nécessaires pour sauvegarder un utilisateur, telles que l'identifiant et le mot de passe, et auquel j'ai ajouté une propriété `ecole`.
+La deuxième fonctionnalité que j'ai décidé d'implementer est l’authentification utilisateur. L'authentification utilisateur est très importante pour l'application car elle permet de vérifier si l'utilisateur est bien un étudiant du Collège de Genève et de lui autoriser l'accès. Ainsi, l'utilisateur doit pouvoir créer son propre compte, vérifier son adresse mail, se connecter afin de s'authentifier et pouvoir accéder à la caverne.
+
+Un des avantages de Django est son système d'authentification. Django possède déjà un modèle `AbstractUser` qui contient toutes les propriétés nécessaires pour sauvegarder un utilisateur, telles que l'identifiant et le mot de passe, et auquel j'ai ajouté une propriété `ecole` qui contiendra le collège auquel appartient l'utilisateur.
 
 ### Inscription au site / Création d'un compte
-```mermaid
----
-title: "Figure X: Processus de création d'un compte"
----
-flowchart LR
-id1("`L'utilisateur remplit le formulaire d'inscription et le soumet`")-->id2[Validation des données]-->id3[("`Création et sauvegarde d'un objet *User* dans la BD`")]-->id4["`Envoi du lien de vérification par mail`" ]-->id5["`Vérification`" ]-->id6["`Accès au site`" ]
-```
-<br/>
 
-De même que pour le processus de publication d'un fichier, le processus de création d'un compte bénéficie du système de formulaire de Django. Ainsi, la validation des données, qui consiste à vérifier l'unicité de l'identifiant et la sécurité du mot de passe, est effectuée par Django ainsi que la création du compte et sa sauvegarde dans la BD. Il est important de savoir que Django ne stocke pas les mots de passe en tant que tels, mais les stocke hachés, pour garantir leur sécurité au sein de la BD.
+#### Point de vue utilisateur
 
-### Vérification par mail
-La vérification sert principalement à s'assurer que la personne qui est en train de créer le compte est bien la personne qu'elle prétend être et à éviter toute tentative de fraude ou d'usurpation d'identité. De plus, dans le cadre de l'application, elle sert à vérifier que la personne possède bien un compte eduge, car le programme envoie le mail de vérification à `<identifiant eduge entré>@eduge.ch`. Il existe donc 3 possibilités :
+<!-- IMAGES
+Fichiers: in_1.png, in_2.png, in_3.png, in_4.png, in_5.png, in_6.png, in_7.png
+Disposition: processus en 7 étapes, grille compacte adaptée à la page
+Ordre: de gauche à droite, puis de haut en bas
+Légende générale: Figure X: Étapes de création d'un compte sur le site.
+Sous-légendes:
+1. Accès à la page d'inscription depuis la page de connexion.
+2. Formulaire de création d'un compte.
+3. Saisie des informations et envoi du formulaire.
+4. Demande de vérification de l'adresse eduge.
+5. Réception du courriel contenant le lien de vérification.
+6. Confirmation de la vérification du compte.
+7. Accès au site après vérification.
+-->
+Les étapes de création d'un compte sont simples et directes. Étant donné que c'est une fonctionnalité présente dans quasiment toutes les applications et elle est toujours implémentée de la même manière, il n'y a pas eu beaucoup de réflexion à faire concernant le fonctionnement général de l'inscription. J'ai regardé comment ces applications la gère et je l'ai recrée dans le site, car un changement peut confondre les utilisateurs.
+
+<!-- IMAGES
+Fichiers: in_id.png, in_pass.png
+Disposition: 2 images côte à côte.
+Légende générale: Figure X: Exemples de validation des données lors de la création d'un compte.
+Sous-légendes:
+1. Refus d'un identifiant eduge déjà utilisé.
+2. Refus d'un mot de passe ne respectant pas les critères de sécurité.
+-->
+La figure X.1 nous montre le message d'erreur qui apparaît lorsqu'on essaie de s'inscrire avec un identifiant déjà utilisé. Ceci évite des potentielles conflits dans la BD.
+
+La figure X.2 nous montre le message d'erreur qui apparaît lorsqu'un utilisateur utilise un mot de passe court. Avoir une longueur minimale protège les utilisateurs contre les attaques par force brute.
+
+La vérification par mail est une méthode de confirmation d'identité qui sert principalement à s'assurer que la personne qui est en train de créer le compte est bien la personne qu'elle prétend être et à éviter toute tentative de fraude ou d'usurpation d'identité. Toutefois, j'ai décidé de l'implementer car elle sert à vérifier que la personne possède bien un compte eduge, puisque le programme envoie le mail de vérification à `<identifiant eduge saisi>@eduge.ch`. Il existe donc 3 possibilités suite à la soumission de formulaire:
 1. la personne s'est inscrite avec un identifiant eduge invalide. Elle ne recevra jamais le mail et ainsi n'aura jamais accès au site.
 2. la personne s'est inscrite avec un identifiant eduge valide mais qui ne lui appartient pas. Elle n'a normalement[^verify-2] pas accès au mail, donc elle n'aura pas accès au site.
 3. la personne s'est inscrite avec un identifiant eduge valide lui appartenant. Elle pourra donc cliquer sur le lien de vérification envoyé et ensuite accéder au site.
 
 [^verify-2]: Je dis "normalement" car elle peut y avoir accès à cause d'une cyberattaque, mais ceci ne nous concerne pas.
 
-Le lien de vérification est valide pendant 24 h avec la possibilité d'en générer un autre afin de quand même donner une chance en cas d'oubli. Ce qui assure l'unicité du lien, c'est que son *token* dépend d'une certaine information de l'utilisateur, du temps et de la clé secrète de l'application[^secret-key], etc.
+<!-- IMAGE
+Fichier: ver_expired.png
+Légende: Figure X: Message affiché lorsqu'un utilisateur tente d'utiliser un lien de vérification expiré.
+Disposition: à droite, inclus avec le reste du texte
+-->
+Le lien de vérification est valide pendant 24 h avec la possibilité d'en générer un autre afin de donner quand même une chance en cas d'oubli (Figure X). Ce qui assure l'unicité du lien, c'est que son *token* dépend d'une certaine information de l'utilisateur, du temps et de la clé secrète de l'application[^secret-key].
 
 [^secret-key]: "La clé secrète d’une installation Django. Elle est utilisée dans le contexte de la signature cryptographique, et doit être définie à une valeur unique et non prédictible." [DJANGO SOFTWARE FOUNDATION, 2026. Réglages. Django (Version 6.1) (en ligne). Disponible à l'adresse : [https://docs.djangoproject.com/fr/6.1/ref/settings/#std-setting-SECRET_KEY](https://docs.djangoproject.com/fr/6.1/ref/settings/#std-setting-SECRET_KEY)]
 
+#### Dans les coulisses
+
+```mermaid
+---
+title: "Figure X: Processus de création d'un compte"
+---
+flowchart LR
+id1(L'utilisateur remplit le formulaire d'inscription et le soumet)-->id2{Validation des données}-->|Validées|id3["`Création et sauvegarde d'un objet *User* dans la BD`"]-->id4[Envoi du lien de vérification par mail]-->id5{Vérification}-->|Vérifié|id6(Accès au site)
+id2-->|Non validées|id7[Rechargement de page avec un message d'erreur adéquat]-->id1
+id5-->|Lien expiré|id4
+```
+<br/>
+
+De même que pour le processus de publication d'un fichier, le processus de création d'un compte bénéficie du système de formulaire de Django. Ainsi, la validation des données, qui consiste à vérifier l'unicité de l'identifiant et la sécurité du mot de passe, est effectuée par Django ainsi que la création du compte et sa sauvegarde dans la BD. Il est important de savoir que Django ne stocke pas les mots de passe en tant que tels, mais les stocke hachés, pour garantir leur sécurité au sein de la BD.
+
 ### Connexion et session
-La connexion et la session sont gérées par Django sans grande modification ou ajout de ma part. Une session, qui est créée suite à la connexion d'un utilisateur, me permet de pouvoir lier l'utilisateur qui a publié un fichier au fichier publié.
+
+La connexion et la session sont gérées par Django sans grande modification ou ajout de ma part. Une session, qui est créée suite à la connexion d'un utilisateur, me permet de pouvoir lier l'utilisateur qui a publié un fichier au fichier publié. De plus, elle maintient la connexion de l'utilisateur même après la fermeture de l'onglet.
+
+<!-- IMAGES
+Fichiers: con_1.png, con_2.png, con_3.png
+Disposition: séquence de 3 images montrant le processus de connexion.
+Légende générale: Figure X: Étapes de connexion au site.
+Sous-légendes:
+1. Formulaire de connexion.
+2. Saisie de l'identifiant eduge et du mot de passe.
+3. Accès au site
+-->
+Pareillement à la création du compte, la connexion a été implémenté de manière conventionnelle pour que l'experience utilisateur soit la même que la majorité des applications et pour éviter des confusions.
+
+<!-- IMAGES
+Fichiers: con_pass.png, con_verify.png
+Disposition: 2 images côte à côte.
+Légende générale: Figure X: Exemples de validation des données lors de la connexion de l’utilisateur.
+Légende: Figure X: Message affiché lorsqu'un utilisateur tente de se connecter avec un identifiant non existant ou un mot de passe incorrecte.
+Sous-légendes:
+1. Refus d'un identifiant non existant ou un mot de passe incorrecte.
+2. Refus de la connexion lorsque les identifiants sont corrects, mais que le compte n'a pas encore été vérifié par mail.
+-->
+En cas de saisie de mauvaises informations, l'utilisateur voit le message dans la figure X.1.
+
+En cas de non verification du compte, l'utilisateur voit le message dans la figure X.2. C'est ici que la verification utilisateur devient importante. Tant que l'utilisateur n'a pas validé le lien reçu sur son adresse eduge, le site ne peut pas confirmer qu'il a accès à cette adresse et lui refuse donc la connexion.
 
 
 ## Accès et téléchargement des fichiers
