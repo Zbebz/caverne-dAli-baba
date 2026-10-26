@@ -16,6 +16,7 @@ ___
     - [Bootstrap et CSS](#bootstrap-et-css)
     - [PostgreSQL](#postgresql)
     - [AWS S3 Buckets](#aws-s3-buckets)
+  - [Utilisation de l'IA](#utilisation-de-lia)
 - [Réalisation](#réalisation)
   - [Publication des fichiers](#publication-des-fichiers)
     - [Organisation des données](#organisation-des-données)
@@ -35,8 +36,13 @@ ___
   - [Système de recherche](#système-de-recherche)
   - [Formats de fichiers acceptés et leur affichage](#formats-de-fichiers-acceptés-et-leur-affichage)
   - [L'aspect visuelle du site](#laspect-visuelle-du-site)
+  - [Moderation](#moderation)
+  - [Tests automatisés](#tests-automatisés)
 - [Conclusion](#conclusion)
-- [Bibliography](#bibliography)
+- [Glossaire](#glossaire)
+- [Bibliographie](#bibliographie)
+  - [Sources d'informatique](#sources-dinformatique)
+- [Un message final](#un-message-final)
 
 ---
 
@@ -54,7 +60,9 @@ La solution que j'ai trouvée aux deux problèmes est la demande aux autres. À 
 
 Je me suis donc posé la question suivante : N'existe-t-il pas de moyen de partage qui ne demande pas la connaissance et le contact de tout un tat de monde ? Après un peu de recherche, je n'en ai pas trouvé qui corresponde à mes besoins. Je connaissais déjà un site de partage de document qui s'appelle [*Scribd*](https://www.scribd.com), et il existe beaucoup d'autres. Les problèmes avec ce dernier est qu'il contient des fichiers très diverses, et surtout qu'il est payant (sauf si on y dépose 10 fichiers). En tant qu'étudiant, un site payant n'est pas de tout attirant.
 
-Étant donné que la programmation m'intéresse bien, j'ai décidé de remédier moi-même à ce problème et de créer un site de partage de fichiers scolaires gratuit pour les étudiants du collège de Genève. Ce projet sert non seulement à répondre à un besoin scolaire, mais à m'apporter une experience plutôt complète de création de site web de A à Z, quelque chose d'assez important si on envisage une carrière dans l'informatique avec l'essor de l'IA.
+Étant donné que la programmation m'intéresse bien, j'ai décidé de remédier moi-même à ce problème et de créer une plateforme de partage de fichiers scolaires gratuit pour les étudiants du collège de Genève. Ce projet sert non seulement à répondre à un besoin scolaire, mais à m'apporter une experience plutôt complète de création de site web de A à Z, quelque chose d'assez important si on envisage une carrière dans l'informatique avec l'essor de l'IA.
+
+Avant de poursuivre la lecture, je vous encourage à découvrir le site, accessible à l'adresse suivante : [https://lacaverne.app/](https://lacaverne.app/). Vous pouvez aussi jeter un coup d'œil sur le code source qui est disponible sur GitHub : [https://github.com/Zbebz/caverne-dAli-baba](https://github.com/Zbebz/caverne-dAli-baba).
 
 ---
 
@@ -63,6 +71,8 @@ Je me suis donc posé la question suivante : N'existe-t-il pas de moyen de parta
 Je suis un simple collégien de 17-18 ans. J'ai fait de la programmation depuis l'âge de 12 ans ; c'était la pandémie et je devais bien faire quelque chose de ma vie. Cependant, je n'ai jamais créé de projet de ma propre ingénierie. J'étais donc perdu lorsqu'il a fallu commencer le travail. Pour pouvoir trouver une piste vers lequel je vais me diriger, j'ai fait une recherche rapide sur internet sur comment planifier un projet informatique. J'ai trouvé un [post](https://www.reddit.com/r/learnprogramming/comments/mumrgn/how_to_plan_and_build_a_programming_project_a/) sur Reddit donnant des étapes pour ce faire. Je n'ai pas suivi toutes les étapes, mais j'en ai pris l'essence. Dans ce chapitre, je explique la démarche que j'ai prise afin de concevoir le site web, ainsi que les choix des outils pris.
 
 ## Définition du projet et ses objectifs
+
+J'ai nommé le site **La Caverne d'Ali Baba** en référence au conte d'Ali Baba et les Quarante Voleurs, dans lequel une caverne renferme de nombreux trésors. Je souhaite que mon site joue un rôle similaire : réunir en un seul endroit des ressources scolaires précieuses pour les collégiens.
 
 Au début, j'ai commencé par définir le *MVP* (*Minimum Viable Product*). Un *MVP* est la version la plus minimale d'un produit ou d'une fonctionnalité. Il s'agit d'implémenter seulement ce qui est nécessaire pour que l'application fonctionne bien et ensuite de commencer à l'améliorer. Le but est donc de concevoir le produit le plus rapidement possible afin de pouvoir le montrer au monde et ensuite d'avoir des retours. En bref, il s'agit d'une version provisoire, mais qui fonctionne bien.[^mvp]
 
@@ -90,13 +100,19 @@ Au début, j'ai choisi d'utiliser Bootstrap, un *framework* CSS qui fournit des 
 
 ### PostgreSQL
 
-Dés le départ, j'ai décidé de prendre PostgreSQL comme BD. À ce moment-là, c'était un choix arbitraire. Quand on m'a demandé "Pourquoi pas MySQL ?", j'ai répondu que je préfère les éléphants sur les dauphins.[^elephants] Au début de development, j'ai gardé SQLite, la BD par défaut avec Django, pour des raisons de simplicité. Quand il a fallu developper la fonctionnalité de recherche, j'ai découvert plusieurs outils utiles dans PostgreSQL. Je parle plus en profondeur de ses outils dans le sous-chapitre [Recherche d'un fichier](#recherche-dun-fichier).
+Dés le départ, j'ai décidé de prendre PostgreSQL comme BD. À ce moment-là, c'était un choix arbitraire. Quand on m'a demandé "Pourquoi pas MySQL ?", j'ai répondu que je préfère les éléphants sur les dauphins.[^elephants] Au début de development, j'ai gardé SQLite, la BD par défaut avec Django, pour des raisons de simplicité. Quand il a fallu developper la fonctionnalité de recherche, j'ai découvert plusieurs outils utiles dans PostgreSQL. Je parle plus en profondeur de ses outils dans le sous-chapitre [Recherche et *Auto-suggestion* (suggestion semi-automatique)](#recherche-et-auto-suggestion-suggestion-semi-automatique).
 
 [^elephants]: La mascotte de PostgreSQL est un éléphant. Celle de MySQL est un dauphin.
 
 ### AWS S3 Buckets
 
 Je stocke les documents sur ce service au lieu du serveur car il permet une séparation de tâches où le serveur s'occupe seulement du programme et de la conservation des métadonnées des fichiers dans la BD et le service s'occupe de la conservation des fichiers. Cette organisation allège le travail du serveur, car leur téléchargement ne nécessite pas de transit à travers le serveur. Plus encore, en cas d'augmentation du nombre de serveurs hébergeant l'application, ils pourront tous communiquer avec le service au lieu de chercher dans chacun où se trouve un certain fichier. Je stocke sur un bucket dans le serveur Zurich pour assurer la rapidité. Toutefois, ce serveur est un des plus chers sur Amazon, donc un changement de serveur peut se faire dans le cas ou ceci devient trop cher.
+
+## Utilisation de l'IA
+
+Pour la création du site, je n'ai utilisé l'IA que lorsque je ne trouvais pas de solution sur Internet. Par exemple, lors du déploiement, j'ai eu un problème où le site n'était plus en ligne. Étant donné que c'était la première fois que je déploie un site web, j'ai fait recours à l'IA pour m'aider avec ce problème. Chaque fois que j'utilisais l'IA, j'essayais de comprendre la solution qu'elle propose.
+
+Ce rapport est écrit en format markdown que vous pouvez trouver sur le dépôt GitHub hébergeant le code du site.  Ce format me permet d'écrire dans le même environnement que j'utilise pour la programmation. Je n'ai donc pas à utiliser plusieurs logiciels en même temps lorsque je travaille sure le projet. Puisqu'il faut une version pdf de ce rapport, j'ai fait recours à l'IA pour la conversion de markdown en pdf, car je n'ai pas de trouver de convertisseur adéquat sur Internet. De plus, les captures d'écrans qu'on voit dans le chapitre suivant, sont prise par moi-même mais ensuite ajouté lors de la conversion. J'ai également utilisé l'IA pour corriger les fautes de langues et de grammaire dans le rapport, puisque la langue française n'est pas ma langue maternelle. Vous trouverez les prompts utilisés dans la [bibliographie](#bibliographie).
 
 ---
 
@@ -222,7 +238,7 @@ id2-->|Non validées|id8[Rechargement de page avec un message d'erreur adéquat]
 ```
 <br/>
 
-Le processus de publication d'un fichier est très simple grâce à Django. Quand un utilisateur partage un fichier, la validation des données, c'est-à-dire la vérification qu'elles sont bien remplies et du bon type, est effectuée par Django qui regarde les critères qui ont été déclarés lors de la création du modèle. De plus, la création d'un objet `Fichier` ainsi que son lien avec la BD sont assurés par l'*ORM* de Django. Tous les fichiers et leurs vignettes sont finalement stockés sur un bucket AWS S3 (cf. [AWS S3 Buckets](#aws-s3-buckets)).
+Le processus de publication d'un fichier est très simple grâce à Django. Quand un utilisateur partage un fichier, la validation des données, c'est-à-dire la vérification qu'elles sont bien remplies et du bon type, est effectuée par Django qui regarde les critères qui ont été déclarés lors de la création du modèle. De plus, la création d'un objet `Fichier` ainsi que son lien avec la BD sont assurés par l'*ORM* de Django. Tous les fichiers et leurs vignettes sont finalement stockés sur un bucket AWS S3.
 
 ## Authentification utilisateur
 
@@ -262,7 +278,7 @@ La figure X.1 nous montre le message d'erreur qui apparaît lorsqu'on essaie de 
 
 La figure X.2 nous montre le message d'erreur qui apparaît lorsqu'un utilisateur utilise un mot de passe court. Avoir une longueur minimale protège les utilisateurs contre les attaques par force brute.
 
-La vérification par mail est une méthode de confirmation d'identité qui sert principalement à s'assurer que la personne qui est en train de créer le compte est bien la personne qu'elle prétend être et à éviter toute tentative de fraude ou d'usurpation d'identité. Toutefois, j'ai décidé de l'implementer car elle sert à vérifier que la personne possède bien un compte eduge, puisque le programme envoie le mail de vérification à `<identifiant eduge saisi>@eduge.ch`. Il existe donc 3 possibilités suite à la soumission de formulaire:
+La vérification par mail est une méthode de confirmation d'identité qui sert principalement à s'assurer que la personne qui est en train de créer le compte est bien la personne qu'elle prétend être et à éviter toute tentative de fraude ou d'usurpation d'identité. Toutefois, j'ai décidé de l'implementer car elle sert à vérifier que la personne est bien un étudiant au collège de Genève, qui possède donc un compte eduge. Le programme envoie un mail de vérification à `<identifiant eduge saisi>@eduge.ch`. Il existe donc 3 possibilités suite à la soumission de formulaire:
 1. la personne s'est inscrite avec un identifiant eduge invalide. Elle ne recevra jamais le mail et ainsi n'aura jamais accès au site.
 2. la personne s'est inscrite avec un identifiant eduge valide mais qui ne lui appartient pas. Elle n'a normalement[^verify-2] pas accès au mail, donc elle n'aura pas accès au site.
 3. la personne s'est inscrite avec un identifiant eduge valide lui appartenant. Elle pourra donc cliquer sur le lien de vérification envoyé et ensuite accéder au site.
@@ -324,7 +340,7 @@ En cas de non verification du compte, l'utilisateur voit le message dans la figu
 
 ## Accès et téléchargement des fichiers
 
-Finalement, la dernière fonctionnalité que j'ai implémenté est le système de recherche des fichiers. Suite à leur publication, il est important que l'utilisateur puisse y accéder et les télécharger ; c'est l'objectif de l'application. Cependant, avec l'augmentation du nombre de fichiers (ce qui, j'espère, va arriver) sur l'application, il devient presque impossible de trouver ce que l'on veut. Afin de résoudre ce problème, il faut mettre un système de recherche efficace qui permettra à l'utilisateur de trouver ce dont il a besoin sans problème. C'est ici qu'on se sert de l'organisation des données dans la BD (cf. [Publication des fichiers](#publication-des-fichiers)).
+Finalement, la dernière fonctionnalité que j'ai implémenté est le système de recherche des fichiers. Suite à leur publication, il est important que l'utilisateur puisse y accéder et les télécharger ; c'est l'objectif de l'application. Cependant, avec l'augmentation du nombre de fichiers (ce qui, j'espère, va arriver) sur l'application, il devient presque impossible de trouver ce que l'on veut. Afin de résoudre ce problème, il faut mettre un système de recherche efficace qui permettra à l'utilisateur de trouver ce dont il a besoin sans problème. C'est ici qu'on se sert de l'organisation des données dans la BD (cf. [Organisation des données](#organisation-des-données)).
 
 ### Point de vu utilisateur
 
@@ -353,7 +369,7 @@ Sous-légendes:
 1. Recherche d'un terme ne correspondant à aucune ressource.
 2. Affichage du message indiquant qu'aucun résultat n'a été trouvé.
 -->
-Quand un utilisateur tape un mot clé qui n'existe pas dans la BD, il ne voit aucune suggestion lors de la recherche, ce qui devrait sous-entendre qu'il n'existe pas de fichiers remplissant ses besoins. S'il décide tout de même de chercher, il voit une message lui disant ainsi.
+Quand un utilisateur tape un mot clé qui n'existe pas dans la BD, il ne voit aucune suggestion lors de la recherche, ce qui devrait sous-entendre qu'il n'existe pas de fichiers remplissant ses besoins. S'il décide tout de même de chercher, il voit une message lui disant ainsi. Nous verrons cependant dans le sous-chapitre suivant que n'avoir aucune suggestion ne signifie pas forcément, à l'état actuel du site, le non-existence de fichiers satisfaisants.
 
 ### Recherche et *Auto-suggestion* (suggestion semi-automatique)
 
@@ -364,7 +380,7 @@ Fichier: se_prob.png
 Légende: Figure X: Absence de suggestion pour "naths".
 Disposition: à droite, inclus avec le reste du texte
 -->
-Après quelques tests, j'ai aperçu que la méthode *Trigram similarity* ne donne pas toujours des résultats. Dans la figure X, on a tapé "naths" au lieu de "maths" et il n'y a pas de mots clés suggérés, malgré le fait qu'il s'agit s'une substitution de deux lettres à côté l'un de l'autre sur un clavier QWERTZ suisse. J'ai trouvé que c'est un problème de seuil de similarité. La fonction dans le module PostgreSQL ne rends que les mots qui ont un score de similarité plus grand qu'un certain seuil prédéfini. Le problème survient principalement avec les mots courts car il y a moins de trigrammes. Ma solution est de baisser ce seuil pour que la recherche soit moins restrictive.
+Après quelques tests, j'ai aperçu que la méthode *Trigram similarity* ne donne pas toujours des résultats. Dans la figure X, on a tapé "naths" au lieu de "maths" et il n'y a pas de mots clés suggérés, malgré le fait qu'il s'agit s'une substitution de deux lettres à côté l'un de l'autre sur un clavier QWERTZ suisse. J'ai trouvé que c'est un problème de seuil de similarité. La fonction dans le module PostgreSQL ne rends que les mots qui ont un score de similarité plus grand qu'un certain seuil prédéfini. Le problème survient principalement avec les mots courts car il y a moins de trigrammes. Ma solution est de baisser ce seuil pour que la recherche soit moins restrictive. La nouvelle valeur pour le seuil a été déterminée grâce à plusieurs tests qui font intervenir des fautes de frappes des mots de longueurs diverses.
 
 [^trigram]: "Un trigramme est un groupe de trois caractères consécutifs extraits d’une chaîne de caractères. Il est possible de mesurer la similarité entre deux chaînes en comptant le nombre de trigrammes qu’elles ont en commun. Cette idée simple s’avère très efficace pour mesurer la similarité entre des mots dans de nombreuses langues naturelles." [POSTGRESQL. pg_trgm — support for similarity of text using trigram matching. PostgreSQL (en ligne). Disponible à l'adresse : [https://www.postgresql.org/docs/current/pgtrgm.html](https://www.postgresql.org/docs/current/pgtrgm.html). Traduit d'anglais en français avec Google Traduction].
 
@@ -402,16 +418,41 @@ Le lecteur PDF actuel dépend du navigateur utilisé, ce qui entraîne une expé
 
 ## L'aspect visuelle du site
 
-En ce moment, le site a un design[^design] très basique qui ne mets pas en avant l'identité de "La Caverne d'Ali Baba". Le design actuel n'est ni attirant ni intuitive. De plus, il est fait pour l'ordinateur, donc sur téléphone, l'ordre visuel dans les pages est bouleversé. Ceci pose problème car la majorité des élèves, le publique que je vise, utiliseront le site sur téléphone. Je retravaillerai l'interface afin qu'elle réponds à ces 2 problèmes. Je n'ai cependant pas encore déterminé précisément le futur design ; les retours obtenus lors de futurs tests utilisateurs pourront m'aider à faire ces choix.
+En ce moment, le site a un design[^design] très basique qui ne mets pas en avant l'identité de **La Caverne d'Ali Baba.** Le design actuel n'est ni attirant ni intuitive. De plus, il est fait pour l'ordinateur, donc sur téléphone, l'ordre visuel dans les pages est bouleversé. Ceci pose problème car la majorité des élèves, le publique que je vise, utiliseront le site sur téléphone. Je retravaillerai l'interface afin qu'elle réponds à ces 2 problèmes. Je n'ai cependant pas encore déterminé précisément le futur design ; les retours obtenus lors de futurs tests utilisateurs pourront m'aider à faire ces choix.
 
 [^design]. Par "design", j'entends l'aspect visuel.
+
+## Moderation
+
+Vou avez peut-être remarqué dans le figure X: Schéma de la BD la propriété `status` (statut en français). Cette propriété a été initialement pour quand un système de modération sera mis en place. En ce moment, tous fichiers publié sur site est visible à tous les utilisateurs. Un problème survient quand on publie du contenu inapproprié. La modération sert à empêcher ce genre de problèmes. Une des solutions peut être un logiciel qui scanne les fichiers et décide s'ils sont appropriés. Je ne l'ai pas implémentée car c'est souvent une IA qu'on utilise, ce qui peut coûter vite cher. Une autre solution peut être la modération manuelle : une ou plusieurs personnes regardent manuellement chaque fichier et font la décision. Si on veut garantir une vérification rapide d'un fichier publié, il faut que les personnes travaillent toute la journée. Pour trouver des personnes qui acceptent de faire ceci, il est très probable qu'il faudra les payer. Si je fais moi-même la modération, la vérification ne sera pas rapide. De plus, je ne suis pas capable de faire ceci chaque jour à cause de ma vie académique. Une dernière solution que j'ai trouvée peut être le signalement des utilisateurs. Cette solution est la plus réaliste car elle ne fait pas intervenir l'argent et dépend de la communauté estudiantine. Toutefois, elle n'est pas optimale, car elle ne prévient pas les utilisateurs qui auront déjà vu ce genre de contenu
+
+## Tests automatisés
+
+Jusqu'au moment où j'écrit ce rapport, je teste manuellement tout le code que j'écris. Ceci devient vite fastidieux spécialement quand il faut tester plusieurs cas. La création de tests automatisés peut faciliter le développement car ils permettent de tester tous ce qu'on a implémenté sans avoir à recommencer les tests dés le début. Ils ne remplaceront pas complètement les tests manuels, car il y a quand même des parties de l'expérience utilisateur qu'on ne peut pas tester avec du code. Cet ajout n'affecte pas directement l’expérience utilisateur mais il affecte l’expérience développeur.
 
 ---
 
 # Conclusion
 
-Tout au long de ce projet, j'apprenais toujours des choses. L'internet est ma source principale. J'ai lu beaucoup de documentations, d'articles, de forums ; j'ai regardé beaucoup de vidéos sur YouTube. Pendant ce projet, j'ai également appris à lire et comprendre le code des différentes librairies utilisés pour pouvoir les modifier quand il y a eu besoin. Cependant, j'avais déjà beaucoup de connaissance sur la programmation et le développement web grâce à des cours en ligne ou des bootcamps. Vous trouverez dans la bibliographie une section dédié aux sources que j'ai utilisées et des cours en ligne gratuites que j'ai faits auparavant.
+Au début de ce travail, mon objectif était de créer une plateforme de partage de fichiers scolaires gratuit pour les étudiants du collège de Genève. Au moment où j'écrit ce rapport, j'ai atteint cet objectif de manière purement technique ; le site est fonctionnel mais il faut encore faire de la publicité et voir si les élèves vont l'adopter. Je peux dire que l'objectif a été atteint de façon technique car le site contient toutes les fonctionnalités posé par le *MVP* que j'ai défini : un site web sur lequel les collégiens de Genève, peuvent créer un compte et se connecter, partager des fichiers scolaires et profiter d'autres fichiers partagés. Toutefois, ceci reste, au moment où j'écrit ce rapport, de manière basique. Comme nous pouvons voir dans le chapitre précédent, il y a quelques problèmes et quelques ajouts que j'ai envie de faire qui séparent le site actuel d'un produit fini. Je suis tout de même satisfait avec ce que j'ai pu produire.
+
+Tout au long de ce projet, j'apprenais toujours des choses. J'ai appris comment planifier un projet et créer son architecture. J'ai appris les différentes parties de la création d'un site web qui ne se limite pas seulement au codage, mais il y a aussi la sécurité, l'experience utilisateur, etc. J'ai également appris à lire et comprendre le code des différentes librairies utilisés pour pouvoir les modifier quand il y a eu besoin. J'ai appris l'utilisation de nouveaux outils technologiques, ce qui m'a permis de voir leurs avantages et leurs désavantages. Finalement, j'ai réussi à créer mon premier site web fonctionnel sur une telle échelle, qui est en ligne et accessible à tous les collégiens.
+
+L’intérêt de la création d'un tel site naît d'un fort intérêt dans l'informatique depuis un assez jeune âge. Ce projet a pu approfondir cet intérêt, mais aussi a pu me donner l’expérience dans la profession d'informaticien. Ceci est particulièrement important à une époque où l'intelligence artificielle prend une place croissante dans le domaine informatique. Ce projet m'a permis de mettre en pratique des compétences comme la conception de l'architecture d'une application et le débogage, en faisant face à de véritables problèmes et en cherchant moi-même des solutions.
 
 ---
 
-# Bibliography
+# Glossaire
+
+---
+
+# Bibliographie
+
+
+## Sources d'informatique
+
+L'internet est ma source principale. J'ai lu beaucoup de documentations, d'articles, de forums ; j'ai regardé beaucoup de vidéos sur YouTube. Pendant ce projet, j'ai également appris à lire et comprendre le code des différentes librairies utilisés pour pouvoir les modifier quand il y a eu besoin. Cependant, j'avais déjà beaucoup de connaissance sur la programmation et le développement web grâce à des cours en ligne ou des bootcamps. Vous trouverez ici des sources que j'ai utilisées et des cours en ligne gratuites que j'ai faits auparavant.
+
+# Un message final
+
+À tous les lecteurs qui sont arrivés jusqu'ici, je vous remercie d'avoir lu ce rapport. Je vous encourage à utiliser la plateforme **La Caverne d'Ali Baba**, accessible à l'adresse suivante : [https://lacaverne.app/](https://lacaverne.app/), et en parler à vos amis (et vos étudiants si vous êtes enseignants). Le site est open-source ; vous pouvez trouver le code sur GitHub sous le nom [**caverne-dAli-baba**](https://github.com/Zbebz/caverne-dAli-baba). Toutes contributions sont les bienvenues.
