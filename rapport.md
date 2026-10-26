@@ -36,7 +36,7 @@ ___
   - [Système de recherche](#système-de-recherche)
   - [Formats de fichiers acceptés et leur affichage](#formats-de-fichiers-acceptés-et-leur-affichage)
   - [L'aspect visuelle du site](#laspect-visuelle-du-site)
-  - [Moderation](#moderation)
+  - [Modération](#modération)
   - [Tests automatisés](#tests-automatisés)
 - [Conclusion](#conclusion)
 - [Glossaire](#glossaire)
@@ -100,7 +100,7 @@ Au début, j'ai choisi d'utiliser Bootstrap, un *framework* CSS qui fournit des 
 
 ### PostgreSQL
 
-Dés le départ, j'ai décidé de prendre PostgreSQL comme BD. À ce moment-là, c'était un choix arbitraire. Quand on m'a demandé "Pourquoi pas MySQL ?", j'ai répondu que je préfère les éléphants sur les dauphins.[^elephants] Au début de development, j'ai gardé SQLite, la BD par défaut avec Django, pour des raisons de simplicité. Quand il a fallu developper la fonctionnalité de recherche, j'ai découvert plusieurs outils utiles dans PostgreSQL. Je parle plus en profondeur de ses outils dans le sous-chapitre [Recherche et *Auto-suggestion* (suggestion semi-automatique)](#recherche-et-auto-suggestion-suggestion-semi-automatique).
+Dés le départ, j'ai décidé de prendre PostgreSQL comme BD. À ce moment-là, c'était un choix arbitraire. Quand on m'a demandé "Pourquoi pas MySQL ?", j'ai répondu que je préfère les éléphants sur les dauphins.[^elephants] Au début de development, j'ai gardé SQLite, la BD par défaut avec Django, pour des raisons de simplicité. Quand il a fallu developper la fonctionnalité de recherche, j'ai découvert plusieurs outils utiles dans PostgreSQL. Je parle plus en profondeur de ses outils dans le sous-chapitre [**Recherche et *Auto-suggestion* (suggestion semi-automatique)**](#recherche-et-auto-suggestion-suggestion-semi-automatique).
 
 [^elephants]: La mascotte de PostgreSQL est un éléphant. Celle de MySQL est un dauphin.
 
@@ -422,7 +422,7 @@ En ce moment, le site a un design[^design] très basique qui ne mets pas en avan
 
 [^design]. Par "design", j'entends l'aspect visuel.
 
-## Moderation
+## Modération
 
 Vou avez peut-être remarqué dans le figure X: Schéma de la BD la propriété `status` (statut en français). Cette propriété a été initialement pour quand un système de modération sera mis en place. En ce moment, tous fichiers publié sur site est visible à tous les utilisateurs. Un problème survient quand on publie du contenu inapproprié. La modération sert à empêcher ce genre de problèmes. Une des solutions peut être un logiciel qui scanne les fichiers et décide s'ils sont appropriés. Je ne l'ai pas implémentée car c'est souvent une IA qu'on utilise, ce qui peut coûter vite cher. Une autre solution peut être la modération manuelle : une ou plusieurs personnes regardent manuellement chaque fichier et font la décision. Si on veut garantir une vérification rapide d'un fichier publié, il faut que les personnes travaillent toute la journée. Pour trouver des personnes qui acceptent de faire ceci, il est très probable qu'il faudra les payer. Si je fais moi-même la modération, la vérification ne sera pas rapide. De plus, je ne suis pas capable de faire ceci chaque jour à cause de ma vie académique. Une dernière solution que j'ai trouvée peut être le signalement des utilisateurs. Cette solution est la plus réaliste car elle ne fait pas intervenir l'argent et dépend de la communauté estudiantine. Toutefois, elle n'est pas optimale, car elle ne prévient pas les utilisateurs qui auront déjà vu ce genre de contenu
 
