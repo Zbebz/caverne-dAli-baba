@@ -15,6 +15,7 @@ ___
     - [htmx et JavaScript](#htmx-et-javascript)
     - [Bootstrap et CSS](#bootstrap-et-css)
     - [PostgreSQL](#postgresql)
+    - [AWS S3 Buckets](#aws-s3-buckets)
 - [Réalisation](#réalisation)
   - [Publication des fichiers](#publication-des-fichiers)
     - [Organisation des données](#organisation-des-données)
@@ -30,8 +31,10 @@ ___
     - [Recherche et *Auto-suggestion* (suggestion semi-automatique)](#recherche-et-auto-suggestion-suggestion-semi-automatique)
     - [Filtrage et affichage des résultats](#filtrage-et-affichage-des-résultats)
     - [Affichage et téléchargement des fichiers](#affichage-et-téléchargement-des-fichiers)
-- [Problèmes rencontrés](#problèmes-rencontrés)
 - [La suite](#la-suite)
+  - [Système de recherche](#système-de-recherche)
+  - [Formats de fichiers acceptés et leur affichage](#formats-de-fichiers-acceptés-et-leur-affichage)
+  - [L'aspect visuelle du site](#laspect-visuelle-du-site)
 - [Conclusion](#conclusion)
 - [Bibliography](#bibliography)
 
@@ -90,6 +93,10 @@ Au début, j'ai choisi d'utiliser Bootstrap, un *framework* CSS qui fournit des 
 Dés le départ, j'ai décidé de prendre PostgreSQL comme BD. À ce moment-là, c'était un choix arbitraire. Quand on m'a demandé "Pourquoi pas MySQL ?", j'ai répondu que je préfère les éléphants sur les dauphins.[^elephants] Au début de development, j'ai gardé SQLite, la BD par défaut avec Django, pour des raisons de simplicité. Quand il a fallu developper la fonctionnalité de recherche, j'ai découvert plusieurs outils utiles dans PostgreSQL. Je parle plus en profondeur de ses outils dans le sous-chapitre [Recherche d'un fichier](#recherche-dun-fichier).
 
 [^elephants]: La mascotte de PostgreSQL est un éléphant. Celle de MySQL est un dauphin.
+
+### AWS S3 Buckets
+
+Je stocke les documents sur ce service au lieu du serveur car il permet une séparation de tâches où le serveur s'occupe seulement du programme et de la conservation des métadonnées des fichiers dans la BD et le service s'occupe de la conservation des fichiers. Cette organisation allège le travail du serveur, car leur téléchargement ne nécessite pas de transit à travers le serveur. Plus encore, en cas d'augmentation du nombre de serveurs hébergeant l'application, ils pourront tous communiquer avec le service au lieu de chercher dans chacun où se trouve un certain fichier. Je stocke sur un bucket dans le serveur Zurich pour assurer la rapidité. Toutefois, ce serveur est un des plus chers sur Amazon, donc un changement de serveur peut se faire dans le cas ou ceci devient trop cher.
 
 ---
 
@@ -162,7 +169,7 @@ FICHIER {
 ```
 <br/>
 
-**On** peut voir dans ce diagramme[^diagram] toutes les relations entre modèles dans la BD. Quand un *user* publie des fichiers, en mentionnant l'enseignant concerné, plusieurs relations sont établies dans la BD. La relation entre `User` et `Fichier` et celle entre `Enseignant` et `Fichier` s'appellent des relations *one-to-many* (un-à-plusieurs) ; un utilisateur peut avoir plusieurs fichiers, mais un fichier n'appartient qu'à un utilisateur. On associe à chaque fichier un ou plusieurs *tags* (mots clés), qui aident plus tard à la recherche de ces documents. Cette relation s'appelle *Many-to-many* ; un *tag* peut être associé à plusieurs fichiers et un fichier peut avoir plusieurs *tags*. Il est important de savoir que pour avoir une relation *many-to-many* (plusieurs-à-plusieurs), il y a besoin d'une table de plus qui n'a pas de modèle associé, elle sert juste de pont entre les deux. Cette table est créée par défaut par l'*ORM* de Django, mais on peut aussi créer la sienne.
+On peut voir dans ce diagramme[^diagram] toutes les relations entre modèles dans la BD. Quand un *user* publie des fichiers, en mentionnant l'enseignant concerné, plusieurs relations sont établies dans la BD. La relation entre `User` et `Fichier` et celle entre `Enseignant` et `Fichier` s'appellent des relations *one-to-many* (un-à-plusieurs) ; un utilisateur peut avoir plusieurs fichiers, mais un fichier n'appartient qu'à un utilisateur. On associe à chaque fichier un ou plusieurs *tags* (mots clés), qui aident plus tard à la recherche de ces documents. Cette relation s'appelle *Many-to-many* ; un *tag* peut être associé à plusieurs fichiers et un fichier peut avoir plusieurs *tags*. Il est important de savoir que pour avoir une relation *many-to-many* (plusieurs-à-plusieurs), il y a besoin d'une table de plus qui n'a pas de modèle associé, elle sert juste de pont entre les deux. Cette table est créée par défaut par l'*ORM* de Django, mais on peut aussi créer la sienne.
 
 Au départ, `tags` était une chaîne de caractère et non un objet dans un autre modèle. J'ai essayé d'utiliser le type *array* (liste ou tableau) de PostgreSQL, mais je n'ai pas pu m'en servir pour la recherche plus tard. La solution était mettre les mots clés dans une table à part.
 
@@ -215,9 +222,7 @@ id2-->|Non validées|id8[Rechargement de page avec un message d'erreur adéquat]
 ```
 <br/>
 
-Le processus de publication d'un fichier est très simple grâce à Django. Quand un utilisateur partage un fichier, la validation des données, c'est-à-dire la vérification qu'elles sont bien remplies et du bon type, est effectuée par Django qui regarde les critères qui ont été déclarés lors de la création du modèle. De plus, la création d'un objet `Fichier` ainsi que son lien avec la BD sont assurés par l'*ORM* de Django.
-
-Tous les fichiers et leurs vignettes sont stockés sur un bucket AWS S3. Le stockage des documents sur un tel service permet une séparation de tâches où le serveur s'occupe seulement du programme et de la conservation des métadonnées des fichiers dans la BD et le service s'occupe de la conservation des fichiers. Cette organisation allège le travail du serveur, car leur téléchargement ne nécessite pas de transit à travers le serveur. Plus encore, en cas d'augmentation du nombre de serveurs hébergeant l'application, ils pourront tous communiquer avec le service au lieu de chercher dans chacun où se trouve un certain fichier.
+Le processus de publication d'un fichier est très simple grâce à Django. Quand un utilisateur partage un fichier, la validation des données, c'est-à-dire la vérification qu'elles sont bien remplies et du bon type, est effectuée par Django qui regarde les critères qui ont été déclarés lors de la création du modèle. De plus, la création d'un objet `Fichier` ainsi que son lien avec la BD sont assurés par l'*ORM* de Django. Tous les fichiers et leurs vignettes sont finalement stockés sur un bucket AWS S3 (cf. [AWS S3 Buckets](#aws-s3-buckets)).
 
 ## Authentification utilisateur
 
@@ -381,28 +386,31 @@ Un utilisateur peut voir plus d'informations sur un fichier ainsi que son conten
 
 ---
 
-# Problèmes rencontrés
-
-
-
----
-
 # La suite
 
-Maintenant que le site web fonctionne de manière basique et est en ligne, il reste encore plusieurs choses que j'ai envie de faire et d'implémenter. Voici une liste non exhaustive :
-- Travailler sur le design du site
-- Changement de mot de passe
-- Repenser le système de recherche actuel
-- Faire tester le site web par d'autres élèves
-- etc.
+Maintenant que le site web fonctionne de manière basique et est en ligne, il reste encore plusieurs choses que j'ai envie de faire et de modifier. De plus, il faut faire tester le site à grande échelle et faire des sondages pour pouvoir avoir plus d'informations et améliorer au mieux le site. Dans ce chapitre, je parle de quelques problèmes actuelles dans le site ainsi que des ajouts futurs.
 
-J'essaie toujours de réfléchir à différentes manières d'améliorer le site web.
+## Système de recherche
+
+Après avoir fait essayer le site à certains amis, j'ai remarqué qu'il ne comprennent pas ce qu'il faut mettre dans le champ "Mots clés" lors de la publication d'un fichier. Ensuite, ils ne comprennent pas que les mots clés saisis auparavant sont les mêmes qu'il faut utiliser pour la recherche. C'est pour cette raison que j'envisage le changement du système de recherche. On m'a fait la suggestion suivante : au lieu de devoir écrire un mot clé, on choisit d'abord la matière, le degré et l'enseignant, ensuite on raffine la recherche à l'aide des mots clés. De plus, j'essaie de faire comprendre l'utilisateur mon intention lors de la saisie de mot clés pendant la publication, et je mets déjà plusieurs mots clés dans la BD. Ce nouveau système sera probablement plus intuitive aux utilisateurs car il leur permet de chercher directement par les critères qu'ils veulent.
+
+## Formats de fichiers acceptés et leur affichage
+
+La création des vignettes des fichiers fait usage d'une libraire qui n'accepte que les fichiers en format PDF. En conséquence, les fichiers acceptés sont de format PDF. Initialement, j'ai prévu d'accepter les fichiers pdf, docx, doc, odt. Ces autres formats sont assez répandus parmi les étudiants et les enseignants, donc les accepter pourrait mener à une augmentation de fichiers publier.
+
+Le lecteur PDF actuel dépend du navigateur utilisé, ce qui entraîne une expérience utilisateur différente selon le navigateur et l'appareil. Je suis en train de chercher un lecteur plus universelle ou potentiellement en faire un moi-même. Le lecteur doit avoir le même interface partout, me donner le contrôle sur l'interface et pouvoir bien s'intégrer avec le reste du site.
+
+## L'aspect visuelle du site
+
+En ce moment, le site a un design[^design] très basique qui ne mets pas en avant l'identité de "La Caverne d'Ali Baba". Le design actuel n'est ni attirant ni intuitive. De plus, il est fait pour l'ordinateur, donc sur téléphone, l'ordre visuel dans les pages est bouleversé. Ceci pose problème car la majorité des élèves, le publique que je vise, utiliseront le site sur téléphone. Je retravaillerai l'interface afin qu'elle réponds à ces 2 problèmes. Je n'ai cependant pas encore déterminé précisément le futur design ; les retours obtenus lors de futurs tests utilisateurs pourront m'aider à faire ces choix.
+
+[^design]. Par "design", j'entends l'aspect visuel.
 
 ---
 
 # Conclusion
 
-
+Tout au long de ce projet, j'apprenais toujours des choses. L'internet est ma source principale. J'ai lu beaucoup de documentations, d'articles, de forums ; j'ai regardé beaucoup de vidéos sur YouTube. Pendant ce projet, j'ai également appris à lire et comprendre le code des différentes librairies utilisés pour pouvoir les modifier quand il y a eu besoin. Cependant, j'avais déjà beaucoup de connaissance sur la programmation et le développement web grâce à des cours en ligne ou des bootcamps. Vous trouverez dans la bibliographie une section dédié aux sources que j'ai utilisées et des cours en ligne gratuites que j'ai faits auparavant.
 
 ---
 
