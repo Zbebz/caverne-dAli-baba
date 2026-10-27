@@ -41,7 +41,9 @@ ___
 - [Conclusion](#conclusion)
 - [Glossaire](#glossaire)
 - [Bibliographie](#bibliographie)
-  - [Sources d'informatique](#sources-dinformatique)
+- [Annexe](#annexe)
+  - [Prompt 1 — Correction linguistique du rapport](#prompt-1--correction-linguistique-du-rapport)
+  - [Prompt 2 — Conversion et mise en page du rapport](#prompt-2--conversion-et-mise-en-page-du-rapport)
 - [Un message final](#un-message-final)
 
 ---
@@ -112,7 +114,7 @@ Je stocke les documents sur ce service au lieu du serveur car il permet une sép
 
 Pour la création du site, je n'ai utilisé l'IA que lorsque je ne trouvais pas de solution sur Internet. Par exemple, lors du déploiement, j'ai eu un problème où le site n'était plus en ligne. Étant donné que c'était la première fois que je déploie un site web, j'ai fait recours à l'IA pour m'aider avec ce problème. Chaque fois que j'utilisais l'IA, j'essayais de comprendre la solution qu'elle propose.
 
-Ce rapport est écrit en format markdown que vous pouvez trouver sur le dépôt GitHub hébergeant le code du site.  Ce format me permet d'écrire dans le même environnement que j'utilise pour la programmation. Je n'ai donc pas à utiliser plusieurs logiciels en même temps lorsque je travaille sure le projet. Puisqu'il faut une version pdf de ce rapport, j'ai fait recours à l'IA pour la conversion de markdown en pdf, car je n'ai pas de trouver de convertisseur adéquat sur Internet. De plus, les captures d'écrans qu'on voit dans le chapitre suivant, sont prise par moi-même mais ensuite ajouté lors de la conversion. J'ai également utilisé l'IA pour corriger les fautes de langues et de grammaire dans le rapport, puisque la langue française n'est pas ma langue maternelle. Vous trouverez les prompts utilisés dans la [bibliographie](#bibliographie).
+Ce rapport est écrit en format markdown que vous pouvez trouver sur le dépôt GitHub hébergeant le code du site.  Ce format me permet d'écrire dans le même environnement que j'utilise pour la programmation. Je n'ai donc pas à utiliser plusieurs logiciels en même temps lorsque je travaille sure le projet. Puisqu'il faut une version pdf de ce rapport, j'ai fait recours à l'IA pour la conversion de markdown en pdf, car je n'ai pas de trouver de convertisseur adéquat sur Internet. De plus, les captures d'écrans qu'on voit dans le chapitre suivant, sont prise par moi-même mais ensuite ajouté lors de la conversion. J'ai également utilisé l'IA pour corriger les fautes de langues et de grammaire dans le rapport, puisque la langue française n'est pas ma langue maternelle. Le logo du site, qui se trouvent sur la couverture, a été crée par l'IA et puis modifié personnellement. Vous trouverez les prompts utilisés dans l'[annexe](#annexe).
 
 ---
 
@@ -444,15 +446,128 @@ L’intérêt de la création d'un tel site naît d'un fort intérêt dans l'inf
 
 # Glossaire
 
+**Base de données relationnelle** : BD qui organise les informations dans des tables pouvant être reliées entre elles.
+
+***Bucket S3*** : Conteneur de stockage dans le service Amazon S3, utilisé pour conserver des objets tels que des documents et des images.
+
+**CSS** : Langage utilisé pour définir l'apparence et la mise en page d'un document HTML.
+
+**Déploiement** : Ensemble des opérations permettant de rendre une application disponible dans un environnement en ligne où les utilisateurs peuvent y accéder.
+
+**DOM (*Document Object Model*)** : Représentation structurée d'une page web permettant à des programmes, notamment JavaScript, d'accéder à ses éléments et de modifier son contenu, sa structure ou son apparence.
+
+**Librairie (bibliothèque logicielle)** : Ensemble de fonctions et d'outils réutilisables par un programme.
+
+**Hachage** : Processus qui transforme une donnée, comme un mot de passe, en une valeur de longueur déterminée à l'aide d'une fonction mathématique. Cette transformation est conçue pour être irréversible.
+
+**HTML** : Langage utilisé pour structurer le contenu d'une page web.
+
+**JavaScript (JS)** : Langage de programmation utilisé notamment pour rendre les pages web interactives.
+
+**Modèle (Django)** : Classe Python définissant la structure des données qui seront généralement stockées dans une table de la BD.
+
+***Open source*** : Un logiciel est *open source* quand son code source est accessible et peut être utilisé, modifié ou redistribué selon les conditions de sa licence.
+
+**ORM (*Object-relational mapping*)** : Technique permettant de manipuler une BD relationnelle à l'aide d'objets du langage de programmation, sans écrire directement la plupart des requêtes SQL.
+
+**Requête HTTP** : Message envoyé, par exemple, par un navigateur à un serveur pour demander une ressource ou effectuer une action.
+
+**Session** : Mécanisme permettant à un site de conserver des informations liées à un utilisateur entre plusieurs requêtes, notamment son état de connexion.
+
+**SQL** : Langage permettant de consulter et de modifier les données d'une BD relationnelle.
+
+**Test automatisé** : Test exécuté par un programme afin de vérifier qu'une fonctionnalité produit le résultat attendu.
+
+***Token* (jeton)** : Valeur générée par une application et utilisée notamment pour vérifier qu'une action, comme la validation d'une adresse électronique, est autorisée.
+
+**Trigramme** : Groupe de trois caractères consécutifs dans un texte. La comparaison des trigrammes communs entre deux chaînes de caractères permet d'estimer leur similarité.
+
+**Type énuméré (enum)** : Type de données défini par un ensemble limité de valeurs prédéfinies. Il permet de restreindre les valeurs possibles d'une propriété, par exemple les degrés scolaires (1re, 2e, 3e et 4e) dans le site.
+
 ---
 
 # Bibliographie
 
+AHMED, Naeem. Why Django Is the Ultimate “Batteries-Included” Framework for Scalable Web Development. Medium [en ligne]. 18 avril 2025. Disponible à l'adresse : https://medium.com/@naeem.ahmed.bdn/why-django-is-the-ultimate-batteries-included-framework-for-scalable-web-development-746ffcebaa7d
 
-## Sources d'informatique
+COWINKIEDINK. How to Plan and Build a Programming Project – A Legitimate Guide for Beginners. Reddit, r/learnprogramming [en ligne]. 2021. Disponible à l'adresse : https://www.reddit.com/r/learnprogramming/comments/mumrgn/how_to_plan_and_build_a_programming_project_a/
 
-L'internet est ma source principale. J'ai lu beaucoup de documentations, d'articles, de forums ; j'ai regardé beaucoup de vidéos sur YouTube. Pendant ce projet, j'ai également appris à lire et comprendre le code des différentes librairies utilisés pour pouvoir les modifier quand il y a eu besoin. Cependant, j'avais déjà beaucoup de connaissance sur la programmation et le développement web grâce à des cours en ligne ou des bootcamps. Vous trouverez ici des sources que j'ai utilisées et des cours en ligne gratuites que j'ai faits auparavant.
+[deleted]. Why use an object storage provider like AWS S3/Wasabi instead of just spinning up your own server? Reddit, r/learnprogramming [en ligne]. 2021. Disponible à l'adresse : https://www.reddit.com/r/learnprogramming/comments/n9zqsv/why_use_an_object_storage_provider_like_aws/
+
+DMAZZONI. Commentaire dans "Best step-by-step way to build a web app?". Reddit, r/learnprogramming [en ligne]. 2023. Disponible à l'adresse : https://www.reddit.com/r/learnprogramming/comments/17zt6s2/comment/ka24s39/
+
+DJANGO SOFTWARE FOUNDATION, 2026. Password management in Django. Django (Version 6.0) [en ligne]. Disponible à l'adresse : https://docs.djangoproject.com/en/6.0/topics/auth/passwords/
+
+DJANGO SOFTWARE FOUNDATION, 2026. Réglages. Django (Version 6.0) [en ligne]. Disponible à l'adresse : https://docs.djangoproject.com/fr/6.0/ref/settings/#std-setting-SECRET_KEY
+
+MAHADEVAN, Jaydev. The Future of the Web: Navigating HTMX, Vanilla JS, and React. DEV Community [en ligne]. 7 mars 2024. Disponible à l'adresse : https://dev.to/jaydevm/the-future-of-the-web-navigating-htmx-vanilla-js-and-react-29i7
+
+MOZILLA. CSS. MDN Web Docs [en ligne]. Disponible à l'adresse : https://developer.mozilla.org/en-US/docs/Glossary/CSS
+
+MOZILLA. Django introduction. MDN Web Docs [en ligne]. Disponible à l'adresse : https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/Django/Introduction
+
+MOZILLA. Document Object Model (DOM) (en français). MDN Web Docs [en ligne]. Disponible à l'adresse : https://developer.mozilla.org/fr/docs/Web/API/Document_Object_Model
+
+MOZILLA. HTML. MDN Web Docs [en ligne]. Disponible à l'adresse : https://developer.mozilla.org/en-US/docs/Glossary/HTML
+
+MOZILLA. HTTP messages. MDN Web Docs [en ligne]. Disponible à l'adresse : https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Messages
+
+MOZILLA. JavaScript. MDN Web Docs [en ligne]. Disponible à l'adresse : https://developer.mozilla.org/en-US/docs/Glossary/JavaScript
+
+MUNROE, Randall. Exploits of a Mom. xkcd, n° 327 [en ligne]. 2007. Disponible à l'adresse : https://xkcd.com/327/
+
+OPENAI (2026). ChatGPT (version 26 octobre) [Large language model]. https://chat.openai.com/. Utilisé pour la correction linguistique du rapport et la mise en page/conversion du rapport Markdown en PDF. 2026. Prompts utilisés : voir annexe.
+
+POSTGRESQL. pg_trgm — support for similarity of text using trigram matching. PostgreSQL [en ligne]. Disponible à l'adresse : https://www.postgresql.org/docs/current/pgtrgm.html
+
+PRODUCTPLAN. Minimum Viable Product (MVP). ProductPlan, Glossary [en ligne]. Disponible à l'adresse : https://www.productplan.com/glossary/minimum-viable-product
+
+W3SCHOOLS. SQL Injection. W3Schools [en ligne]. Disponible à l'adresse : https://www.w3schools.com/SQL/sql_injection.asp
+
+WIKIMEDIA. Access token. Wikipedia [en ligne]. Disponible à l'adresse : https://en.wikipedia.org/wiki/Access_token
+
+WIKIMEDIA. Amazon S3. Wikipedia [en ligne]. Disponible à l'adresse : https://en.wikipedia.org/wiki/Amazon_S3
+
+WIKIMEDIA. Django (web framework). Wikipedia [en ligne]. Disponible à l'adresse : https://en.wikipedia.org/wiki/Django_(web_framework)
+
+WIKIMEDIA. Hash function. Wikipedia [en ligne]. Disponible à l'adresse : https://en.wikipedia.org/wiki/Hash_function
+
+WIKIMEDIA. Library (computing). Wikipedia [en ligne]. Disponible à l'adresse : https://en.wikipedia.org/wiki/Library_(computing)
+
+WIKIMEDIA. Minimum viable product. Wikipedia [en ligne]. Disponible à l'adresse : https://en.wikipedia.org/wiki/Minimum_viable_product
+
+WIKIMEDIA. Object–relational mapping. Wikipedia [en ligne]. Disponible à l'adresse : https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping
+
+WIKIMEDIA. Open source. Wikipedia [en ligne]. Disponible à l'adresse : https://en.wikipedia.org/wiki/Open_source
+
+WIKIMEDIA. Relational database. Wikipedia [en ligne]. Disponible à l'adresse : https://en.wikipedia.org/wiki/Relational_database
+
+WIKIMEDIA. Session (computer science). Wikipedia [en ligne]. Disponible à l'adresse : https://en.wikipedia.org/wiki/Session_(computer_science)
+
+WIKIMEDIA. Software deployment. Wikipedia [en ligne]. Disponible à l'adresse : https://en.wikipedia.org/wiki/Software_deployment
+
+WIKIMEDIA. Software testing. Wikipedia [en ligne]. Disponible à l'adresse : https://en.wikipedia.org/wiki/Software_testing
+
+WIKIMEDIA. SQL. Wikipedia [en ligne]. Disponible à l'adresse : https://en.wikipedia.org/wiki/SQL
+
+WIKIMEDIA. Type énuméré. Wikipédia [en ligne]. Disponible à l'adresse : https://fr.wikipedia.org/wiki/Type_%C3%A9num%C3%A9r%C3%A9
+
+# Annexe
+
+## Prompt 1 — Correction linguistique du rapport
+
+**Outil :** ChatGPT (OpenAI)  
+**Date :** 2026
+
+> Edit the uploaded rapport.md to correct all French spelling, grammar, agreement, conjugation, accents, punctuation, and obvious grammatical phrasing errors throughout the entire document, including Mermaid diagram labels and footnotes. Do NOT add, remove, fact-check, rewrite, or otherwise change the substantive content, ideas, tone, organization, Markdown structure, links, citations, diagrams, or technical claims. Preserve the author's wording as much as grammatically possible. Deliver a corrected .md file.
+
+## Prompt 2 — Conversion et mise en page du rapport
+
+**Outil :** ChatGPT (OpenAI)  
+**Date :** 2026
+
+> Convert rapport.md into a polished PDF report. Preserve the report's content and structure. Put the cover page in an organized way. Don't put the report title. Put a title for the table of contents. Number the chapters and subchapters except for the introduction. Do not cut sentences between pages. Each chapter must start at a new page. Use mermaid renderer for diagrams. Process diagrams to flow horizontally and wrap into snake-like rows, preserving the Mermaid shapes and all connections. Put the footnotes on the same page as where they're mentioned. Make all hyperlink colors the same as the text. Interpret the HTML comment placeholders for images/figures as layout instructions, and include the screenshots/images supplied, matching filenames. Insert single images at their indicated locations with their captions and requested right-aligned/in-text placement where practical. add a light border to images to be able seprate them from the background. Add a small space between the image legend and the image itself. Render Mermaid diagrams cleanly. Use Trebuchet MS for Mermaid diagrams. Use Andale Mono for code text. Number figures consistently in order of appearance instead of leaving 'Figure X'. Put page numbers in TOC. Put headers featuring chapter and subchapter names. Each chapter must start at a new page, but subchapters can start in the middle of a page. Put the page numbers on the bottom right corner. When possible, make photos or diagrams smaller to be able to bring them up a page. Produce and return the final PDF.
 
 # Un message final
 
-À tous les lecteurs qui sont arrivés jusqu'ici, je vous remercie d'avoir lu ce rapport. Je vous encourage à utiliser la plateforme **La Caverne d'Ali Baba**, accessible à l'adresse suivante : [https://lacaverne.app/](https://lacaverne.app/), et en parler à vos amis (et vos étudiants si vous êtes enseignants). Le site est open-source ; vous pouvez trouver le code sur GitHub sous le nom [**caverne-dAli-baba**](https://github.com/Zbebz/caverne-dAli-baba). Toutes contributions sont les bienvenues.
+À tous les lecteurs qui sont arrivés jusqu'ici, je vous remercie d'avoir lu ce rapport. Je vous encourage à utiliser la plateforme **La Caverne d'Ali Baba**, accessible à l'adresse suivante : [https://lacaverne.app/](https://lacaverne.app/), et en parler à vos amis (et vos étudiants si vous êtes enseignants). Le site est *open source* ; vous pouvez trouver le code sur GitHub sous le nom [**caverne-dAli-baba**](https://github.com/Zbebz/caverne-dAli-baba). Toutes contributions sont les bienvenues.
