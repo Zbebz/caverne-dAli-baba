@@ -559,7 +559,7 @@ WIKIMEDIA. Type énuméré. Wikipédia [en ligne]. Disponible à l'adresse : htt
 **Outil :** ChatGPT (OpenAI)  
 **Date :** 2026
 
-> Edit the uploaded rapport.md to correct all French spelling, grammar, agreement, conjugation, accents, punctuation, and obvious grammatical phrasing errors throughout the entire document, including Mermaid diagram labels and footnotes. Do NOT add, remove, fact-check, rewrite, or otherwise change the substantive content, ideas, tone, organization, Markdown structure, links, citations, diagrams, or technical claims. Preserve the author's wording as much as grammatically possible. Deliver a corrected .md file.
+> Edit the uploaded rapport.md to correct all French spelling, grammar, agreement, conjugation, accents, punctuation, and obvious grammatical phrasing errors throughout the entire document, including Mermaid diagram labels and footnotes. Do NOT add, remove, fact-check, rewrite, or otherwise change the substantive content, ideas, tone, organization, Markdown structure, links, citations, diagrams, or technical claims. Preserve the wording as much as grammatically possible. Deliver a corrected .md file.
 
 ## Prompt 2 — Conversion et mise en page du rapport
 
