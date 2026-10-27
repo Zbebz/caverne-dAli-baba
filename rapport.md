@@ -78,7 +78,7 @@ J'ai nommé le site **La Caverne d'Ali Baba** en référence au conte d'Ali Baba
 
 Au début, j'ai commencé par définir le *MVP* (*Minimum Viable Product*). Un *MVP* est la version la plus minimale d'un produit ou d'une fonctionnalité. Il s'agit d'implémenter seulement ce qui est nécessaire pour que l'application fonctionne bien et ensuite de commencer à l'améliorer. Le but est donc de concevoir le produit le plus rapidement possible afin de pouvoir le montrer au monde et ensuite d'avoir des retours. En bref, il s'agit d'une version provisoire, mais qui fonctionne bien.[^mvp]
 
-[^mvp]: WIKIMEDIA. Minimum viable product. Wikipédia (en ligne). Disponible à l'adresse : [https://en.wikipedia.org/wiki/Minimum_viable_product](https://en.wikipedia.org/wiki/Minimum_viable_product)
+[^mvp]: WIKIPEDIA CONTRIBUTORS. Minimum viable product. Wikipedia, The Free Encyclopedia [en ligne]. Version 15 mai 2026. [Consulté le 20 mai 2026]. Disponible à l'adresse : https://en.wikipedia.org/w/index.php?title=Minimum_viable_product&oldid=1354312482
 
 J'ai défini le *MVP* de la manière suivante : un site web sur lequel les utilisateurs, qui sont les collégiens de Genève, peuvent partager/publier des fichiers scolaires. C'est l'essentiel du site. Ces utilisateurs doivent pouvoir créer un compte, se connecter et se déconnecter. Ceci permet d'identifier les utilisateurs et de réguler l'accès au site. Les fichiers partagés doivent être accessibles à tout utilisateur authentifié, à l'aide d'un système de recherche et de filtrage afin de trouver un résultat satisfaisant, et téléchargeables. Selon moi, cette définition permet de créer la version la plus minimaliste du site. Elle me donne un but vers lequel je m'oblige à m'orienter afin d'obtenir une version utilisable du site. Il y a certaines choses que je n'ai pas mises dans la définition, principalement tout ce qui concerne le style du site, car l'aspect fonctionnel du site est plus important que l'aspect visuel. Ceci ne signifie pas qu'il est futile ; un bon style du site améliore fortement l'expérience utilisateur.
 
@@ -187,7 +187,7 @@ FICHIER {
     ENSEIGNANT ||--o{ FICHIER : concerne
     FICHIER }o--o{ TAG : possède
 ```
-<!--
+<!-- SOUS-LÉGENDES DE LA FIGURE PRÉCÉDENTE
 PK : *Primary Key* (Clé primaire)
 FK : *Foreign Key* (Clé étrangère)
 UUID : *Universally unique identifier* (Identifiant unique universel)
@@ -202,7 +202,7 @@ Au départ, `tags` était une chaîne de caractères et non un objet dans un aut
 
 Pour les écoles, matières, types de fichier et années, je n'ai pas créé de modèle. J'ai utilisé des *enums*[^enum], car ces valeurs sont toujours constantes, ne changeront jamais, et il n'y en a pas beaucoup. Pour les enseignants, j'ai prévu d'utiliser ce même outil. Cependant, j'ai dû faire un modèle `Enseignant` car je ne possède pas de liste contenant tous les enseignants de tous les collèges de Genève. À chaque publication d'un fichier, un enseignant ne figurant pas déjà dans la BD est ajouté. Ceci signifie qu'avec un grand nombre d'utilisateurs et de fichiers téléversés sur le site, je peux avoir une telle liste.
 
-[^enum]: "En programmation informatique, un type énuméré (appelé souvent énumération ou juste enum, parfois type énumératif ou liste énumérative) est un type de données qui consiste en un ensemble de valeurs constantes. Ces différentes valeurs représentent différents cas ; on les nomme énumérateurs. Lorsqu'une variable est de type énuméré, elle peut avoir comme valeur n'importe quel cas de ce type énuméré." [WIKIMEDIA. Type énuméré. Wikipédia (en ligne). Disponible à l'adresse : [https://fr.wikipedia.org/wiki/Type_%C3%A9num%C3%A9r%C3%A9](https://fr.wikipedia.org/wiki/Type_%C3%A9num%C3%A9r%C3%A9)]
+[^enum]: "En programmation informatique, un type énuméré (appelé souvent énumération ou juste enum, parfois type énumératif ou liste énumérative) est un type de données qui consiste en un ensemble de valeurs constantes. Ces différentes valeurs représentent différents cas ; on les nomme énumérateurs. Lorsqu'une variable est de type énuméré, elle peut avoir comme valeur n'importe quel cas de ce type énuméré." (CONTRIBUTEURS DE WIKIPÉDIA. Type énuméré. Wikipédia, l'encyclopédie libre [en ligne]. Version 20 février 2024. [Consulté le 14 septembre 2026]. Disponible à l'adresse : https://fr.wikipedia.org/wiki/Type_%C3%A9num%C3%A9r%C3%A9)
 
 ### Point de vue utilisateur
 
@@ -303,7 +303,7 @@ Disposition: à droite, inclus avec le reste du texte
 -->
 Le lien de vérification est valide pendant 24 h avec la possibilité d'en générer un autre afin de donner quand même une chance en cas d'oubli (Figure X). Ce qui assure l'unicité du lien, c'est que son *token* dépend d'une certaine information de l'utilisateur, du temps et de la clé secrète de l'application[^secret-key].
 
-[^secret-key]: "La clé secrète d’une installation Django. Elle est utilisée dans le contexte de la signature cryptographique, et doit être définie à une valeur unique et non prédictible." [DJANGO SOFTWARE FOUNDATION, 2026. Réglages. Django (Version 6.0) (en ligne). Disponible à l'adresse : [https://docs.djangoproject.com/fr/6.0/ref/settings/#std-setting-SECRET_KEY](https://docs.djangoproject.com/fr/6.1/ref/settings/#std-setting-SECRET_KEY)]
+[^secret-key]: "La clé secrète d’une installation Django. Elle est utilisée dans le contexte de la signature cryptographique, et doit être définie à une valeur unique et non prédictible." (DJANGO SOFTWARE FOUNDATION, 2025. Réglages. Django (Version 6.0) [en ligne]. [Consulté le 16 septembre 2026]. Disponible à l'adresse : https://docs.djangoproject.com/fr/6.0/ref/settings/#std-setting-SECRET_KEY)
 
 #### Dans les coulisses
 
@@ -393,11 +393,11 @@ Disposition: à droite, inclus avec le reste du texte
 -->
 Après quelques tests, je me suis aperçu que la méthode *Trigram similarity* ne donne pas toujours des résultats. Dans la figure X, on a tapé "naths" au lieu de "maths" et il n'y a pas de mots clés suggérés, malgré le fait qu'il s'agisse d'un remplacement d’une lettre par une lettre voisine sur un clavier QWERTZ suisse. J'ai trouvé que c'est un problème de seuil de similarité. La fonction dans le module PostgreSQL ne rend que les mots qui ont un score de similarité plus grand qu'un certain seuil prédéfini. Le problème survient principalement avec les mots courts car il y a moins de trigrammes. Ma solution est de baisser ce seuil pour que la recherche soit moins restrictive. La nouvelle valeur pour le seuil a été déterminée grâce à plusieurs tests qui font intervenir des fautes de frappe dans des mots de longueurs diverses.
 
-[^trigram]: "Un trigramme est un groupe de trois caractères consécutifs extraits d’une chaîne de caractères. Il est possible de mesurer la similarité entre deux chaînes en comptant le nombre de trigrammes qu’elles ont en commun. Cette idée simple s’avère très efficace pour mesurer la similarité entre des mots dans de nombreuses langues naturelles." [POSTGRESQL. pg_trgm — support for similarity of text using trigram matching. PostgreSQL (en ligne). Disponible à l'adresse : [https://www.postgresql.org/docs/current/pgtrgm.html](https://www.postgresql.org/docs/current/pgtrgm.html). Traduit de l'anglais en français avec Google Traduction].
+[^trigram]: "Un trigramme est un groupe de trois caractères consécutifs extraits d’une chaîne de caractères. Il est possible de mesurer la similarité entre deux chaînes en comptant le nombre de trigrammes qu’elles ont en commun. Cette idée simple s’avère très efficace pour mesurer la similarité entre des mots dans de nombreuses langues naturelles." (POSTGRESQL. pg_trgm — support for similarity of text using trigram matching. PostgreSQL [en ligne]. [Consulté le 14 septembre 2026]. Disponible à l'adresse : https://www.postgresql.org/docs/current/pgtrgm.html) Traduit de l'anglais en français avec Google Traduction.
 
 Bien souvent, l'utilisateur peut changer le contenu de la barre de recherche. Quand l'utilisateur tape dans la barre de recherche ou change son contenu, il est préférable que les suggestions apparaissent ou changent sans rechargement de page, pour lui donner une sensation de dynamisme. C'est ici qu'intervient htmx (cf. [htmx et JavaScript](#htmx-et-javascript)). Dans le cas de cette application, htmx envoie une requête à Django avec le contenu de la barre de recherche, Django fait sa magie[^magie] et envoie un fragment de HTML avec les résultats (qui sont les suggestions), et htmx le remplace directement dans le *DOM*[^dom] au lieu de recharger la page, le tout à l'aide d'attributs HTML. Sans htmx, il aurait fallu coder en JavaScript la détection de la modification de la barre de recherche, l'envoi de la requête, la récupération de la réponse et la modification du *DOM* pour afficher les nouveaux résultats.
 
-[^dom]: "Le Document Object Model (DOM) est une interface de programmation pour les documents web. Il représente la page de façon à ce que des programmes puissent modifier la structure, le style et le contenu du document. Le DOM représente le document sous forme de nœuds et d'objets ; ainsi, les langages de programmation peuvent interagir avec la page." [MOZILLA. Document Object Model (DOM) (en français). MDN Web Docs (en ligne). Disponible à l'adresse : [https://developer.mozilla.org/fr/docs/Web/API/Document_Object_Model](https://developer.mozilla.org/fr/docs/Web/API/Document_Object_Model)]
+[^dom]: "Le Document Object Model (DOM) est une interface de programmation pour les documents web. Il représente la page de façon à ce que des programmes puissent modifier la structure, le style et le contenu du document. Le DOM représente le document sous forme de nœuds et d'objets ; ainsi, les langages de programmation peuvent interagir avec la page." (MOZILLA. Référence du DOM. MDN Web Docs [en ligne]. [Consulté le 17 septembre 2026]. Disponible à l'adresse : https://developer.mozilla.org/fr/docs/Web/API/Document_Object_Model)
 
 [^magie]: Ce n'est bien sûr pas de la magie, il s'agit d'une requête faite par Django dans la BD avec *Trigram Similarity*.
 
@@ -477,9 +477,7 @@ L’intérêt pour la création d'un tel site naît d'un fort intérêt pour l'i
 
 **Modèle (Django)** : Classe Python définissant la structure des données qui seront généralement stockées dans une table de la BD.
 
-***Open source*** : Un logiciel est *open source* quand son code source est accessible et peut être utilisé, modifié ou redistribué selon les conditions de sa licence.
-
-**ORM (*Object-relational mapping*)** : Technique permettant de manipuler une BD relationnelle à l'aide d'objets du langage de programmation, sans écrire directement la plupart des requêtes SQL.
+**ORM (*Object-relational mapping*)** : Technique permettant de manipuler une BD relationnelle à l'aide d'objets du langage de programmation orientée objet, sans écrire directement la plupart des requêtes SQL.
 
 **Requête HTTP** : Message envoyé, par exemple, par un navigateur à un serveur pour demander une ressource ou effectuer une action.
 
@@ -487,7 +485,7 @@ L’intérêt pour la création d'un tel site naît d'un fort intérêt pour l'i
 
 **SQL** : Langage permettant de consulter et de modifier les données d'une BD relationnelle.
 
-**Test automatisé** : Test exécuté par un programme afin de vérifier qu'une fonctionnalité produit le résultat attendu.
+**Test automatisé** : Test exécuté par un programme à grande échelle afin de vérifier qu'une fonctionnalité produit le résultat attendu.
 
 ***Token* (jeton)** : Valeur générée par une application et utilisée notamment pour vérifier qu'une action, comme la validation d'une adresse électronique, est autorisée.
 
@@ -499,83 +497,65 @@ L’intérêt pour la création d'un tel site naît d'un fort intérêt pour l'i
 
 # Bibliographie
 
-AHMED, Naeem. Why Django Is the Ultimate “Batteries-Included” Framework for Scalable Web Development. Medium [en ligne]. 18 avril 2025. Disponible à l'adresse : https://medium.com/@naeem.ahmed.bdn/why-django-is-the-ultimate-batteries-included-framework-for-scalable-web-development-746ffcebaa7d
+ABBA, Ihechikara, 2022. What is an ORM – The Meaning of Object Relational Mapping Database Tools. freeCodeCamp [en ligne]. 21 octobre 2022. [Consulté le 14 septembre 2026]. Disponible à l'adresse : https://www.freecodecamp.org/news/what-is-an-orm-the-meaning-of-object-relational-mapping-database-tools/
 
-AMAZON WEB SERVICES. Amazon S3. AWS [en ligne]. Disponible à l'adresse : https://aws.amazon.com/fr/s3/
+AHMED, Naeem, 2025. Why Django Is the Ultimate “Batteries-Included” Framework for Scalable Web Development. Medium [en ligne]. 18 avril 2025. [Consulté le 21 février 2026]. Disponible à l'adresse : https://medium.com/@naeem.ahmed.bdn/why-django-is-the-ultimate-batteries-included-framework-for-scalable-web-development-746ffcebaa7d
 
-COWINKIEDINK. How to Plan and Build a Programming Project – A Legitimate Guide for Beginners. Reddit, r/learnprogramming [en ligne]. 2021. Disponible à l'adresse : https://www.reddit.com/r/learnprogramming/comments/mumrgn/how_to_plan_and_build_a_programming_project_a/
+AMAZON WEB SERVICES. Amazon S3. AWS [en ligne]. [Consulté le 27 octobre 2026]. Disponible à l'adresse : https://aws.amazon.com/fr/s3/
 
-[deleted]. Why use an object storage provider like AWS S3/Wasabi instead of just spinning up your own server? Reddit, r/learnprogramming [en ligne]. 2021. Disponible à l'adresse : https://www.reddit.com/r/learnprogramming/comments/n9zqsv/why_use_an_object_storage_provider_like_aws/
+BURGESS, Monica, 2025. What is a Session in Cybersecurity? Explained. Huntress [en ligne]. 26 juin 2025. [Consulté le 27 octobre 2026]. Disponible à l'adresse : https://www.huntress.com/cybersecurity-101/topic/what-is-a-session
 
-DMAZZONI. Commentaire dans "Best step-by-step way to build a web app?". Reddit, r/learnprogramming [en ligne]. 2023. Disponible à l'adresse : https://www.reddit.com/r/learnprogramming/comments/17zt6s2/comment/ka24s39/
+COWINKIEDINK, 2021. How to Plan and Build a Programming Project – A Legitimate Guide for Beginners. Reddit, r/learnprogramming [en ligne]. 2021. [Consulté le 20 février 2026]. Disponible à l'adresse : https://www.reddit.com/r/learnprogramming/comments/mumrgn/how_to_plan_and_build_a_programming_project_a/
 
-DJANGO SOFTWARE FOUNDATION, 2026. Password management in Django. Django (Version 6.0) [en ligne]. Disponible à l'adresse : https://docs.djangoproject.com/en/6.0/topics/auth/passwords/
+[deleted], 2021. Why use an object storage provider like AWS S3/Wasabi instead of just spinning up your own server?. Reddit, r/learnprogramming [en ligne]. 2021. [Consulté le 11 mars 2026]. Disponible à l'adresse : https://www.reddit.com/r/learnprogramming/comments/n9zqsv/why_use_an_object_storage_provider_like_aws/
 
-DJANGO SOFTWARE FOUNDATION, 2026. Réglages. Django (Version 6.0) [en ligne]. Disponible à l'adresse : https://docs.djangoproject.com/fr/6.0/ref/settings/#std-setting-SECRET_KEY
+DMAZZONI, 2023. Commentaire dans "Best step-by-step way to build a web app?". Reddit, r/learnprogramming [en ligne]. 2023. [Consulté le 20 février 2026]. Disponible à l'adresse : https://www.reddit.com/r/learnprogramming/comments/17zt6s2/comment/ka24s39/
 
-DJANGO SOFTWARE FOUNDATION, 2026. Security in Django. Django (Version 6.0) [en ligne]. Disponible à l'adresse : https://docs.djangoproject.com/en/6.0/topics/security/#sql-injection-protection
+DJANGO SOFTWARE FOUNDATION, 2025. Password management in Django. Django (Version 6.0) [en ligne]. [Consulté le 27 octobre 2026]. Disponible à l'adresse : https://docs.djangoproject.com/en/6.0/topics/auth/passwords/
 
-HTMX. Documentation. htmx [en ligne]. Disponible à l'adresse : https://htmx.org/docs/
+DJANGO SOFTWARE FOUNDATION, 2025. Réglages. Django (Version 6.0) [en ligne]. [Consulté le 16 septembre 2026]. Disponible à l'adresse : https://docs.djangoproject.com/fr/6.0/ref/settings/#std-setting-SECRET_KEY
 
-MAHADEVAN, Jaydev. The Future of the Web: Navigating HTMX, Vanilla JS, and React. DEV Community [en ligne]. 7 mars 2024. Disponible à l'adresse : https://dev.to/jaydevm/the-future-of-the-web-navigating-htmx-vanilla-js-and-react-29i7
+DJANGO SOFTWARE FOUNDATION, 2025. Security in Django. Django (Version 6.0) [en ligne]. [Consulté le 27 octobre 2026]. Disponible à l'adresse : https://docs.djangoproject.com/en/6.0/topics/security/#sql-injection-protection
 
-MOZILLA. CSS. MDN Web Docs [en ligne]. Disponible à l'adresse : https://developer.mozilla.org/en-US/docs/Glossary/CSS
+HEWLETT PACKARD ENTERPRISE. Qu’est-ce que le déploiement d’application ?. HPE [en ligne]. [Consulté le 27 octobre 2026]. Disponible à l'adresse : https://www.hpe.com/ch/fr/what-is/application-delivery.html
 
-MOZILLA. Django introduction. MDN Web Docs [en ligne]. Disponible à l'adresse : https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/Django/Introduction
+HTMX. Documentation. htmx [en ligne]. [Consulté le 20 février 2026]. Disponible à l'adresse : https://htmx.org/docs/
 
-MOZILLA. Document Object Model (DOM) (en français). MDN Web Docs [en ligne]. Disponible à l'adresse : https://developer.mozilla.org/fr/docs/Web/API/Document_Object_Model
+IONOS, 2023. Hashing : voici comment fonctionne le hachage. IONOS Digital Guide [en ligne]. 22 février 2023. [Consulté le 27 octobre 2026]. Disponible à l'adresse : https://www.ionos.fr/digitalguide/sites-internet/developpement-web/hachage/
 
-MOZILLA. HTML. MDN Web Docs [en ligne]. Disponible à l'adresse : https://developer.mozilla.org/en-US/docs/Glossary/HTML
+MAHADEVAN, Jaydev, 2024. The Future of the Web: Navigating HTMX, vanilla JS, and React. DEV Community [en ligne]. 7 mars 2024. [Consulté le 21 février 2026]. Disponible à l'adresse : https://dev.to/jaydevm/the-future-of-the-web-navigating-htmx-vanilla-js-and-react-29i7
 
-MOZILLA. HTTP messages. MDN Web Docs [en ligne]. Disponible à l'adresse : https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Messages
+MOZILLA. Django introduction. MDN Web Docs [en ligne]. [Consulté le 21 février 2026]. Disponible à l'adresse : https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/Django/Introduction
 
-MOZILLA. JavaScript. MDN Web Docs [en ligne]. Disponible à l'adresse : https://developer.mozilla.org/en-US/docs/Glossary/JavaScript
+MOZILLA. Référence du DOM. MDN Web Docs [en ligne]. [Consulté le 17 septembre 2026]. Disponible à l'adresse : https://developer.mozilla.org/fr/docs/Web/API/Document_Object_Model
 
-MUNROE, Randall. Exploits of a Mom. xkcd, n° 327 [en ligne]. 2007. Disponible à l'adresse : https://xkcd.com/327/
+MOZILLA. Messages HTTP. MDN Web Docs [en ligne]. [Consulté le 27 octobre 2026]. Disponible à l'adresse : https://developer.mozilla.org/fr/docs/Web/HTTP/Guides/Messages
 
-OPENAI. ChatGPT (GPT-6 Astra). Utilisé pour la correction linguistique du rapport et la mise en page/conversion du rapport Markdown en PDF. 2026. Prompts utilisés : voir annexe. Disponible à l'adresse : https://chat.openai.com/
+MOZILLA. JavaScript. MDN Web Docs [en ligne]. [Consulté le 27 octobre 2026]. Disponible à l'adresse : https://developer.mozilla.org/en-US/docs/Glossary/JavaScript
+
+MUNROE, Randall. Exploits of a Mom. xkcd, n° 327 [en ligne]. 2007. [Consulté le 14 septembre 2026]. Disponible à l'adresse : https://xkcd.com/327/
 
 OPENAI. ChatGPT [Large language model]. Utilisé pour le débogage. 2026. https://chat.openai.com/
 
 OPENAI. ChatGPT [GPT-6 Astra]. Utilisé pour la correction linguistique du rapport et la mise en page/conversion du rapport Markdown en PDF. 2026. Prompts utilisés : voir annexe. Disponible à l'adresse : https://chat.openai.com/
 
-POSTGRESQL. pg_trgm — support for similarity of text using trigram matching. PostgreSQL [en ligne]. Disponible à l'adresse : https://www.postgresql.org/docs/current/pgtrgm.html
+POSTGRESQL. pg_trgm — support for similarity of text using trigram matching. PostgreSQL [en ligne]. [Consulté le 14 septembre 2026]. Disponible à l'adresse : https://www.postgresql.org/docs/current/pgtrgm.html
 
-PRODUCTPLAN. Minimum Viable Product (MVP). ProductPlan, Glossary [en ligne]. Disponible à l'adresse : https://www.productplan.com/glossary/minimum-viable-product
+SMARTBEAR. What Is Automated Testing? Guide to Automated Testing. SmartBear [en ligne]. [Consulté le 27 octobre 2026]. Disponible à l'adresse : https://smartbear.com/learn/automated-testing/what-is-automated-testing/
 
-W3SCHOOLS. SQL Injection. W3Schools [en ligne]. Disponible à l'adresse : https://www.w3schools.com/SQL/sql_injection.asp
+TECHNO-SCIENCE, 2022. Bibliothèque logicielle. Techno-Science [en ligne]. 30 octobre 2022. [Consulté le 27 octobre 2026]. Disponible à l'adresse : https://www.techno-science.net/fr/definitions/bibliotheque-logicielle
 
-WIKIMEDIA. Access token. Wikipedia [en ligne]. Disponible à l'adresse : https://en.wikipedia.org/wiki/Access_token
+W3SCHOOLS. SQL Injection. W3Schools [en ligne]. [Consulté le 14 septembre 2026]. Disponible à l'adresse : https://www.w3schools.com/SQL/sql_injection.asp
 
-WIKIMEDIA. Django (web framework). Wikipedia [en ligne]. Disponible à l'adresse : https://en.wikipedia.org/wiki/Django_(web_framework)
+WIKIPEDIA CONTRIBUTORS. Django (web framework). Wikipedia, The Free Encyclopedia [en ligne]. Version 16 février 2026. [Consulté le 21 février 2026]. Disponible à l'adresse : https://en.wikipedia.org/w/index.php?title=Django_(web_framework)&oldid=1338594675
 
-WIKIMEDIA. *Framework*. Wikipédia [en ligne]. Disponible à l'adresse : https://fr.wikipedia.org/wiki/Framework
+CONTRIBUTEURS DE WIKIPÉDIA. *Framework*. Wikipédia, l'encyclopédie libre [en ligne]. Version 25 septembre 2026. [Consulté le 27 octobre 2026]. Disponible à l'adresse : https://fr.wikipedia.org/w/index.php?title=Framework&oldid=239809798
 
-WIKIMEDIA. Hash function. Wikipedia [en ligne]. Disponible à l'adresse : https://en.wikipedia.org/wiki/Hash_function
+WIKIPEDIA CONTRIBUTORS. Minimum viable product. Wikipedia, The Free Encyclopedia [en ligne]. Version 15 mai 2026. [Consulté le 20 mai 2026]. Disponible à l'adresse : https://en.wikipedia.org/w/index.php?title=Minimum_viable_product&oldid=1354312482
 
-WIKIMEDIA. htmx. Wikipedia [en ligne]. Disponible à l'adresse : https://en.wikipedia.org/wiki/Htmx
+CONTRIBUTEURS DE WIKIPÉDIA. Type énuméré. Wikipédia, l'encyclopédie libre [en ligne]. Version 20 février 2024. [Consulté le 14 septembre 2026]. Disponible à l'adresse : https://fr.wikipedia.org/wiki/Type_%C3%A9num%C3%A9r%C3%A9
 
-WIKIMEDIA. Library (computing). Wikipedia [en ligne]. Disponible à l'adresse : https://en.wikipedia.org/wiki/Library_(computing)
-
-WIKIMEDIA. Minimum viable product. Wikipedia [en ligne]. Disponible à l'adresse : https://en.wikipedia.org/wiki/Minimum_viable_product
-
-WIKIMEDIA. Object–relational mapping. Wikipedia [en ligne]. Disponible à l'adresse : https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping
-
-WIKIMEDIA. Open source. Wikipedia [en ligne]. Disponible à l'adresse : https://en.wikipedia.org/wiki/Open_source
-
-WIKIMEDIA. Relational database. Wikipedia [en ligne]. Disponible à l'adresse : https://en.wikipedia.org/wiki/Relational_database
-
-WIKIMEDIA. Session (computer science). Wikipedia [en ligne]. Disponible à l'adresse : https://en.wikipedia.org/wiki/Session_(computer_science)
-
-WIKIMEDIA. Software deployment. Wikipedia [en ligne]. Disponible à l'adresse : https://en.wikipedia.org/wiki/Software_deployment
-
-WIKIMEDIA. Software testing. Wikipedia [en ligne]. Disponible à l'adresse : https://en.wikipedia.org/wiki/Software_testing
-
-WIKIMEDIA. SQL. Wikipedia [en ligne]. Disponible à l'adresse : https://en.wikipedia.org/wiki/SQL
-
-WIKIMEDIA. Type énuméré. Wikipédia [en ligne]. Disponible à l'adresse : https://fr.wikipedia.org/wiki/Type_%C3%A9num%C3%A9r%C3%A9
-
-WIKIMEDIA. *Universally unique identifier*. Wikipédia [en ligne]. Disponible à l'adresse : https://fr.wikipedia.org/wiki/Universally_unique_identifier
+CONTRIBUTEURS DE WIKIPÉDIA. *Universally unique identifier*. Wikipédia, l'encyclopédie libre [en ligne]. Version 12 mai 2026. [Consulté le 27 octobre 2026]. Disponible à l'adresse : https://fr.wikipedia.org/w/index.php?title=Universally_unique_identifier&oldid=236119803
 
 # Annexe
 
